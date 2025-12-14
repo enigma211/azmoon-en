@@ -1,0 +1,19 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.azmoonkade.twa",
+      "sha256_cert_fingerprints": [
+        "5B:96:91:2B:8D:9F:ED:0B:01:06:B0:65:A2:42:EA:3E:20:3F:27:FD:0C:57:90:1A:EC:E5:D4:F1:A8:AD:86:50"
+      ]
+    }
+  },
+  {
+    "relation": ["check_validation"],
+    "target": {
+      "namespace": "cafebazaar_twa",
+      "package_name": "com.azmoonkade.twa"
+    }
+  }
+]

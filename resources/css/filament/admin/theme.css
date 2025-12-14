@@ -1,0 +1,12 @@
+/* Basic RTL direction for Filament admin panel */
+html {
+  direction: rtl;
+}
+
+body {
+  text-align: right;
+}
+
+/* Optional: adjust some common utilities for RTL feel */
+*[dir="rtl"] .fi-breadcrumbs { direction: rtl; }
+*[dir="rtl"] .fi-main { direction: rtl; }
