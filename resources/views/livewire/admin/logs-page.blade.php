@@ -37,7 +37,7 @@
                     @foreach($logs as $row)
                         <tr class="border-b">
                             <td class="px-3 py-2">{{ $row->id }}</td>
-                            <td class="px-3 py-2 whitespace-nowrap">{{ @formatDate($row->created_at, 'Y/m/d H:i') }}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">{{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('Y/m/d H:i') : '' }}</td>
                             <td class="px-3 py-2">{{ $row->user?->name ?? 'Guest' }}</td>
                             <td class="px-3 py-2">{{ $row->event }}</td>
                             <td class="px-3 py-2">{{ $row->exam?->title ?? '—' }}</td>

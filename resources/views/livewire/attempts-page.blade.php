@@ -39,7 +39,7 @@
                         <div class="flex flex-wrap items-center gap-4 text-sm">
                             <div class="flex items-center gap-1">
                                 <span class="text-gray-500">Date:</span>
-                                <span>{{ $attempt->started_at ? @formatDate($attempt->started_at, 'Y/m/d H:i') : '—' }}</span>
+                                <span>{{ $attempt->started_at ? \Carbon\Carbon::parse($attempt->started_at)->format('Y/m/d H:i') : '—' }}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <span class="text-gray-500">Answered:</span>

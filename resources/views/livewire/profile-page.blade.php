@@ -109,7 +109,7 @@
                     <!-- Start Date -->
                     <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
                         <span class="text-gray-600 dark:text-gray-400">Start Date:</span>
-                        <span class="font-medium">{{ @formatDate(auth()->user()->subscription_start, 'Y/m/d') }}</span>
+                        <span class="font-medium">{{ auth()->user()->subscription_start ? \Carbon\Carbon::parse(auth()->user()->subscription_start)->format('Y/m/d') : '-' }}</span>
                     </div>
 
                     <!-- End Date -->
@@ -117,7 +117,7 @@
                         <span class="text-gray-600 dark:text-gray-400">End Date:</span>
                         <span class="font-medium">
                             @if(auth()->user()->subscription_end)
-                                {{ @formatDate(auth()->user()->subscription_end, 'Y/m/d') }}
+                                {{ \Carbon\Carbon::parse(auth()->user()->subscription_end)->format('Y/m/d') }}
                             @else
                                 <span class="text-green-600">Unlimited</span>
                             @endif

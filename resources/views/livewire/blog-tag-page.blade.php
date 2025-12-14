@@ -53,7 +53,7 @@
                                         </a>
                                     @endif
                                     <span class="text-xs text-gray-400">
-                                        {{ @formatDate($post->published_at)->format('%d %B %Y') }}
+                                        {{ $post->published_at ? \Carbon\Carbon::parse($post->published_at)->format('d M Y') : '' }}
                                     </span>
                                 </div>
 
