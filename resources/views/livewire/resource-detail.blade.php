@@ -18,13 +18,13 @@
                 <source src="{{ $url }}" type="video/{{ $ext }}" />
             </video>
         @else
-            <a href="{{ $url }}" target="_blank" class="rounded bg-indigo-600 px-3 py-2 text-white">باز کردن</a>
+            <a href="{{ $url }}" target="_blank" class="rounded bg-indigo-600 px-3 py-2 text-white">Open</a>
         @endif
     @else
-        <div class="rounded border p-4 text-sm text-gray-600">فایلی برای نمایش وجود ندارد.</div>
+        <div class="rounded border p-4 text-sm text-gray-600">No file to display.</div>
     @endif
 
     <div>
-        <a href="{{ route('resources') }}" wire:navigate class="rounded bg-gray-100 px-4 py-2 text-gray-700">بازگشت</a>
+        <a href="{{ route('resources') }}" wire:navigate class="rounded bg-gray-100 px-4 py-2 text-gray-700">Back</a>
     </div>
 </div>

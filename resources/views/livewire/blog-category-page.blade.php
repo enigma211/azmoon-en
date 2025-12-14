@@ -3,13 +3,13 @@
         <!-- Header Text -->
         <div class="text-center mb-8">
             <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $currentCategory->title }}</h1>
-            <p class="text-gray-600">آرشیو مطالب دسته‌بندی {{ $currentCategory->title }}</p>
+            <p class="text-gray-600">Archive of posts in {{ $currentCategory->title }}</p>
         </div>
 
         <!-- Categories Navigation -->
         <div class="flex overflow-x-auto pb-4 mb-6 gap-2 no-scrollbar">
             <a href="{{ route('blog.index') }}" class="px-4 py-2 rounded-full bg-white text-gray-700 text-sm font-medium hover:bg-gray-100 hover:text-indigo-600 whitespace-nowrap border border-gray-200 transition-colors">
-                همه مطالب
+                All Posts
             </a>
             @foreach($categories as $category)
                 <a href="{{ route('blog.category', $category->slug) }}" class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap border transition-colors {{ $category->id === $currentCategory->id ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100 hover:text-indigo-600' }}">
@@ -25,7 +25,7 @@
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
                     </svg>
-                    <p class="text-gray-500 text-lg">هنوز مطلبی در این دسته‌بندی منتشر نشده است.</p>
+                    <p class="text-gray-500 text-lg">No posts published in this category yet.</p>
                 </div>
             @else
                 @foreach($posts as $post)
@@ -75,14 +75,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
-                                        {{ number_format($post->view_count) }} بازدید
+                                        {{ number_format($post->view_count) }} views
                                     </span>
                                 </div>
                                 
                                 <a href="{{ route('blog.show', ['category' => $post->category->slug ?? 'general', 'slug' => $post->slug]) }}" class="text-indigo-600 text-xs font-semibold flex items-center hover:underline">
-                                    ادامه مطلب
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    Read More
+                                    <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                     </svg>
                                 </a>
                             </div>

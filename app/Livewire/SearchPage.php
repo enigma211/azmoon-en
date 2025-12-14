@@ -83,8 +83,8 @@ class SearchPage extends Component
             'domains' => $domains,
             'results' => $results
         ])->layout('layouts.app', [
-            'seoTitle' => 'جستجوی سوالات - آزمون کده',
-            'seoDescription' => 'جستجوی پیشرفته در بانک سوالات آزمون‌های نظام مهندسی و کارشناس رسمی',
+            'seoTitle' => 'Question Search - ExamApp',
+            'seoDescription' => 'Advanced search in the question bank for engineering and official expert exams',
         ]);
     }
 }

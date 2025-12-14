@@ -4,14 +4,14 @@
         
         <div class="mt-4 flex justify-end">
             <x-filament::button type="submit">
-                ذخیره تنظیمات
+                Save Settings
             </x-filament::button>
         </div>
     </form>
 
     <hr class="my-8 border-gray-200 dark:border-gray-700">
 
-    <div class="space-y-6" dir="rtl">
+    <div class="space-y-6" dir="ltr">
         @if(session('success'))
             <div class="fi-alert fi-color-success">
                 <div class="fi-alert-content">

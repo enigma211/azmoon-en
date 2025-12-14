@@ -1,19 +1,19 @@
 <div class="mx-auto max-w-6xl p-6 space-y-6">
-    <h1 class="text-xl font-semibold">لاگ و رخدادها</h1>
+    <h1 class="text-xl font-semibold">Logs & Events</h1>
 
     <div class="flex flex-col sm:flex-row sm:items-end gap-3">
         <div class="flex-1">
-            <label class="block text-xs text-gray-600 mb-1">جستجو</label>
-            <input type="text" wire:model.live="q" class="w-full rounded border-gray-300" placeholder="IP، عنوان آزمون، User-Agent">
+            <label class="block text-xs text-gray-600 mb-1">Search</label>
+            <input type="text" wire:model.live="q" class="w-full rounded border-gray-300" placeholder="IP, Exam Title, User-Agent">
         </div>
         <div>
-            <label class="block text-xs text-gray-600 mb-1">رویداد</label>
+            <label class="block text-xs text-gray-600 mb-1">Event</label>
             <select wire:model.live="event" class="rounded border-gray-300">
-                <option value="all">همه</option>
-                <option value="exam_started">شروع آزمون</option>
-                <option value="exam_finished">پایان آزمون</option>
-                <option value="result_viewed">مشاهده کارنامه (Attempt)</option>
-                <option value="result_viewed_session">مشاهده کارنامه (Session)</option>
+                <option value="all">All</option>
+                <option value="exam_started">Exam Started</option>
+                <option value="exam_finished">Exam Finished</option>
+                <option value="result_viewed">View Result (Attempt)</option>
+                <option value="result_viewed_session">View Result (Session)</option>
             </select>
         </div>
     </div>
@@ -23,14 +23,14 @@
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 text-gray-600">
-                        <th class="px-3 py-2 text-right">#</th>
-                        <th class="px-3 py-2 text-right">زمان</th>
-                        <th class="px-3 py-2 text-right">کاربر</th>
-                        <th class="px-3 py-2 text-right">رویداد</th>
-                        <th class="px-3 py-2 text-right">آزمون</th>
-                        <th class="px-3 py-2 text-right">Attempt</th>
-                        <th class="px-3 py-2 text-right">IP</th>
-                        <th class="px-3 py-2 text-right">جزئیات</th>
+                        <th class="px-3 py-2 text-left">#</th>
+                        <th class="px-3 py-2 text-left">Time</th>
+                        <th class="px-3 py-2 text-left">User</th>
+                        <th class="px-3 py-2 text-left">Event</th>
+                        <th class="px-3 py-2 text-left">Exam</th>
+                        <th class="px-3 py-2 text-left">Attempt</th>
+                        <th class="px-3 py-2 text-left">IP</th>
+                        <th class="px-3 py-2 text-left">Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,7 +38,7 @@
                         <tr class="border-b">
                             <td class="px-3 py-2">{{ $row->id }}</td>
                             <td class="px-3 py-2 whitespace-nowrap">{{ @formatDate($row->created_at, 'Y/m/d H:i') }}</td>
-                            <td class="px-3 py-2">{{ $row->user?->name ?? 'مهمان' }}</td>
+                            <td class="px-3 py-2">{{ $row->user?->name ?? 'Guest' }}</td>
                             <td class="px-3 py-2">{{ $row->event }}</td>
                             <td class="px-3 py-2">{{ $row->exam?->title ?? '—' }}</td>
                             <td class="px-3 py-2">{{ $row->attempt_id ?? '—' }}</td>
@@ -56,6 +56,6 @@
             {{ $logs->links() }}
         </div>
     @else
-        <div class="rounded border p-4 text-sm text-gray-600">لاگی یافت نشد.</div>
+        <div class="rounded border p-4 text-sm text-gray-600">No logs found.</div>
     @endif
 </div>

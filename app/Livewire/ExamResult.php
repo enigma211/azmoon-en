@@ -39,7 +39,7 @@ class ExamResult extends Component
             $attempt = $query->first();
             // If attempt id is provided but not found or not owned, show friendly message
             if (!$attempt) {
-                SessionFacade::flash('error', 'نتیجه‌ای برای این شناسه تلاش یافت نشد یا به شما تعلق ندارد.');
+                SessionFacade::flash('error', 'Result for this attempt ID not found or does not belong to you.');
                 $this->stats = [];
                 $this->userAnswers = [];
                 $this->attemptModel = null;

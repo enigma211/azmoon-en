@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>دیباگ PWA - آزمون کده</title>
+    <title>PWA Debug - ExamApp</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -55,15 +55,15 @@
     </style>
 </head>
 <body>
-    <h2 style="margin-bottom: 20px; text-align: center;">🔍 دیباگ PWA</h2>
+    <h2 style="margin-bottom: 20px; text-align: center;">🔍 PWA Debug</h2>
 
     <div class="card">
-        <h3>📱 اطلاعات دستگاه</h3>
+        <h3>📱 Device Info</h3>
         <div id="device-info"></div>
     </div>
 
     <div class="card">
-        <h3>🌐 پروتکل و دامنه</h3>
+        <h3>🌐 Protocol & Domain</h3>
         <div id="protocol-info"></div>
     </div>
 
@@ -83,16 +83,16 @@
     </div>
 
     <div class="card">
-        <h3>📦 قابلیت نصب</h3>
+        <h3>📦 Installability</h3>
         <div id="install-info"></div>
-        <button id="install-btn" style="display: none;">نصب اپلیکیشن</button>
+        <button id="install-btn" style="display: none;">Install App</button>
     </div>
 
     <div class="card">
-        <h3>🔧 اقدامات</h3>
-        <button onclick="location.reload()">رفرش صفحه</button>
-        <button onclick="unregisterSW()">حذف Service Worker</button>
-        <button onclick="clearAllCaches()">پاک کردن Cache</button>
+        <h3>🔧 Actions</h3>
+        <button onclick="location.reload()">Refresh Page</button>
+        <button onclick="unregisterSW()">Unregister Service Worker</button>
+        <button onclick="clearAllCaches()">Clear Cache</button>
     </div>
 
     <script>
@@ -103,18 +103,18 @@
             <div class="status info">User Agent: ${navigator.userAgent}</div>
             <div class="status info">Platform: ${navigator.platform}</div>
             <div class="status info">Screen: ${screen.width}x${screen.height}</div>
-            <div class="status info">Standalone: ${window.matchMedia('(display-mode: standalone)').matches ? 'بله' : 'خیر'}</div>
+            <div class="status info">Standalone: ${window.matchMedia('(display-mode: standalone)').matches ? 'Yes' : 'No'}</div>
         `;
 
         // Protocol Info
         const isHTTPS = location.protocol === 'https:';
         document.getElementById('protocol-info').innerHTML = `
             <div class="status ${isHTTPS ? 'success' : 'error'}">
-                پروتکل: ${location.protocol}
+                Protocol: ${location.protocol}
             </div>
-            <div class="status info">دامنه: ${location.hostname}</div>
-            <div class="status info">پورت: ${location.port || 'پیش‌فرض'}</div>
-            ${!isHTTPS ? '<div class="status error">⚠️ HTTPS مورد نیاز است!</div>' : ''}
+            <div class="status info">Domain: ${location.hostname}</div>
+            <div class="status info">Port: ${location.port || 'Default'}</div>
+            ${!isHTTPS ? '<div class="status error">⚠️ HTTPS is required!</div>' : ''}
         `;
 
         // Check Manifest
@@ -128,21 +128,21 @@
                 });
                 
                 document.getElementById('manifest-info').innerHTML = `
-                    <div class="status success">✅ Manifest موجود است</div>
+                    <div class="status success">✅ Manifest found</div>
                     <div class="status ${hasIcons ? 'success' : 'error'}">
-                        آیکون‌ها: ${manifest.icons?.length || 0} عدد
+                        Icons: ${manifest.icons?.length || 0} count
                     </div>
                     <div class="status ${has144Icon ? 'success' : 'error'}">
-                        آیکون 144px+: ${has144Icon ? 'موجود' : 'ناموجود'}
+                        Icon 144px+: ${has144Icon ? 'Found' : 'Missing'}
                     </div>
-                    <div class="status info">نام: ${manifest.name}</div>
+                    <div class="status info">Name: ${manifest.name}</div>
                     <div class="status info">Display: ${manifest.display}</div>
                     <pre>${JSON.stringify(manifest, null, 2).substring(0, 500)}...</pre>
                 `;
             })
             .catch(err => {
                 document.getElementById('manifest-info').innerHTML = `
-                    <div class="status error">❌ خطا: ${err.message}</div>
+                    <div class="status error">❌ Error: ${err.message}</div>
                 `;
             });
 
@@ -151,41 +151,41 @@
             navigator.serviceWorker.getRegistration()
                 .then(reg => {
                     if (reg) {
-                        const state = reg.active?.state || 'نامشخص';
+                        const state = reg.active?.state || 'Unknown';
                         document.getElementById('sw-info').innerHTML = `
-                            <div class="status success">✅ Service Worker ثبت شده</div>
-                            <div class="status info">وضعیت: ${state}</div>
+                            <div class="status success">✅ Service Worker registered</div>
+                            <div class="status info">Status: ${state}</div>
                             <div class="status info">Scope: ${reg.scope}</div>
                             <div class="status info">Update: ${reg.updateViaCache}</div>
                         `;
                     } else {
                         document.getElementById('sw-info').innerHTML = `
-                            <div class="status error">❌ Service Worker ثبت نشده</div>
-                            <div class="status warning">در حال تلاش برای ثبت...</div>
+                            <div class="status error">❌ Service Worker not registered</div>
+                            <div class="status warning">Attempting to register...</div>
                         `;
                         
                         // Try to register
                         navigator.serviceWorker.register('/service-worker.js')
                             .then(() => {
                                 document.getElementById('sw-info').innerHTML += `
-                                    <div class="status success">✅ ثبت موفق - لطفاً رفرش کنید</div>
+                                    <div class="status success">✅ Registration successful - Please refresh</div>
                                 `;
                             })
                             .catch(err => {
                                 document.getElementById('sw-info').innerHTML += `
-                                    <div class="status error">❌ خطا در ثبت: ${err.message}</div>
+                                    <div class="status error">❌ Registration error: ${err.message}</div>
                                 `;
                             });
                     }
                 })
                 .catch(err => {
                     document.getElementById('sw-info').innerHTML = `
-                        <div class="status error">❌ خطا: ${err.message}</div>
+                        <div class="status error">❌ Error: ${err.message}</div>
                     `;
                 });
         } else {
             document.getElementById('sw-info').innerHTML = `
-                <div class="status error">❌ مرورگر از Service Worker پشتیبانی نمی‌کند</div>
+                <div class="status error">❌ Browser does not support Service Worker</div>
             `;
         }
 
@@ -195,14 +195,14 @@
                 const count = names.length;
                 document.getElementById('cache-info').innerHTML = `
                     <div class="status ${count > 0 ? 'success' : 'warning'}">
-                        تعداد Cache: ${count}
+                        Cache Count: ${count}
                     </div>
-                    ${names.length > 0 ? `<div class="status info">نام‌ها: ${names.join(', ')}</div>` : ''}
+                    ${names.length > 0 ? `<div class="status info">Names: ${names.join(', ')}</div>` : ''}
                 `;
             });
         } else {
             document.getElementById('cache-info').innerHTML = `
-                <div class="status error">❌ Cache API پشتیبانی نمی‌شود</div>
+                <div class="status error">❌ Cache API not supported</div>
             `;
         }
 
@@ -212,8 +212,8 @@
             deferredPrompt = e;
             
             document.getElementById('install-info').innerHTML = `
-                <div class="status success">✅ اپلیکیشن قابل نصب است!</div>
-                <div class="status info">رویداد beforeinstallprompt فعال شد</div>
+                <div class="status success">✅ App is installable!</div>
+                <div class="status info">beforeinstallprompt event fired</div>
             `;
             document.getElementById('install-btn').style.display = 'block';
         });
@@ -221,12 +221,12 @@
         // Check if already installed
         if (window.matchMedia('(display-mode: standalone)').matches) {
             document.getElementById('install-info').innerHTML = `
-                <div class="status success">✅ اپلیکیشن نصب شده است</div>
+                <div class="status success">✅ App is installed</div>
             `;
         } else {
             document.getElementById('install-info').innerHTML = `
-                <div class="status warning">⏳ در انتظار رویداد نصب...</div>
-                <div class="status info">اگر رویداد نیامد، شرایط PWA بررسی شود</div>
+                <div class="status warning">⏳ Waiting for install event...</div>
+                <div class="status info">If event doesn't fire, check PWA criteria</div>
             `;
         }
 
@@ -237,7 +237,7 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 document.getElementById('install-info').innerHTML += `
                     <div class="status ${outcome === 'accepted' ? 'success' : 'warning'}">
-                        نتیجه: ${outcome === 'accepted' ? 'نصب شد' : 'لغو شد'}
+                        Outcome: ${outcome === 'accepted' ? 'Installed' : 'Cancelled'}
                     </div>
                 `;
                 deferredPrompt = null;
@@ -250,7 +250,7 @@
                 const reg = await navigator.serviceWorker.getRegistration();
                 if (reg) {
                     await reg.unregister();
-                    alert('Service Worker حذف شد. صفحه را رفرش کنید.');
+                    alert('Service Worker unregistered. Refresh the page.');
                 }
             }
         }
@@ -260,7 +260,7 @@
             if ('caches' in window) {
                 const names = await caches.keys();
                 await Promise.all(names.map(name => caches.delete(name)));
-                alert('تمام Cache پاک شد. صفحه را رفرش کنید.');
+                alert('All caches cleared. Refresh the page.');
             }
         }
     </script>

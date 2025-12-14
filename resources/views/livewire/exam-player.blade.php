@@ -24,7 +24,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                مشاهده مفروضات آزمون
+                View Exam Assumptions
             </button>
         </div>
     @endif
@@ -35,18 +35,18 @@
         <div class="h-2 w-full rounded bg-gray-200">
             <div class="h-2 rounded bg-indigo-600" style="width: {{ $pct }}%"></div>
         </div>
-        <div class="mt-1 text-[11px] text-gray-500">پیشرفت: {{ $pct }}%</div>
+        <div class="mt-1 text-[11px] text-gray-500">Progress: {{ $pct }}%</div>
     </div>
 
     <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-600">سوال {{ ($index ?? 0) + 1 }} از {{ $total ?? 0 }}</div>
+        <div class="text-sm text-gray-600">Question {{ ($index ?? 0) + 1 }} of {{ $total ?? 0 }}</div>
         <div class="text-xs text-gray-700">
             @if(!is_null($durationSeconds))
                 <span wire:poll.1s="tick">
-                    زمان باقیمانده: {{ floor($remainingSeconds / 60) }} دقیقه
+                    Time Remaining: {{ floor($remainingSeconds / 60) }} min
                 </span>
             @else
-                <span>بدون محدودیت زمان</span>
+                <span>No Time Limit</span>
             @endif
         </div>
     </div>
@@ -75,9 +75,9 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     </svg>
-                    <span class="text-lg font-bold">این سوال بطور رسمی حذف شده است</span>
+                    <span class="text-lg font-bold">This question has been officially removed</span>
                 </div>
-                <p class="mt-2 text-sm text-amber-600">این سوال در محاسبه نمره نهایی شما لحاظ نخواهد شد. لطفاً به سوال بعدی بروید.</p>
+                <p class="mt-2 text-sm text-amber-600">This question will not be calculated in your final score. Please proceed to the next question.</p>
             </div>
         @elseif($q->choices && $q->choices->count())
             <div class="mt-3 space-y-2">
@@ -92,7 +92,7 @@
                                    class="h-5 w-5 mt-0.5 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                    @checked(($answers[$q->id][$choice->id] ?? false) === true)
                                    wire:click="saveAnswer({{ $q->id }}, {{ $choice->id }}, true)" />
-                            <div class="flex-1 text-sm leading-relaxed choice-text" dir="rtl">
+                            <div class="flex-1 text-sm leading-relaxed choice-text" dir="ltr">
                                 {!! $choice->text !!}
                             </div>
                         </label>
@@ -102,16 +102,16 @@
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">گزینه‌ها مخفی هستند</h3>
-                        <p class="mt-1 text-sm text-gray-500">برای مشاهده گزینه‌ها و پاسخ به سوال، لطفاً با ایمیل و رمز عبور وارد شوید.</p>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">Choices are hidden</h3>
+                        <p class="mt-1 text-sm text-gray-500">To view options and answer the question, please login with your email and password.</p>
                         <div class="mt-6">
                             @guest
                                 <a href="{{ route('login') }}" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                    ورود / ثبت نام
+                                    Login / Register
                                 </a>
                             @else
                                 <a href="{{ route('profile') }}" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                    مشاهده پروفایل
+                                    View Profile
                                 </a>
                             @endguest
                         </div>
@@ -126,12 +126,12 @@
                 <button wire:click="prev" 
                         class="rounded bg-gray-100 px-8 py-2 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition font-medium" 
                         @disabled(($index ?? 0) === 0)>
-                    قبلی
+                    Previous
                 </button>
                 <button wire:click="next" 
                         class="rounded bg-indigo-600 px-8 py-2 text-white hover:bg-indigo-700 transition font-medium" 
                         @disabled((($index ?? 0) + 1) >= ($total ?? 0))>
-                    بعدی
+                    Next
                 </button>
             </div>
             
@@ -144,7 +144,7 @@
                         <button type="submit"
                                 class="rounded-lg px-6 py-2 text-white font-medium text-sm {{ ($this->requireAllAnswered && $this->unansweredCount() > 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 shadow hover:shadow-lg' }} transition-all"
                                 @disabled($this->requireAllAnswered && $this->unansweredCount() > 0)>
-                            پایان آزمون و مشاهده کارنامه
+                            Finish Exam & View Result
                         </button>
                     </form>
                 @endif
@@ -155,14 +155,14 @@
         <div class="flex justify-center pt-2">
             <button wire:click="$set('showReportModal', true)" 
                     class="text-sm text-gray-600 hover:text-red-600 underline transition">
-                گزارش ایراد سوال
+                Report Issue
             </button>
         </div>
     @endif
         </div>
     </div>
     @else
-        <div class="rounded border p-4 text-sm text-gray-600">سوالی برای نمایش وجود ندارد.</div>
+        <div class="rounded border p-4 text-sm text-gray-600">No questions to display.</div>
     @endif
 
     <!-- Report Issue Modal -->
@@ -193,7 +193,7 @@
             
             <!-- Header -->
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-gray-900">گزارش ایراد سوال</h3>
+                <h3 class="text-lg font-bold text-gray-900">Report Question Issue</h3>
                 <button @click="$wire.set('showReportModal', false)" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -216,11 +216,11 @@
             <!-- Form -->
             <form wire:submit.prevent="submitReport">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">توضیحات ایراد:</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Issue Description:</label>
                     <textarea wire:model="reportText" 
                               rows="4" 
                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                              placeholder="لطفاً ایراد سوال را به طور دقیق توضیح دهید..."></textarea>
+                              placeholder="Please describe the issue in detail..."></textarea>
                     @error('reportText')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -230,12 +230,12 @@
                 <div class="flex gap-3">
                     <button type="submit" 
                             class="flex-1 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition">
-                        ارسال گزارش
+                        Submit Report
                     </button>
                     <button type="button" 
                             @click="$wire.set('showReportModal', false)"
                             class="flex-1 rounded-lg bg-gray-200 px-4 py-2 text-gray-700 font-medium hover:bg-gray-300 transition">
-                        انصراف
+                        Cancel
                     </button>
                 </div>
             </form>
@@ -287,7 +287,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
-                            <h3 class="text-xl font-bold">مفروضات این آزمون</h3>
+                            <h3 class="text-xl font-bold">Exam Assumptions</h3>
                         </div>
                         <button 
                             @click="show = false"
@@ -310,7 +310,7 @@
                             <div class="flex justify-center bg-gray-50 rounded-lg p-4">
                                 <img 
                                     src="{{ Storage::url($this->exam->assumptions_image) }}" 
-                                    alt="تصویر مفروضات" 
+                                    alt="Assumptions Image" 
                                     class="max-w-full h-auto rounded shadow-lg">
                             </div>
                         @endif
@@ -321,7 +321,7 @@
                         <button 
                             @click="show = false"
                             class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition">
-                            بستن
+                            Close
                         </button>
                     </div>
                 </div>

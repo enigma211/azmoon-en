@@ -2,14 +2,14 @@
     <div class="mx-auto max-w-md px-4 py-8">
         <!-- Header -->
         <header class="mb-8 text-center">
-            <h1 class="text-lg font-bold text-gray-900">آزمون‌های رسمی دوره‌های گذشته</h1>
+            <h1 class="text-lg font-bold text-gray-900">Official Past Exams</h1>
             @if(isset($domain) && $domain->id == 1)
-                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-right">
-                    کلیه سوالات از وب سایت دفتر مقررات ملی ساختمان که بصورت رایگان در اختیار مهندسین قرار گرفته است دریافت شده است
+                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-left">
+                    All questions are obtained from the National Building Regulations Office website, which are available to engineers for free.
                 </div>
             @elseif(isset($domain) && $domain->id == 3)
-                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-right">
-                    کلیه سوالات از وب سایت شورای عالی کارشناسان رسمی دادگستری که بصورت رایگان در اختیار مهندسین قرار گرفته است دریافت شده است
+                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-left">
+                    All questions are obtained from the High Council of Official Experts of Justice website, which are available to engineers for free.
                 </div>
             @endif
         </header>
@@ -51,7 +51,7 @@
                     <div class="p-7 bg-white flex flex-col items-center">
                         <a href="{{ route('exams', ['batch' => $batch->id]) }}" wire:navigate class="block w-fit mx-auto">
                             <div class="{{ $btnColor }} text-white font-bold text-center py-2 px-3 rounded-xl shadow transition-colors flex items-center justify-center gap-2 text-sm">
-                                <span>مشاهده آزمون‌ها</span>
+                                <span>View Exams</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                 </svg>
@@ -61,7 +61,7 @@
                         <!-- Inactive Badge -->
                         @if(!$batch->is_active)
                             <div class="mt-2 text-gray-400 text-xs font-medium bg-gray-100 px-3 py-1 rounded-full">
-                                غیرفعال
+                                Inactive
                             </div>
                         @endif
                     </div>
@@ -77,8 +77,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">نوبتی یافت نشد</h3>
-                <p class="text-gray-500">در حال حاضر هیچ نوبت آزمونی در این دامنه موجود نیست.</p>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No Batches Found</h3>
+                <p class="text-gray-500">Currently, there are no exam batches available in this domain.</p>
             </div>
         @endif
     </div>

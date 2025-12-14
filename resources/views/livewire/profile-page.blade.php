@@ -20,13 +20,13 @@
         @if ($isGuest)
             {{-- Guest User: Show Login Form --}}
             <header class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">پروفایل کاربری</h1>
-                <p class="text-sm text-gray-600 mt-2">برای دسترسی به پروفایل خود، لطفا با ایمیل و رمز عبور وارد شوید</p>
+                <h1 class="text-3xl font-bold text-gray-900">User Profile</h1>
+                <p class="text-sm text-gray-600 mt-2">To access your profile, please login with your email and password</p>
             </header>
 
             <div class="flex justify-center mt-4">
                 <a href="{{ route('login') }}" class="inline-flex items-center rounded-lg bg-indigo-600 px-6 py-2.5 text-white text-sm font-medium hover:bg-indigo-700 transition shadow-md hover:shadow-lg">
-                    ورود با ایمیل و رمز عبور
+                    Login with Email
                 </a>
             </div>
         @else
@@ -36,17 +36,17 @@
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <h1 class="text-xl font-bold mb-1">
-                                خوش آمدید، {{ auth()->user()->name }}!
+                                Welcome, {{ auth()->user()->name }}!
                             </h1>
                             <p class="text-indigo-100 text-sm">
-                                وضعیت اشتراک: 
+                                Subscription Status: 
                                 @if($isPremium)
-                                    <span class="font-semibold">اشتراک ویژه</span>
+                                    <span class="font-semibold">Premium</span>
                                     @if($daysRemaining !== null && $daysRemaining > 0)
-                                        <span class="text-xs"> ({{ ceil($daysRemaining) }} روز باقیمانده)</span>
+                                        <span class="text-xs"> ({{ ceil($daysRemaining) }} days remaining)</span>
                                     @endif
                                 @else
-                                    <span class="font-semibold">کاربر رایگان</span>
+                                    <span class="font-semibold">Free User</span>
                                 @endif
                             </p>
                         </div>
@@ -54,7 +54,7 @@
                             wire:click="logout"
                             class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-white text-xs font-medium transition-colors backdrop-blur"
                         >
-                            خروج
+                            Logout
                         </button>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        تاریخچه آزمون‌ها و نمرات
+                        Exam History & Grades
                     </a>
                 </div>
             </header>
@@ -83,8 +83,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     <div class="text-center">
-                        <h3 class="text-xl font-bold">پشتیبانی</h3>
-                        <p class="text-sm text-blue-100 mt-1">ارسال تیکت و مشاهده پاسخ‌ها</p>
+                        <h3 class="text-xl font-bold">Support</h3>
+                        <p class="text-sm text-blue-100 mt-1">Submit tickets and view responses</p>
                     </div>
                 </div>
             </button>
@@ -94,13 +94,13 @@
 
             <!-- Old Subscription Card (Hidden, keeping for reference) -->
             <div class="hidden bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">وضعیت اشتراک (قدیمی)</h2>
+            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Subscription Status (Legacy)</h2>
             
             @if($subscription)
                 <div class="space-y-4">
                     <!-- Plan Name -->
                     <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
-                        <span class="text-gray-600 dark:text-gray-400">نوع اشتراک:</span>
+                        <span class="text-gray-600 dark:text-gray-400">Plan:</span>
                         <span class="font-semibold text-lg {{ $subscription->price > 0 ? 'text-green-600' : 'text-gray-600' }}">
                             {{ $subscription->title }}
                         </span>
@@ -108,18 +108,18 @@
 
                     <!-- Start Date -->
                     <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
-                        <span class="text-gray-600 dark:text-gray-400">تاریخ فعال‌سازی:</span>
+                        <span class="text-gray-600 dark:text-gray-400">Start Date:</span>
                         <span class="font-medium">{{ @formatDate(auth()->user()->subscription_start, 'Y/m/d') }}</span>
                     </div>
 
                     <!-- End Date -->
                     <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
-                        <span class="text-gray-600 dark:text-gray-400">تاریخ پایان:</span>
+                        <span class="text-gray-600 dark:text-gray-400">End Date:</span>
                         <span class="font-medium">
                             @if(auth()->user()->subscription_end)
                                 {{ @formatDate(auth()->user()->subscription_end, 'Y/m/d') }}
                             @else
-                                <span class="text-green-600">نامحدود</span>
+                                <span class="text-green-600">Unlimited</span>
                             @endif
                         </span>
                     </div>
@@ -127,19 +127,19 @@
                     <!-- Days Remaining -->
                     @if($daysRemaining !== null)
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600 dark:text-gray-400">روزهای باقی‌مانده:</span>
+                            <span class="text-gray-600 dark:text-gray-400">Days Remaining:</span>
                             <span class="font-bold text-lg {{ $isExpired ? 'text-red-600' : ($daysRemaining <= 7 ? 'text-yellow-600' : 'text-green-600') }}">
                                 @if($isExpired)
-                                    منقضی شده
+                                    Expired
                                 @else
-                                    {{ $daysRemaining }} روز
+                                    {{ $daysRemaining }} days
                                 @endif
                             </span>
                         </div>
                     @else
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600 dark:text-gray-400">مدت اعتبار:</span>
-                            <span class="font-bold text-lg text-green-600">نامحدود</span>
+                            <span class="text-gray-600 dark:text-gray-400">Validity:</span>
+                            <span class="font-bold text-lg text-green-600">Unlimited</span>
                         </div>
                     @endif
 
@@ -147,13 +147,13 @@
                     @if($isExpired)
                         <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                             <p class="text-red-800 dark:text-red-200 font-medium">
-                                ⚠️ اشتراک شما منقضی شده است. برای ادامه استفاده از امکانات ویژه، لطفاً اشتراک خود را تمدید کنید.
+                                ⚠️ Your subscription has expired. Please renew to access premium features.
                             </p>
                         </div>
                     @endif
                 </div>
             @else
-                <p class="text-gray-600 dark:text-gray-400">اطلاعات اشتراک یافت نشد.</p>
+                <p class="text-gray-600 dark:text-gray-400">No subscription info found.</p>
             @endif
             </div>
         @endif

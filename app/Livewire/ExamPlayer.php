@@ -280,7 +280,7 @@ class ExamPlayer extends Component
     {
         // Only allow logged-in users to submit
         if (!$this->canUserInteract()) {
-            return redirect()->route('login')->with('warning', 'برای ثبت آزمون لطفاً ابتدا وارد حساب کاربری خود شوید.');
+            return redirect()->route('login')->with('warning', 'Please login to submit the exam.');
         }
 
         // Fail-safe: If attemptId is lost, try to recover the active attempt

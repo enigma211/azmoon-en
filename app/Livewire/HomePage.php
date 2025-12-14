@@ -25,12 +25,12 @@ class HomePage extends Component
         return view('livewire.home-page', [
                 'sliders' => $sliders,
                 'domains' => $domains,
-                'heroTitle' => $settings?->hero_title ?? 'جستجوی پیشرفته در بانک سوالات',
+                'heroTitle' => $settings?->hero_title ?? 'Advanced Question Bank Search',
                 'heroDescription' => $settings?->hero_description,
             ])
             ->layout('layouts.app', [
-                'seoTitle' => $settings?->seo_title ?? 'آزمون کده - بزرگترین شبیه ساز آزمون نظام مهندسی',
-                'seoDescription' => $settings?->site_description ?? 'آزمون کده: بزرگترین شبیه ساز آزمون نظام مهندسی. با نمونه سوالات واقعی سال‌های گذشته در محیطی مشابه آزمون اصلی تمرین کنید و کارنامه قبولی/مردودی خود را فوراً دریافت نمایید.',
+                'seoTitle' => $settings?->seo_title ?? 'ExamApp - The Largest Exam Simulator',
+                'seoDescription' => $settings?->site_description ?? 'ExamApp: The largest exam simulation platform. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',
                 'seoKeywords' => $settings?->seo_keywords,
             ]);
     }

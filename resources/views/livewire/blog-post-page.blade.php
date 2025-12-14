@@ -44,14 +44,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
-                                {{ number_format($post->view_count) }} بازدید
+                                {{ number_format($post->view_count) }} views
                             </span>
                         </div>
                     </div>
 
                     <!-- Summary -->
                     @if($post->summary)
-                        <div class="bg-gray-50 border-r-4 border-indigo-500 p-4 mb-8 rounded-l-lg">
+                        <div class="bg-gray-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
                             <p class="text-gray-800 font-medium leading-relaxed">
                                 {{ $post->summary }}
                             </p>
@@ -66,7 +66,7 @@
                     <!-- Keywords (Tags) -->
                     @if($post->meta_keywords)
                         <div class="mt-10 pt-6 border-t border-gray-100">
-                            <h4 class="text-sm font-bold text-gray-700 mb-3">برچسب‌ها:</h4>
+                            <h4 class="text-sm font-bold text-gray-700 mb-3">Tags:</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach(explode(',', $post->meta_keywords) as $keyword)
                                     <a href="{{ route('blog.tag', trim($keyword)) }}" class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm hover:bg-indigo-100 hover:text-indigo-700 transition-colors">
@@ -84,16 +84,16 @@
                 
                 <!-- CTA Box (Example) -->
                 <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-lg p-6 text-white text-center">
-                    <h3 class="text-xl font-bold mb-2">آماده آزمون هستید؟</h3>
-                    <p class="text-indigo-100 text-sm mb-4">با شرکت در آزمون‌های آزمایشی، شانس قبولی خود را افزایش دهید.</p>
+                    <h3 class="text-xl font-bold mb-2">Ready for the exam?</h3>
+                    <p class="text-indigo-100 text-sm mb-4">Increase your chances of passing by taking mock exams.</p>
                     <a href="{{ route('domains') }}" class="block w-full bg-white text-indigo-600 font-bold py-2.5 rounded-xl hover:bg-indigo-50 transition-colors shadow-md">
-                        مشاهده آزمون‌ها
+                        View Exams
                     </a>
                 </div>
 
                 <!-- Recent Posts -->
                 <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">آخرین مطالب</h3>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Recent Posts</h3>
                     <div class="space-y-4">
                         @foreach($recentPosts as $recent)
                             <a href="{{ route('blog.show', ['category' => $recent->category->slug ?? 'general', 'slug' => $recent->slug]) }}" class="flex gap-3 group">

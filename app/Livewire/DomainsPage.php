@@ -17,8 +17,8 @@ class DomainsPage extends Component
         return view('livewire.domains-page', [
             'domains' => $domains
         ])->layout('layouts.app', [
-            'seoTitle' => 'آزمون‌های نظام مهندسی - آزمون کده',
-            'seoDescription' => 'آزمون کده: بزرگترین شبیه ساز آزمون نظام مهندسی. با نمونه سوالات واقعی سال‌های گذشته در محیطی مشابه آزمون اصلی تمرین کنید و کارنامه قبولی/مردودی خود را فوراً دریافت نمایید.',
+            'seoTitle' => 'Engineering Exams - ExamApp',
+            'seoDescription' => 'ExamApp: The largest exam simulation platform. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',
         ]);
     }
 }

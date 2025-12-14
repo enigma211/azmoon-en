@@ -29,7 +29,7 @@ new class extends Component
                     @if($logo)
                         <img src="{{ $logo }}" alt="{{ config('app.name') }}" class="h-8 w-auto">
                     @else
-                        <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">{{ config('app.name', 'آزمون کده') }}</span>
+                        <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">{{ config('app.name', 'ExamApp') }}</span>
                     @endif
                 </a>
             </div>

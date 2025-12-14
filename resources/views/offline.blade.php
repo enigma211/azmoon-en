@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>آفلاین - آزمون کده</title>
+    <title>Offline - ExamApp</title>
     
-    <!-- Fonts: Vazirmatn -->
+    <!-- Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     @vite(['resources/css/app.css'])
     
     <style>
         body {
-            font-family: Vazirmatn, system-ui, -apple-system, sans-serif;
+            font-family: Inter, system-ui, -apple-system, sans-serif;
         }
         
         @keyframes float {
@@ -55,21 +55,21 @@
         
         <!-- Title -->
         <h1 class="text-3xl font-bold text-gray-900 mb-4">
-            اتصال اینترنت قطع است
+            No Internet Connection
         </h1>
         
         <!-- Description -->
         <p class="text-gray-600 mb-8 leading-relaxed">
-            برای استفاده از آزمون کده به اتصال اینترنت نیاز دارید.
+            You need an internet connection to use ExamApp.
             <br>
-            لطفاً اتصال خود را بررسی کنید.
+            Please check your connection.
         </p>
         
         <!-- Connection Status -->
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
             <div class="flex items-center justify-center gap-3 mb-4">
                 <div class="w-3 h-3 bg-red-500 rounded-full pulse-slow"></div>
-                <span class="text-sm font-medium text-gray-700">آفلاین</span>
+                <span class="text-sm font-medium text-gray-700">Offline</span>
             </div>
             
             <div class="text-xs text-gray-500 space-y-2">
@@ -77,7 +77,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span>بررسی کنید که Wi-Fi یا داده موبایل فعال باشد</span>
+                    <span>Check if Wi-Fi or mobile data is enabled</span>
                 </div>
             </div>
         </div>
@@ -91,29 +91,29 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
-                <span>تلاش مجدد</span>
+                <span>Retry</span>
             </div>
         </button>
         
         <!-- Tips -->
-        <div class="mt-8 text-right">
-            <h3 class="text-sm font-semibold text-gray-700 mb-3">💡 نکات مفید:</h3>
+        <div class="mt-8 text-left">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">💡 Helpful Tips:</h3>
             <ul class="text-xs text-gray-600 space-y-2">
                 <li class="flex items-start gap-2">
                     <span class="text-indigo-600 mt-0.5">•</span>
-                    <span>حالت هواپیما را خاموش کنید</span>
+                    <span>Turn off Airplane Mode</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-indigo-600 mt-0.5">•</span>
-                    <span>به شبکه Wi-Fi متصل شوید</span>
+                    <span>Connect to a Wi-Fi network</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-indigo-600 mt-0.5">•</span>
-                    <span>داده موبایل را فعال کنید</span>
+                    <span>Enable mobile data</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-indigo-600 mt-0.5">•</span>
-                    <span>روتر را ریست کنید</span>
+                    <span>Restart your router</span>
                 </li>
             </ul>
         </div>
@@ -121,19 +121,19 @@
         <!-- Auto Retry Indicator -->
         <div class="mt-8 flex items-center justify-center gap-2 text-xs text-gray-500">
             <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-            <span>تلاش خودکار برای اتصال...</span>
+            <span>Auto-retrying connection...</span>
         </div>
     </div>
     
     <!-- Auto Retry Script -->
     <script>
-        // تلاش خودکار برای اتصال هر 5 ثانیه
+        // Auto retry every 5 seconds
         let retryCount = 0;
-        const maxRetries = 20; // حداکثر 20 بار (100 ثانیه)
+        const maxRetries = 20; // Max 20 times (100 seconds)
         
         function checkConnection() {
             if (retryCount >= maxRetries) {
-                console.log('حداکثر تلاش انجام شد');
+                console.log('Max retries reached');
                 return;
             }
             
@@ -142,27 +142,27 @@
             fetch('/manifest.webmanifest', { method: 'HEAD', cache: 'no-cache' })
                 .then(response => {
                     if (response.ok) {
-                        console.log('✅ اتصال برقرار شد، در حال بازگشت...');
+                        console.log('✅ Connection established, reloading...');
                         window.location.href = '/';
                     }
                 })
                 .catch(() => {
-                    console.log(`❌ تلاش ${retryCount} ناموفق، تلاش مجدد در 5 ثانیه...`);
+                    console.log(`❌ Attempt ${retryCount} failed, retrying in 5 seconds...`);
                     setTimeout(checkConnection, 5000);
                 });
         }
         
-        // شروع تلاش خودکار بعد از 3 ثانیه
+        // Start auto retry after 3 seconds
         setTimeout(checkConnection, 3000);
         
-        // گوش دادن به تغییر وضعیت آنلاین/آفلاین
+        // Listen for online/offline status changes
         window.addEventListener('online', () => {
-            console.log('✅ اتصال برقرار شد');
+            console.log('✅ Connection established');
             window.location.href = '/';
         });
         
         window.addEventListener('offline', () => {
-            console.log('❌ اتصال قطع شد');
+            console.log('❌ Connection lost');
         });
     </script>
 </body>

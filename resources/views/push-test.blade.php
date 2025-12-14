@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,24 +7,24 @@
     @auth
     <meta name="user-authenticated" content="true">
     @endauth
-    <title>تست Push Notifications - آزمون کده</title>
+    <title>Push Notifications Test - ExamApp</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     @vite(['resources/css/app.css'])
     
     <style>
-        body { font-family: Vazirmatn, system-ui, sans-serif; }
+        body { font-family: Inter, system-ui, sans-serif; }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-gray-50 to-white p-4">
     <div class="max-w-2xl mx-auto py-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">🔔 تست Push Notifications</h1>
-            <p class="text-gray-600">مدیریت اعلان‌های فشاری</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">🔔 Push Notifications Test</h1>
+            <p class="text-gray-600">Push Notification Management</p>
         </div>
 
         <!-- Status Card -->
@@ -36,8 +36,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900">وضعیت اعلان‌ها</h3>
-                    <p class="text-sm text-gray-500" id="status-text">در حال بررسی...</p>
+                    <h3 class="font-bold text-gray-900">Notification Status</h3>
+                    <p class="text-sm text-gray-500" id="status-text">Checking...</p>
                 </div>
             </div>
             <div class="space-y-2" id="status-details"></div>
@@ -45,64 +45,64 @@
 
         <!-- Actions -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h3 class="font-bold text-gray-900 mb-4">🎮 اقدامات</h3>
+            <h3 class="font-bold text-gray-900 mb-4">🎮 Actions</h3>
             <div class="space-y-3">
                 <button 
                     id="btn-request-permission" 
                     class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    درخواست اجازه
+                    Request Permission
                 </button>
                 
                 <button 
                     id="btn-subscribe" 
                     class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    فعال کردن اعلان‌ها
+                    Enable Notifications
                 </button>
                 
                 <button 
                     id="btn-unsubscribe" 
                     class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    غیرفعال کردن اعلان‌ها
+                    Disable Notifications
                 </button>
                 
                 <button 
                     id="btn-send-test" 
                     class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    ارسال اعلان تستی
+                    Send Test Notification
                 </button>
                 
                 <button 
                     onclick="window.location.href='/'" 
                     class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors"
                 >
-                    بازگشت به صفحه اصلی
+                    Back to Home
                 </button>
             </div>
         </div>
 
         <!-- Info -->
         <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
-            <h3 class="font-bold text-blue-900 mb-3">ℹ️ راهنما</h3>
+            <h3 class="font-bold text-blue-900 mb-3">ℹ️ Guide</h3>
             <ul class="text-sm text-blue-800 space-y-2">
                 <li class="flex items-start gap-2">
                     <span class="text-blue-600 mt-0.5">•</span>
-                    <span>برای دریافت اعلان‌ها، ابتدا اجازه دهید</span>
+                    <span>To receive notifications, first grant permission</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-blue-600 mt-0.5">•</span>
-                    <span>بعد از فعال کردن، می‌توانید اعلان تستی ارسال کنید</span>
+                    <span>After enabling, you can send a test notification</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-blue-600 mt-0.5">•</span>
-                    <span>اعلان‌ها حتی وقتی اپ بسته است کار می‌کنند</span>
+                    <span>Notifications work even when app is closed</span>
                 </li>
                 <li class="flex items-start gap-2">
                     <span class="text-blue-600 mt-0.5">•</span>
-                    <span>برای تست، باید لاگین باشید</span>
+                    <span>You must be logged in to test</span>
                 </li>
             </ul>
         </div>
@@ -124,13 +124,13 @@
                 warning: 'text-yellow-400'
             };
             const logDiv = document.getElementById('console-log');
-            const time = new Date().toLocaleTimeString('fa-IR');
+            const time = new Date().toLocaleTimeString('en-US');
             logDiv.innerHTML += `<div class="${colors[type]}">[${time}] ${msg}</div>`;
             logDiv.scrollTop = logDiv.scrollHeight;
             console.log(msg);
         };
 
-        // بررسی وضعیت
+        // Check Status
         async function checkStatus() {
             const status = await window.pushManager.getSubscriptionStatus();
             
@@ -140,38 +140,38 @@
             
             if (!window.pushManager.isSupported()) {
                 statusCard.classList.add('border-red-500');
-                statusText.textContent = '❌ پشتیبانی نمی‌شود';
-                statusDetails.innerHTML = '<div class="text-sm text-red-600">مرورگر شما از Push Notifications پشتیبانی نمی‌کند</div>';
-                log('مرورگر از Push Notifications پشتیبانی نمی‌کند', 'error');
+                statusText.textContent = '❌ Not Supported';
+                statusDetails.innerHTML = '<div class="text-sm text-red-600">Your browser does not support Push Notifications</div>';
+                log('Browser does not support Push Notifications', 'error');
                 return;
             }
             
             if (status.permission === 'denied') {
                 statusCard.classList.add('border-red-500');
-                statusText.textContent = '🚫 اجازه داده نشده';
-                statusDetails.innerHTML = '<div class="text-sm text-red-600">شما اجازه دریافت اعلان را رد کرده‌اید. برای فعال کردن، تنظیمات مرورگر را بررسی کنید.</div>';
-                log('اجازه دریافت اعلان رد شده است', 'error');
+                statusText.textContent = '🚫 Permission Denied';
+                statusDetails.innerHTML = '<div class="text-sm text-red-600">You denied notification permission. Check browser settings to enable.</div>';
+                log('Notification permission denied', 'error');
             } else if (status.permission === 'granted' && status.subscribed) {
                 statusCard.classList.add('border-green-500');
-                statusText.textContent = '✅ فعال';
-                statusDetails.innerHTML = '<div class="text-sm text-green-600">اعلان‌ها فعال هستند و آماده دریافت</div>';
-                log('اعلان‌ها فعال هستند', 'success');
+                statusText.textContent = '✅ Active';
+                statusDetails.innerHTML = '<div class="text-sm text-green-600">Notifications are active and ready to receive</div>';
+                log('Notifications are active', 'success');
             } else if (status.permission === 'granted' && !status.subscribed) {
                 statusCard.classList.add('border-yellow-500');
-                statusText.textContent = '⚠️ اجازه داده شده اما غیرفعال';
-                statusDetails.innerHTML = '<div class="text-sm text-yellow-600">اجازه داده شده اما اشتراک ثبت نشده است</div>';
-                log('اجازه داده شده اما subscribe نشده', 'warning');
+                statusText.textContent = '⚠️ Granted but inactive';
+                statusDetails.innerHTML = '<div class="text-sm text-yellow-600">Permission granted but no subscription</div>';
+                log('Granted but not subscribed', 'warning');
             } else {
                 statusCard.classList.add('border-gray-300');
-                statusText.textContent = '⏳ غیرفعال';
-                statusDetails.innerHTML = '<div class="text-sm text-gray-600">برای دریافت اعلان، ابتدا اجازه دهید</div>';
-                log('اعلان‌ها غیرفعال هستند', 'info');
+                statusText.textContent = '⏳ Inactive';
+                statusDetails.innerHTML = '<div class="text-sm text-gray-600">To receive notifications, grant permission first</div>';
+                log('Notifications are inactive', 'info');
             }
             
             updateButtons(status);
         }
 
-        // به‌روزرسانی دکمه‌ها
+        // Update Buttons
         function updateButtons(status) {
             const btnPermission = document.getElementById('btn-request-permission');
             const btnSubscribe = document.getElementById('btn-subscribe');
@@ -192,63 +192,63 @@
             btnSendTest.disabled = !status.subscribed;
         }
 
-        // درخواست اجازه
+        // Request Permission
         document.getElementById('btn-request-permission').addEventListener('click', async () => {
             try {
-                log('درخواست اجازه...', 'info');
+                log('Requesting permission...', 'info');
                 const granted = await window.pushManager.requestPermission();
                 if (granted) {
-                    log('✅ اجازه داده شد', 'success');
+                    log('✅ Permission granted', 'success');
                 } else {
-                    log('❌ اجازه داده نشد', 'error');
+                    log('❌ Permission denied', 'error');
                 }
                 await checkStatus();
             } catch (error) {
-                log('❌ خطا: ' + error.message, 'error');
+                log('❌ Error: ' + error.message, 'error');
             }
         });
 
-        // فعال کردن
+        // Enable
         document.getElementById('btn-subscribe').addEventListener('click', async () => {
             try {
-                log('در حال فعال کردن اعلان‌ها...', 'info');
+                log('Enabling notifications...', 'info');
                 await window.pushManager.subscribe();
-                log('✅ اعلان‌ها فعال شدند', 'success');
+                log('✅ Notifications enabled', 'success');
                 await checkStatus();
             } catch (error) {
-                log('❌ خطا: ' + error.message, 'error');
+                log('❌ Error: ' + error.message, 'error');
             }
         });
 
-        // غیرفعال کردن
+        // Disable
         document.getElementById('btn-unsubscribe').addEventListener('click', async () => {
-            if (!confirm('آیا مطمئن هستید که می‌خواهید اعلان‌ها را غیرفعال کنید؟')) {
+            if (!confirm('Are you sure you want to disable notifications?')) {
                 return;
             }
             try {
-                log('در حال غیرفعال کردن اعلان‌ها...', 'info');
+                log('Disabling notifications...', 'info');
                 await window.pushManager.unsubscribe();
-                log('✅ اعلان‌ها غیرفعال شدند', 'success');
+                log('✅ Notifications disabled', 'success');
                 await checkStatus();
             } catch (error) {
-                log('❌ خطا: ' + error.message, 'error');
+                log('❌ Error: ' + error.message, 'error');
             }
         });
 
-        // ارسال تست
+        // Send Test
         document.getElementById('btn-send-test').addEventListener('click', async () => {
             try {
-                log('در حال ارسال اعلان تستی...', 'info');
+                log('Sending test notification...', 'info');
                 await window.pushManager.sendTestNotification();
-                log('✅ اعلان تستی ارسال شد - چند ثانیه صبر کنید', 'success');
+                log('✅ Test notification sent - wait a few seconds', 'success');
             } catch (error) {
-                log('❌ خطا: ' + error.message, 'error');
+                log('❌ Error: ' + error.message, 'error');
             }
         });
 
-        // بررسی اولیه
+        // Check Initial Status
         window.addEventListener('load', () => {
-            log('🚀 شروع تست Push Notifications...', 'info');
+            log('🚀 Starting Push Notifications Test...', 'info');
             checkStatus();
         });
     </script>

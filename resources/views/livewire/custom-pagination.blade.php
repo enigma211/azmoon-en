@@ -45,7 +45,7 @@
 
             {{-- Mobile View (Simplified) --}}
             <div class="sm:hidden flex items-center text-sm text-gray-500 font-medium px-2">
-                <span>صفحه {{ $paginator->currentPage() }} از {{ $paginator->lastPage() }}</span>
+                <span>Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}</span>
             </div>
 
             {{-- Next Page Link --}}

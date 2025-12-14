@@ -1,13 +1,13 @@
 <div class="mx-auto max-w-4xl p-6 space-y-6">
-    <h1 class="text-xl font-medium text-gray-900">تاریخچه تلاش‌ها</h1>
+    <h1 class="text-xl font-medium text-gray-900">Attempt History</h1>
 
     <div class="flex items-center gap-3">
-        <label class="text-sm text-gray-600">وضعیت:</label>
+        <label class="text-sm text-gray-600">Status:</label>
         <select wire:model.live="status" class="rounded border-gray-300 text-sm">
-            <option value="all">همه</option>
-            <option value="in_progress">در حال انجام</option>
-            <option value="submitted">کامل‌شده</option>
-            <option value="abandoned">ناتمام</option>
+            <option value="all">All</option>
+            <option value="in_progress">In Progress</option>
+            <option value="submitted">Completed</option>
+            <option value="abandoned">Abandoned</option>
         </select>
     </div>
 
@@ -21,16 +21,16 @@
                             <div class="min-w-0">
                                 <div class="font-semibold text-gray-900 truncate">{{ $attempt->exam->title ?? '---' }}</div>
                                 <div class="text-xs text-gray-500 mt-1">
-                                    تلاش #{{ $attempt->id }}
+                                    Attempt #{{ $attempt->id }}
                                 </div>
                             </div>
                             @if($attempt->status === 'submitted')
                                 <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-                                    تمام شده
+                                    Finished
                                 </span>
                             @elseif($attempt->status === 'in_progress')
                                 <span class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700">
-                                    در حال انجام
+                                    In Progress
                                 </span>
                             @endif
                         </div>
@@ -38,15 +38,15 @@
                         {{-- Stats row --}}
                         <div class="flex flex-wrap items-center gap-4 text-sm">
                             <div class="flex items-center gap-1">
-                                <span class="text-gray-500">تاریخ:</span>
+                                <span class="text-gray-500">Date:</span>
                                 <span>{{ $attempt->started_at ? @formatDate($attempt->started_at, 'Y/m/d H:i') : '—' }}</span>
                             </div>
                             <div class="flex items-center gap-1">
-                                <span class="text-gray-500">پاسخ داده:</span>
-                                <span class="font-medium">{{ $attempt->answers_count ?? 0 }} سوال</span>
+                                <span class="text-gray-500">Answered:</span>
+                                <span class="font-medium">{{ $attempt->answers_count ?? 0 }} Qs</span>
                             </div>
                             <div class="flex items-center gap-1">
-                                <span class="text-gray-500">نمره:</span>
+                                <span class="text-gray-500">Score:</span>
                                 <span class="font-semibold {{ ($attempt->score ?? 0) >= 50 ? 'text-green-600' : 'text-red-600' }}">
                                     {{ is_null($attempt->score) ? '—' : number_format($attempt->score, 1).'%' }}
                                 </span>
@@ -54,7 +54,7 @@
                             @if($attempt->status === 'submitted' && $attempt->exam)
                                 <a href="{{ route('exam.result', ['exam' => $attempt->exam_id, 'attempt' => $attempt->id]) }}" 
                                    class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 transition mr-auto">
-                                    مشاهده کارنامه
+                                    View Report
                                 </a>
                             @endif
                         </div>
@@ -67,6 +67,6 @@
             {{ $attempts->links() }}
         </div>
     @else
-        <div class="rounded border p-4 text-sm text-gray-600">تلاشی ثبت نشده است.</div>
+        <div class="rounded border p-4 text-sm text-gray-600">No attempts recorded.</div>
     @endif
 </div>

@@ -56,12 +56,12 @@ new #[Layout('layouts.guest')] class extends Component
         <!-- First / Last Name -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <x-input-label for="first_name" value="نام" />
+                <x-input-label for="first_name" value="First Name" />
                 <x-text-input wire:model="first_name" id="first_name" class="block mt-1 w-full" type="text" name="first_name" required autofocus autocomplete="given-name" />
                 <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="last_name" value="نام خانوادگی" />
+                <x-input-label for="last_name" value="Last Name" />
                 <x-text-input wire:model="last_name" id="last_name" class="block mt-1 w-full" type="text" name="last_name" required autocomplete="family-name" />
                 <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
             </div>
@@ -69,7 +69,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         <!-- Username -->
         <div class="mt-4">
-            <x-input-label for="username" value="نام کاربری (فقط انگلیسی و اعداد)" />
+            <x-input-label for="username" value="Username (English letters and numbers only)" />
             <x-text-input wire:model="username" id="username" class="block mt-1 w-full" type="text" name="username" required autocomplete="username" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>

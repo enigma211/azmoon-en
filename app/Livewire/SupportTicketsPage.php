@@ -21,10 +21,10 @@ class SupportTicketsPage extends Component
     ];
 
     protected $messages = [
-        'subject.required' => 'موضوع تیکت الزامی است',
-        'subject.max' => 'موضوع نباید بیشتر از 255 کاراکتر باشد',
-        'message.required' => 'متن تیکت الزامی است',
-        'message.max' => 'متن تیکت نباید بیشتر از 2000 کاراکتر باشد',
+        'subject.required' => 'Ticket subject is required',
+        'subject.max' => 'Subject must not exceed 255 characters',
+        'message.required' => 'Ticket message is required',
+        'message.max' => 'Message must not exceed 2000 characters',
     ];
 
     public function toggleCreateForm()
@@ -40,7 +40,7 @@ class SupportTicketsPage extends Component
     {
         $this->validate();
 
-        // ایجاد تیکت
+        // Create Ticket
         $ticket = SupportTicket::create([
             'user_id' => Auth::id(),
             'ticket_number' => SupportTicket::generateTicketNumber(),
@@ -49,7 +49,7 @@ class SupportTicketsPage extends Component
             'status' => 'pending',
         ]);
 
-        session()->flash('success', 'تیکت شما با موفقیت ثبت شد. شماره تیکت: ' . $ticket->ticket_number);
+        session()->flash('success', 'Your ticket has been created successfully. Ticket Number: ' . $ticket->ticket_number);
         
         $this->reset(['subject', 'message', 'showCreateForm']);
         $this->resetValidation();
@@ -74,8 +74,8 @@ class SupportTicketsPage extends Component
         $this->validate([
             'replyMessage' => 'required|string|max:2000',
         ], [
-            'replyMessage.required' => 'متن پاسخ الزامی است',
-            'replyMessage.max' => 'متن پاسخ نباید بیشتر از 2000 کاراکتر باشد',
+            'replyMessage.required' => 'Reply message is required',
+            'replyMessage.max' => 'Reply message must not exceed 2000 characters',
         ]);
 
         TicketReply::create([
@@ -85,12 +85,12 @@ class SupportTicketsPage extends Component
             'is_admin' => false,
         ]);
 
-        // تغییر وضعیت به pending برای اطلاع ادمین
+        // Change status to pending for admin notification
         $this->selectedTicket->update(['status' => 'pending']);
 
-        session()->flash('reply_success', 'پاسخ شما با موفقیت ارسال شد.');
+        session()->flash('reply_success', 'Your reply has been sent successfully.');
         
-        // بارگذاری مجدد تیکت با پاسخ‌ها
+        // Reload ticket with replies
         $this->selectedTicket = SupportTicket::with('replies.user')
             ->findOrFail($this->selectedTicket->id);
         
