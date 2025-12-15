@@ -48,8 +48,8 @@ class ResourcePostDetailPage extends Component
     public function render()
     {
         return view('livewire.resource-post-detail-page')->layout('layouts.app', [
-            'seoTitle' => $this->post->title . ' - ' . $this->category->title . ' - آزمون کده',
-            'seoDescription' => $this->post->description ?: 'مشاهده ' . $this->post->title,
+            'seoTitle' => $this->post->title . ' - ' . $this->category->title . ' - AllExam24',
+            'seoDescription' => $this->post->description ?: 'View ' . $this->post->title,
         ]);
     }
 }

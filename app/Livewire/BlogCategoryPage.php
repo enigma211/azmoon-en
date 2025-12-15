@@ -33,8 +33,8 @@ class BlogCategoryPage extends Component
             'posts' => $posts,
             'categories' => $categories
         ])->layout('layouts.app', [
-            'seoTitle' => 'اخبار ' . $this->currentCategory->title . ' - آزمون کده',
-            'seoDescription' => 'آرشیو اخبار و مقالات مربوط به ' . $this->currentCategory->title
+            'seoTitle' => 'News ' . $this->currentCategory->title . ' - AllExam24',
+            'seoDescription' => 'Archive of news and articles related to ' . $this->currentCategory->title
         ]);
     }
 }

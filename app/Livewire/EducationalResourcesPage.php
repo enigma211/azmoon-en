@@ -16,8 +16,8 @@ class EducationalResourcesPage extends Component
         return view('livewire.educational-resources-page', [
             'examTypes' => $examTypes,
         ])->layout('layouts.app', [
-            'seoTitle' => 'منابع آموزشی - آزمون کده',
-            'seoDescription' => 'دسترسی به ویدیوها و جزوات آموزشی آزمون نظام مهندسی و سایر آزمون‌ها',
+            'seoTitle' => 'Educational Resources - AllExam24',
+            'seoDescription' => 'Access educational videos and study materials for exams',
         ]);
     }
 }

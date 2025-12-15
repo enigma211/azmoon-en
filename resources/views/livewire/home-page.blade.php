@@ -68,45 +68,6 @@
             @endif
         </section>
 
-        <!-- Search Section -->
-        <section class="py-4">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 shadow-xl text-white p-6 sm:p-10">
-                <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-                
-                <div class="relative z-10 max-w-3xl mx-auto text-center">
-                    <h2 class="text-2xl sm:text-3xl font-black mb-3">{{ $heroTitle }}</h2>
-                    @if($heroDescription)
-                        <p class="text-white/90 mb-6 text-sm sm:text-base leading-relaxed">{{ $heroDescription }}</p>
-                    @endif
-
-                    <form action="{{ route('search') }}" method="GET" class="bg-white p-2 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-2">
-                        <div class="flex-1 relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                </svg>
-                            </div>
-                            <input type="text" name="q" placeholder="Search exams, topics, questions..." class="w-full border-0 bg-transparent py-3 pl-10 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm" required>
-                        </div>
-                        <div class="sm:w-48 relative border-t sm:border-t-0 sm:border-l border-gray-100">
-                            <select name="domain" class="w-full border-0 bg-transparent py-3 pl-4 pr-8 text-gray-900 focus:ring-0 sm:text-sm cursor-pointer">
-                                <option value="">All Domains</option>
-                                @if(isset($domains))
-                                    @foreach ($domains as $domain)
-                                        <option value="{{ $domain->id }}">{{ $domain->title }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-                        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-6 rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
-                            <span>Search</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
-
         <!-- Exam Domains Section -->
         <section class="py-6">
             @if(($domains ?? collect())->isEmpty())

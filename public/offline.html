@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>آفلاین هستید</title>
+  <title>You are offline</title>
   <meta name="robots" content="noindex" />
   <style>
     body {font-family: sans-serif; background:#f8fafc; color:#0f172a; margin:0;}
@@ -17,9 +17,11 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>اتصال اینترنت برقرار نیست</h1>
-      <p>شما آفلاین هستید. لطفاً اتصال خود را بررسی کنید و دوباره تلاش کنید.</p>
-      <a class="btn" href="/">بازگشت به خانه</a>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">You are offline</h1>
+      <p class="text-gray-600 mb-6">Please check your internet connection.</p>
+      <button onclick="window.location.reload()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+          Retry Connection
+      </button>
     </div>
   </div>
 </body>

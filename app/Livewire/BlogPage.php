@@ -22,8 +22,9 @@ class BlogPage extends Component
             'posts' => $posts,
             'categories' => $categories
         ])->layout('layouts.app', [
-            'seoTitle' => 'اخبار و مقالات - آزمون کده',
-            'seoDescription' => 'جدیدترین اخبار، مقالات و اطلاعیه‌های مربوط به آزمون‌های نظام مهندسی و کارشناس رسمی دادگستری'
+            'seoTitle' => 'News and Articles - AllExam24',
+            'seoDescription' => 'Latest news, articles, and announcements from AllExam24.',
+            'seoCanonical' => 'https://allexam24.com/blog',
         ]);
     }
 }

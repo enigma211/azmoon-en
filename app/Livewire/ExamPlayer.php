@@ -356,23 +356,23 @@ class ExamPlayer extends Component
     {
         // Only allow logged-in users to submit reports
         if (!$this->canUserInteract()) {
-            session()->flash('error', 'برای گزارش خطا لطفاً ابتدا وارد حساب کاربری خود شوید.');
+            session()->flash('error', 'Please login to submit a report.');
             return;
         }
 
         $this->validate([
             'reportText' => 'required|string|min:10|max:1000',
         ], [
-            'reportText.required' => 'لطفاً متن گزارش را وارد کنید.',
-            'reportText.min' => 'گزارش باید حداقل 10 کاراکتر باشد.',
-            'reportText.max' => 'گزارش نباید بیشتر از 1000 کاراکتر باشد.',
+            'reportText.required' => 'Please enter the report text.',
+            'reportText.min' => 'Report must be at least 10 characters.',
+            'reportText.max' => 'Report must not exceed 1000 characters.',
         ]);
 
         $questions = $this->exam->questions->where('is_deleted', false)->values();
         $currentQuestion = $questions[$this->page - 1] ?? null;
 
         if (!$currentQuestion) {
-            session()->flash('error', 'سوال یافت نشد.');
+            session()->flash('error', 'Question not found.');
             return;
         }
 
@@ -386,7 +386,7 @@ class ExamPlayer extends Component
 
         $this->reportText = '';
         $this->showReportModal = false;
-        session()->flash('success', 'گزارش شما با موفقیت ثبت شد.');
+        session()->flash('success', 'Your report has been submitted successfully.');
     }
 
     public function render()
@@ -400,7 +400,7 @@ class ExamPlayer extends Component
             'index' => $this->page - 1,
             'total' => $questions->count(),
         ])->layout('layouts.app', [
-            'seoTitle' => $this->exam->seo_title ?: ($this->exam->title . ' - آزمون کده'),
+            'seoTitle' => $this->exam->seo_title ?: ($this->exam->title . ' - AllExam24'),
             'seoDescription' => $this->exam->seo_description ?? '',
             'seoCanonical' => route('exam.play', ['exam' => $this->exam->id, 'page' => $this->page]),
         ]);

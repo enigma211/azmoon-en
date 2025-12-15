@@ -32,13 +32,13 @@ class ResourcePostsPage extends Component
 
         // Create better SEO title and description
         $seoTitle = $this->category->type === 'video' 
-            ? 'ویدیوهای آموزشی آزمون ' . $this->examType->title . ' - آزمون کده'
-            : 'جزوات آموزشی آزمون ' . $this->examType->title . ' - آزمون کده';
+            ? 'Educational Videos for ' . $this->examType->title . ' Exam - AllExam24'
+            : 'Study Materials for ' . $this->examType->title . ' Exam - AllExam24';
         
         $seoDescription = $this->category->description ?: (
             $this->category->type === 'video'
-                ? 'دسترسی به ویدیوهای آموزشی کامل آزمون ' . $this->examType->title . ' - آموزش تخصصی و کاربردی'
-                : 'دانلود جزوات و منابع آموزشی آزمون ' . $this->examType->title . ' - مطالب جامع و کاربردی'
+                ? 'Access complete educational videos for ' . $this->examType->title . ' Exam - Specialized and practical training'
+                : 'Download study materials and resources for ' . $this->examType->title . ' Exam - Comprehensive and practical content'
         );
 
         return view('livewire.resource-posts-page', [

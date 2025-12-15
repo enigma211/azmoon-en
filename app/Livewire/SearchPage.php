@@ -50,7 +50,7 @@ class SearchPage extends Component
         return view('livewire.search-page', [
             'results' => $results
         ])->layout('layouts.app', [
-            'seoTitle' => 'Search Exams - ExamApp',
+            'seoTitle' => 'Search Exams - AllExam24',
             'seoDescription' => 'Search for exams by title',
         ]);
     }

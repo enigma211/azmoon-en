@@ -29,8 +29,8 @@ class HomePage extends Component
                 'heroDescription' => $settings?->hero_description,
             ])
             ->layout('layouts.app', [
-                'seoTitle' => $settings?->seo_title ?? 'ExamApp - The Largest Exam Simulator',
-                'seoDescription' => $settings?->site_description ?? 'ExamApp: The largest exam simulation platform. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',
+                'seoTitle' => $settings?->seo_title ?? 'AllExam24 - The Largest Exam Simulator',
+                'seoDescription' => $settings?->site_description ?? 'AllExam24: The largest exam simulation platform. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',
                 'seoKeywords' => $settings?->seo_keywords,
             ]);
     }

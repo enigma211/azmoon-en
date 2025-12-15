@@ -20,7 +20,7 @@ class ExamsPage extends Component
             'exams' => $this->batch->exams()->orderBy('sort_order')->get(),
         ])->layout('layouts.app', [
             'seoTitle' => $this->batch->seo_title ?: $this->batch->title,
-            'seoDescription' => $this->batch->seo_description ?: 'آزمون کده: بزرگترین شبیه ساز آزمون نظام مهندسی. با نمونه سوالات واقعی سال‌های گذشته در محیطی مشابه آزمون اصلی تمرین کنید و کارنامه قبولی/مردودی خود را فوراً دریافت نمایید.',
+            'seoDescription' => $this->batch->seo_description ?: 'AllExam24: The largest exam simulator. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',
         ]);
     }
 }

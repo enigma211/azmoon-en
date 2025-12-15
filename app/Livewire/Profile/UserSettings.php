@@ -42,7 +42,7 @@ class UserSettings extends Component
             document.body.style.fontSize = '{$fontSize}';
             document.body.setAttribute('data-font-size', '{$size}');
             if (typeof window.showNotification === 'function') {
-                window.showNotification('اندازه فونت با موفقیت تغییر کرد');
+                window.showNotification('Font size changed successfully');
             }
         ");
     }
@@ -64,7 +64,7 @@ class UserSettings extends Component
                 document.body.style.backgroundColor = '#1f2937';
                 document.body.style.color = '#f3f4f6';
                 
-                // برای صفحه آزمون
+                // For exam page
                 setTimeout(() => {
                     document.querySelectorAll('.question-text, .choice-text, .exam-question').forEach(el => {
                         el.style.color = '#f3f4f6';
@@ -88,7 +88,7 @@ class UserSettings extends Component
             }
             
             if (typeof window.showNotification === 'function') {
-                window.showNotification('تم با موفقیت تغییر کرد');
+                window.showNotification('Theme changed successfully');
             }
         ");
     }

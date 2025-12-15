@@ -31,8 +31,8 @@ class BlogTagPage extends Component
             'posts' => $posts,
             'categories' => $categories
         ])->layout('layouts.app', [
-            'seoTitle' => 'اخبار با برچسب ' . $this->tag . ' - آزمون کده',
-            'seoDescription' => 'آرشیو اخبار و مقالات دارای برچسب ' . $this->tag
+            'seoTitle' => 'News tagged with ' . $this->tag . ' - AllExam24',
+            'seoDescription' => 'Archive of news and articles tagged with ' . $this->tag
         ]);
     }
 }

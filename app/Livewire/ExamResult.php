@@ -151,7 +151,7 @@ class ExamResult extends Component
             'review' => $this->review,
             'passThreshold' => (float)($this->exam->pass_threshold ?? 50),
         ])->layout('layouts.app', [
-            'seoTitle' => $this->exam->seo_title ?: 'نتیجه آزمون ' . $this->exam->title . ' - آزمون کده',
+            'seoTitle' => $this->exam->seo_title ?: 'Exam Result: ' . $this->exam->title . ' - AllExam24',
             'seoDescription' => $this->exam->seo_description ?? '',
         ]);
     }

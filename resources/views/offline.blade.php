@@ -60,7 +60,7 @@
         
         <!-- Description -->
         <p class="text-gray-600 mb-8 leading-relaxed">
-            You need an internet connection to use ExamApp.
+            You need an internet connection to use AllExam24.
             <br>
             Please check your connection.
         </p>

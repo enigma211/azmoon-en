@@ -10,28 +10,28 @@
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
         
-        <meta name="description" content="{{ $seoDescription ?? 'ExamApp: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
+        <meta name="description" content="{{ $seoDescription ?? 'AllExam24: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
         @if(isset($seoKeywords))
             <meta name="keywords" content="{{ $seoKeywords }}">
         @endif
         <meta name="robots" content="{{ $seoRobots ?? 'index, follow' }}">
         <link rel="canonical" href="{{ $seoCanonical ?? url()->current() }}">
 
-        <title>{{ $seoTitle ?? config('app.name', 'ExamApp') }}</title>
+        <title>{{ $seoTitle ?? config('app.name', 'AllExam24') }}</title>
 
         <meta property="og:locale" content="en_US">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="{{ $seoTitle ?? config('app.name', 'ExamApp') }}">
-        <meta property="og:description" content="{{ $seoDescription ?? 'ExamApp: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
+        <meta property="og:title" content="{{ $seoTitle ?? config('app.name', 'AllExam24') }}">
+        <meta property="og:description" content="{{ $seoDescription ?? 'AllExam24: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
         <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:site_name" content="{{ config('app.name', 'ExamApp') }}">
+        <meta property="og:site_name" content="{{ config('app.name', 'AllExam24') }}">
         @if(isset($seoImage))
             <meta property="og:image" content="{{ $seoImage }}">
         @endif
 
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="{{ $seoTitle ?? config('app.name', 'ExamApp') }}">
-        <meta name="twitter:description" content="{{ $seoDescription ?? 'ExamApp: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
+        <meta name="twitter:title" content="{{ $seoTitle ?? config('app.name', 'AllExam24') }}">
+        <meta name="twitter:description" content="{{ $seoDescription ?? 'AllExam24: The best platform for exam simulation. Practice with real questions and get instant results.' }}">
         @if(isset($seoImage))
             <meta name="twitter:image" content="{{ $seoImage }}">
         @endif
@@ -347,14 +347,14 @@
                         .then((registration) => {
                             console.log('✅ Service Worker registered:', registration.scope);
                             
-                            // بررسی به‌روزرسانی
+                            // Check for updates
                             registration.addEventListener('updatefound', () => {
                                 const newWorker = registration.installing;
                                 console.log('🔄 New Service Worker installing...');
                                 
                                 newWorker.addEventListener('statechange', () => {
                                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        // نسخه جدید آماده است
+                                        // New version is ready
                                         if (confirm('New version available. Update now?')) {
                                             newWorker.postMessage({ type: 'SKIP_WAITING' });
                                             window.location.reload();
@@ -367,7 +367,7 @@
                             console.error('❌ Service Worker registration failed:', error);
                         });
                     
-                    // رفرش خودکار وقتی SW جدید فعال شد
+                    // Auto refresh when new SW is activated
                     let refreshing = false;
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
                         if (!refreshing) {

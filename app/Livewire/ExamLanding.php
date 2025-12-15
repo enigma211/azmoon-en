@@ -23,7 +23,7 @@ class ExamLanding extends Component
     public function render()
     {
         return view('livewire.exam-landing')->layout('layouts.app', [
-            'seoTitle' => $this->exam->seo_title ?: $this->exam->title . ' - آزمون کده',
+            'seoTitle' => $this->exam->seo_title ?: $this->exam->title . ' - AllExam24',
             'seoDescription' => $this->exam->seo_description ?? '',
         ]);
     }
