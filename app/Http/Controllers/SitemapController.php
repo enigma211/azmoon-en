@@ -63,57 +63,6 @@ class SitemapController extends Controller
                 'priority' => '0.5',
             ];
 
-            // Educational Resources (Detailed)
-            $urls[] = [
-                'loc' => route('educational-resources'),
-                'lastmod' => now()->toAtomString(),
-                'changefreq' => 'daily',
-                'priority' => '0.8',
-            ];
-
-            $examTypes = ExamType::query()->where('is_active', true)->orderBy('id','asc')->get(['id','slug','updated_at']);
-            foreach ($examTypes as $type) {
-                $urls[] = [
-                    'loc' => route('educational-resources.categories', $type->slug),
-                    'lastmod' => optional($type->updated_at)->toAtomString(),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.7',
-                ];
-            }
-
-            $categories = ResourceCategory::query()->where('is_active', true)->orderBy('id','asc')->get(['id','exam_type_id','slug','type','updated_at']);
-            $typeMap = $examTypes->keyBy('id');
-            foreach ($categories as $cat) {
-                $type = $typeMap->get($cat->exam_type_id);
-                if (!$type) continue;
-                $urls[] = [
-                    'loc' => route('educational-resources.posts', [$type->slug, $cat->slug]),
-                    'lastmod' => optional($cat->updated_at)->toAtomString(),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.6',
-                ];
-            }
-
-            $posts = EducationalPost::query()
-                ->where('is_active', true)
-                ->whereNotNull('published_at')
-                ->where('published_at', '<=', now())
-                ->orderBy('id','asc')
-                ->get(['id','resource_category_id','slug','updated_at']);
-            $catMap = $categories->keyBy('id');
-            foreach ($posts as $post) {
-                $cat = $catMap->get($post->resource_category_id);
-                if (!$cat) continue;
-                $type = $typeMap->get($cat->exam_type_id);
-                if (!$type) continue;
-                $urls[] = [
-                    'loc' => route('educational-resources.post', [$type->slug, $cat->slug, $post->slug]),
-                    'lastmod' => optional($post->updated_at)->toAtomString(),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.9',
-                ];
-            }
-
             $domains = ExamDomain::query()->orderBy('id','asc')->get(['id','updated_at']);
             foreach ($domains as $domain) {
                 $urls[] = [
