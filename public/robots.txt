@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow:
 
-Sitemap: https://azmoonkade.com/sitemap.xml
+Sitemap: https://allexam24.com/sitemap.xml

@@ -42,6 +42,28 @@ class SitemapController extends Controller
                 'priority' => '0.8',
             ];
 
+            // Info Pages (About, Terms, Privacy)
+            $urls[] = [
+                'loc' => route('about'),
+                'lastmod' => now()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.5',
+            ];
+
+            $urls[] = [
+                'loc' => route('terms'),
+                'lastmod' => now()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.5',
+            ];
+
+            $urls[] = [
+                'loc' => route('privacy-policy'),
+                'lastmod' => now()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.5',
+            ];
+
             // Educational Resources (Detailed)
             $urls[] = [
                 'loc' => route('educational-resources'),
