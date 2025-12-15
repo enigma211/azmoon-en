@@ -10,7 +10,7 @@
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
 
-        <title>{{ config('app.name', 'ExamApp') }}</title>
+        <title>{{ config('app.name', 'allexam24') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

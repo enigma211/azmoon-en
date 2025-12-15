@@ -96,6 +96,11 @@ Route::get('/dashboard', HomePage::class)->name('dashboard');
 // Breeze auth routes
 require __DIR__.'/auth.php';
 
+// Privacy Policy
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
 // Terms and Conditions
 Route::get('/terms', function () {
     return view('terms');

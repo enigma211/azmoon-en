@@ -79,12 +79,6 @@ class ExamBatchResource extends Resource
                             ->default(0)
                             ->helperText('Lower number = shown first. e.g.: 1, 2, 3...')
                             ->required(),
-
-                        Toggle::make('auto_generate_engineering_exams')
-                            ->label('Auto-generate Standard Exams')
-                            ->helperText('If enabled, standard exams for this batch will be created automatically.')
-                            ->default(false)
-                            ->columnSpanFull(),
                     ])->columns(2),
 
                 Section::make('SEO Settings')

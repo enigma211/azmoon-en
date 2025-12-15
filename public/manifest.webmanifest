@@ -1,16 +1,16 @@
 {
   "id": "/",
-  "name": "آزمون کده - شبیه ساز آزمون نظام مهندسی",
-  "short_name": "آزمون کده",
-  "description": "شبیه‌ساز آزمون نظام مهندسی با سوالات واقعی سال‌های گذشته",
+  "name": "allexam24 - Engineering Exam Simulator",
+  "short_name": "allexam24",
+  "description": "Engineering exam simulator with real past questions",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#f9fafb",
   "theme_color": "#4f46e5",
-  "lang": "fa",
-  "dir": "rtl",
+  "lang": "en",
+  "dir": "ltr",
   "categories": ["education", "productivity"],
   "icons": [
     {

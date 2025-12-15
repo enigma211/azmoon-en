@@ -7,7 +7,7 @@
     @auth
     <meta name="user-authenticated" content="true">
     @endauth
-    <title>Push Notifications Test - ExamApp</title>
+    <title>Push Notifications Test - allexam24</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

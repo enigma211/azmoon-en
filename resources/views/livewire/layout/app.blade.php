@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ExamApp: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta name="description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
-    <title>{{ $title ?? config('app.name', 'ExamApp') }}</title>
+    <title>{{ $title ?? config('app.name', 'allexam24') }}</title>
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $title ?? config('app.name', 'ExamApp') }}">
-    <meta property="og:description" content="ExamApp: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta property="og:title" content="{{ $title ?? config('app.name', 'allexam24') }}">
+    <meta property="og:description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:site_name" content="{{ config('app.name', 'ExamApp') }}">
+    <meta property="og:site_name" content="{{ config('app.name', 'allexam24') }}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $title ?? config('app.name', 'ExamApp') }}">
-    <meta name="twitter:description" content="ExamApp: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta name="twitter:title" content="{{ $title ?? config('app.name', 'allexam24') }}">
+    <meta name="twitter:description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
     @php
         $favicon = \App\Helpers\BrandingHelper::getFavicon();
     @endphp
@@ -46,7 +46,7 @@
             <div class="max-w-screen-md mx-auto px-4 py-8">
                 <div class="flex flex-col items-center justify-center space-y-4">
                     <div class="text-center text-sm text-gray-400">
-                        <p>&copy; {{ date('Y') }} {{ config('app.name', 'ExamApp') }} - All rights reserved.</p>
+                        <p>&copy; {{ date('Y') }} {{ config('app.name', 'allexam24') }} - All rights reserved.</p>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PWA Test - ExamApp</title>
+    <title>PWA Test - allexam24</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
     <div class="max-w-4xl mx-auto py-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">🧪 ExamApp PWA Test</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">🧪 allexam24 PWA Test</h1>
             <p class="text-gray-600">Complete Progressive Web App Capabilities Check</p>
         </div>
 

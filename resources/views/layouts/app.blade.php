@@ -108,15 +108,15 @@
                         $logo = \App\Helpers\BrandingHelper::getLogo();
                     @endphp
                     @if($logo)
-                        <img src="{{ $logo }}" alt="ExamApp" class="h-24 w-auto">
+                        <img src="{{ $logo }}" alt="allexam24" class="h-24 w-auto">
                     @else
-                        <div class="text-4xl font-bold text-indigo-600">ExamApp</div>
+                        <div class="text-4xl font-bold text-indigo-600">allexam24</div>
                     @endif
                 </div>
                 
                 <!-- Welcome Text -->
                 <div class="text-center space-y-2">
-                    <h1 class="text-xl font-semibold text-gray-800">Welcome to ExamApp</h1>
+                    <h1 class="text-xl font-semibold text-gray-800">Welcome to allexam24</h1>
                     <p class="text-sm text-gray-600">Loading...</p>
                 </div>
                 
