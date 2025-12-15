@@ -14,7 +14,7 @@ class EditQuestionReport extends EditRecord
     {
         return [
             Actions\Action::make('edit_question')
-                ->label('ویرایش سوال')
+                ->label('Edit Question')
                 ->icon('heroicon-o-pencil-square')
                 ->color('warning')
                 ->url(fn () => $this->record->question_id 

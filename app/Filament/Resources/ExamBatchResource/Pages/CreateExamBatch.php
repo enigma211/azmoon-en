@@ -27,82 +27,82 @@ class CreateExamBatch extends CreateRecord
 
         $exams = [
             [
-                'title' => 'تاسیسات برقی طراحی',
+                'title' => 'Electrical Installations Design',
                 'duration_minutes' => 225,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'تاسیسات برقی نظارت',
+                'title' => 'Electrical Installations Supervision',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'تاسیسات برقی اجرا',
+                'title' => 'Electrical Installations Execution',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'تاسیسات مکانیکی طراحی',
+                'title' => 'Mechanical Installations Design',
                 'duration_minutes' => 225,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'تاسیسات مکانیکی نظارت',
+                'title' => 'Mechanical Installations Supervision',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'تاسیسات مکانیکی اجرا',
+                'title' => 'Mechanical Installations Execution',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'عمران اجرا',
+                'title' => 'Civil Engineering Execution',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'عمران نظارت',
+                'title' => 'Civil Engineering Supervision',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'عمران محاسبات',
+                'title' => 'Civil Engineering Calculations',
                 'duration_minutes' => 270,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'معماری نظارت',
+                'title' => 'Architecture Supervision',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'معماری اجرا',
+                'title' => 'Architecture Execution',
                 'duration_minutes' => 150,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'نقشه برداری',
+                'title' => 'Surveying',
                 'duration_minutes' => 195,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'ترافیک',
+                'title' => 'Traffic',
                 'duration_minutes' => 135,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'شهرسازی',
+                'title' => 'Urban Planning',
                 'duration_minutes' => 135,
                 'pass_threshold' => 50,
             ],
             [
-                'title' => 'عمران بهسازی',
+                'title' => 'Civil Engineering Retrofitting',
                 'duration_minutes' => 120,
                 'pass_threshold' => 60,
             ],
             [
-                'title' => 'عمران گودبرداری',
+                'title' => 'Civil Engineering Excavation',
                 'duration_minutes' => 120,
                 'pass_threshold' => 60,
             ],
@@ -118,8 +118,8 @@ class CreateExamBatch extends CreateRecord
                 'duration_minutes' => $examData['duration_minutes'],
                 'pass_threshold' => $examData['pass_threshold'],
                 'is_published' => false,
-                'seo_title' => 'نمونه سوالات آزمون ' . $fullTitle,
-                'seo_description' => 'نمونه سوالات آزمون نظام مهندسی ساختمان رشته ' . $fullTitle,
+                'seo_title' => 'Exam Questions Sample ' . $fullTitle,
+                'seo_description' => 'Building Engineering Organization Exam Questions Field ' . $fullTitle,
             ]);
         }
     }

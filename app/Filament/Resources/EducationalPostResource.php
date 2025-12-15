@@ -19,13 +19,13 @@ class EducationalPostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     
-    protected static ?string $navigationLabel = 'پست‌های آموزشی';
+    protected static ?string $navigationLabel = 'Educational Posts';
     
-    protected static ?string $modelLabel = 'پست آموزشی';
+    protected static ?string $modelLabel = 'Educational Post';
     
-    protected static ?string $pluralModelLabel = 'پست‌های آموزشی';
+    protected static ?string $pluralModelLabel = 'Educational Posts';
     
-    protected static ?string $navigationGroup = 'منابع آموزشی';
+    protected static ?string $navigationGroup = 'Educational Resources';
     
     protected static ?int $navigationSort = 2;
 
@@ -33,15 +33,15 @@ class EducationalPostResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('اطلاعات اصلی')
+                Forms\Components\Section::make('Main Information')
                     ->schema([
                         Forms\Components\Select::make('resource_category_id')
-                            ->label('دسته‌بندی')
+                            ->label('Category')
                             ->options(function () {
                                 return ResourceCategory::with('examType')
                                     ->get()
                                     ->mapWithKeys(function ($category) {
-                                        $type = $category->type === 'video' ? 'ویدیو' : 'جزوه';
+                                        $type = $category->type === 'video' ? 'Video' : 'Document';
                                         return [$category->id => $category->examType->title . ' - ' . $type];
                                     });
                             })
@@ -51,7 +51,7 @@ class EducationalPostResource extends Resource
                             ->afterStateUpdated(fn (callable $set) => $set('video_embed_code', null)),
                         
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان')
+                            ->label('Title')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
@@ -59,21 +59,21 @@ class EducationalPostResource extends Resource
                             ->columnSpanFull(),
                         
                         Forms\Components\TextInput::make('slug')
-                            ->label('نامک (Slug)')
+                            ->label('Slug')
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
-                            ->helperText('به صورت خودکار از عنوان ساخته می‌شود')
+                            ->helperText('Automatically generated from title')
                             ->columnSpanFull(),
                         
                         Forms\Components\Textarea::make('description')
-                            ->label('توضیحات کوتاه')
+                            ->label('Short Description')
                             ->rows(2)
                             ->maxLength(500)
                             ->columnSpanFull(),
                         
                         Forms\Components\FileUpload::make('thumbnail')
-                            ->label('تصویر شاخص')
+                            ->label('Thumbnail')
                             ->image()
                             ->directory('educational-posts/thumbnails')
                             ->maxSize(2048)
@@ -82,12 +82,12 @@ class EducationalPostResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('محتوای ویدیو')
+                Forms\Components\Section::make('Video Content')
                     ->schema([
                         Forms\Components\Textarea::make('video_embed_code')
-                            ->label('کد Embed ویدیو (آپارات)')
+                            ->label('Video Embed Code (Aparat)')
                             ->rows(5)
-                            ->helperText('کد embed را از سایت آپارات کپی کنید')
+                            ->helperText('Copy embed code from Aparat')
                             ->placeholder('<script src="https://www.aparat.com/embed/...">')
                             ->columnSpanFull(),
                     ])
@@ -96,16 +96,16 @@ class EducationalPostResource extends Resource
                         ResourceCategory::find($get('resource_category_id'))?->type === 'video'
                     ),
 
-                Forms\Components\Section::make('فایل جزوه')
+                Forms\Components\Section::make('Document File')
                     ->schema([
                         Forms\Components\FileUpload::make('pdf_file')
-                            ->label('فایل PDF')
+                            ->label('PDF File')
                             ->acceptedFileTypes(['application/pdf'])
                             ->directory('educational-posts/documents')
                             ->maxSize(10240) // 10MB
                             ->downloadable()
                             ->openable()
-                            ->helperText('حداکثر حجم: 10 مگابایت')
+                            ->helperText('Max size: 10MB')
                             ->columnSpanFull(),
                     ])
                     ->visible(fn (Forms\Get $get) => 
@@ -113,36 +113,36 @@ class EducationalPostResource extends Resource
                         ResourceCategory::find($get('resource_category_id'))?->type === 'document'
                     ),
 
-                Forms\Components\Section::make('محتوای متنی')
+                Forms\Components\Section::make('Text Content')
                     ->schema([
                         TinyEditor::make('content')
-                            ->label('محتوا')
+                            ->label('Content')
                             ->columnSpanFull(),
                     ])
                     ->collapsible(),
 
-                Forms\Components\Section::make('تنظیمات')
+                Forms\Components\Section::make('Settings')
                     ->schema([
                         Forms\Components\DateTimePicker::make('published_at')
-                            ->label('تاریخ انتشار')
+                            ->label('Published At')
                             ->default(now())
                             ->required(),
                         
                         Forms\Components\TextInput::make('sort_order')
-                            ->label('ترتیب نمایش')
+                            ->label('Sort Order')
                             ->numeric()
                             ->default(0)
                             ->required(),
                         
                         Forms\Components\Toggle::make('is_active')
-                            ->label('فعال')
+                            ->label('Active')
                             ->default(true)
                             ->required(),
                         
                         Forms\Components\Toggle::make('is_featured')
-                            ->label('پست ویژه')
+                            ->label('Featured Post')
                             ->default(false)
-                            ->helperText('در صفحه اصلی نمایش داده شود'),
+                            ->helperText('Show on home page'),
                     ])
                     ->columns(2),
             ]);
@@ -153,22 +153,22 @@ class EducationalPostResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail')
-                    ->label('تصویر')
+                    ->label('Image')
                     ->circular(),
                 
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable()
                     ->sortable()
                     ->limit(50),
                 
                 Tables\Columns\TextColumn::make('category.examType.title')
-                    ->label('نوع آزمون')
+                    ->label('Exam Type')
                     ->sortable()
                     ->searchable(),
                 
                 Tables\Columns\TextColumn::make('category.type')
-                    ->label('نوع محتوا')
+                    ->label('Content Type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'video' => 'success',
@@ -176,50 +176,50 @@ class EducationalPostResource extends Resource
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'video' => 'ویدیو',
-                        'document' => 'جزوه',
+                        'video' => 'Video',
+                        'document' => 'Document',
                         default => $state,
                     }),
                 
                 Tables\Columns\TextColumn::make('view_count')
-                    ->label('بازدید')
+                    ->label('Views')
                     ->sortable()
                     ->alignCenter(),
                 
                 Tables\Columns\TextColumn::make('download_count')
-                    ->label('دانلود')
+                    ->label('Downloads')
                     ->sortable()
                     ->alignCenter()
                     ->visible(fn ($record) => $record && $record->category?->type === 'document'),
                 
                 Tables\Columns\IconColumn::make('is_featured')
-                    ->label('ویژه')
+                    ->label('Featured')
                     ->boolean()
                     ->sortable(),
                 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('فعال')
+                    ->label('Active')
                     ->boolean()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label('تاریخ انتشار')
+                    ->label('Published At')
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
             ])
             ->defaultSort('published_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('category')
-                    ->label('دسته‌بندی')
+                    ->label('Category')
                     ->relationship('category', 'title')
                     ->searchable()
                     ->preload(),
                 
                 Tables\Filters\SelectFilter::make('type')
-                    ->label('نوع محتوا')
+                    ->label('Content Type')
                     ->options([
-                        'video' => 'ویدیو',
-                        'document' => 'جزوه',
+                        'video' => 'Video',
+                        'document' => 'Document',
                     ])
                     ->query(function (Builder $query, array $data) {
                         if (isset($data['value'])) {
@@ -230,16 +230,16 @@ class EducationalPostResource extends Resource
                     }),
                 
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('وضعیت')
-                    ->placeholder('همه')
-                    ->trueLabel('فعال')
-                    ->falseLabel('غیرفعال'),
+                    ->label('Status')
+                    ->placeholder('All')
+                    ->trueLabel('Active')
+                    ->falseLabel('Inactive'),
                 
                 Tables\Filters\TernaryFilter::make('is_featured')
-                    ->label('ویژه')
-                    ->placeholder('همه')
-                    ->trueLabel('ویژه')
-                    ->falseLabel('عادی'),
+                    ->label('Featured')
+                    ->placeholder('All')
+                    ->trueLabel('Featured')
+                    ->falseLabel('Normal'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

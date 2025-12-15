@@ -17,13 +17,13 @@ class SupportTicketResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
-    protected static ?string $navigationLabel = 'تیکت پشتیبانی';
+    protected static ?string $navigationLabel = 'Support Tickets';
 
-    protected static ?string $modelLabel = 'تیکت';
+    protected static ?string $modelLabel = 'Ticket';
 
-    protected static ?string $pluralModelLabel = 'تیکت‌های پشتیبانی';
+    protected static ?string $pluralModelLabel = 'Support Tickets';
 
-    protected static ?string $navigationGroup = 'پشتیبانی';
+    protected static ?string $navigationGroup = 'Support';
 
     protected static ?int $navigationSort = 1;
 
@@ -41,35 +41,35 @@ class SupportTicketResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('اطلاعات تیکت')
+                Forms\Components\Section::make('Ticket Information')
                     ->schema([
                         Forms\Components\TextInput::make('ticket_number')
-                            ->label('شماره تیکت')
+                            ->label('Ticket Number')
                             ->disabled()
                             ->dehydrated(false),
                         
                         Forms\Components\Select::make('user_id')
-                            ->label('کاربر')
+                            ->label('User')
                             ->relationship('user', 'name')
                             ->disabled()
                             ->dehydrated(false),
                         
                         Forms\Components\TextInput::make('subject')
-                            ->label('موضوع')
+                            ->label('Subject')
                             ->disabled()
                             ->dehydrated(false),
                         
                         Forms\Components\Textarea::make('message')
-                            ->label('پیام کاربر')
+                            ->label('User Message')
                             ->disabled()
                             ->dehydrated(false)
                             ->rows(5),
                         
                         Forms\Components\Placeholder::make('status_display')
-                            ->label('وضعیت فعلی')
+                            ->label('Current Status')
                             ->content(fn ($record) => $record ? 
-                                ($record->status === 'pending' ? '⏳ در انتظار پاسخ' : '✅ پاسخ داده شده') 
-                                : 'جدید'
+                                ($record->status === 'pending' ? 'Awaiting Reply' : 'Answered') 
+                                : 'New'
                             ),
                         
                         Forms\Components\Hidden::make('status')
@@ -77,19 +77,19 @@ class SupportTicketResource extends Resource
                     ])
                     ->columns(1),
                 
-                Forms\Components\Section::make('گفتگو')
+                Forms\Components\Section::make('Conversation')
                     ->schema([
                         Forms\Components\Placeholder::make('conversation')
                             ->label('')
                             ->content(function ($record) {
                                 if (!$record || !$record->replies()->exists()) {
-                                    return 'هنوز پاسخی ارسال نشده است.';
+                                    return 'No replies yet.';
                                 }
                                 
                                 $html = '<div class="space-y-3">';
                                 foreach ($record->replies()->orderBy('created_at')->get() as $reply) {
                                     $color = $reply->is_admin ? 'bg-green-50 border-green-500' : 'bg-blue-50 border-blue-500';
-                                    $sender = $reply->is_admin ? 'پشتیبانی' : ($reply->user->name ?? 'کاربر');
+                                    $sender = $reply->is_admin ? 'Support' : ($reply->user->name ?? 'User');
                                     $time = $reply->created_at->format('Y/m/d H:i');
                                     
                                     $html .= "<div class='p-3 rounded border-r-4 {$color}'>";
@@ -108,12 +108,12 @@ class SupportTicketResource extends Resource
                     ->columns(1)
                     ->visible(fn ($record) => $record && $record->replies()->exists()),
                 
-                Forms\Components\Section::make('پاسخ جدید')
+                Forms\Components\Section::make('New Reply')
                     ->schema([
                         Forms\Components\Textarea::make('admin_reply')
-                            ->label('پاسخ')
+                            ->label('Reply')
                             ->rows(6)
-                            ->helperText('پاسخ خود را برای کاربر بنویسید'),
+                            ->helperText('Write your reply to the user'),
                     ])
                     ->columns(1),
             ]);
@@ -124,12 +124,12 @@ class SupportTicketResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('ticket_number')
-                    ->label('شماره تیکت')
+                    ->label('Ticket Number')
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('کاربر')
+                    ->label('User')
                     ->searchable()
                     ->sortable()
                     ->url(fn ($record) => $record->user ? "/admin/users/{$record->user_id}/edit" : null)
@@ -137,44 +137,44 @@ class SupportTicketResource extends Resource
                     ->weight('medium'),
                 
                 Tables\Columns\TextColumn::make('subject')
-                    ->label('موضوع')
+                    ->label('Subject')
                     ->searchable()
                     ->limit(50),
                 
                 Tables\Columns\BadgeColumn::make('status')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'answered',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'در انتظار پاسخ',
-                        'answered' => 'پاسخ داده شده',
+                        'pending' => 'Awaiting Reply',
+                        'answered' => 'Answered',
                         default => $state,
                     }),
                 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاریخ ایجاد')
+                    ->label('Created At')
                     ->dateTime('Y/m/d H:i')
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('replied_at')
-                    ->label('تاریخ پاسخ')
+                    ->label('Replied At')
                     ->dateTime('Y/m/d H:i')
                     ->sortable()
                     ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->options([
-                        'pending' => 'در انتظار پاسخ',
-                        'answered' => 'پاسخ داده شده',
+                        'pending' => 'Awaiting Reply',
+                        'answered' => 'Answered',
                     ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('پاسخ')
+                    ->label('Reply')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success'),
             ])

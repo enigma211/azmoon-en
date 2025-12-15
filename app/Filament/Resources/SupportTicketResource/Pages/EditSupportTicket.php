@@ -19,9 +19,9 @@ class EditSupportTicket extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // اگر پاسخ داده شده، وضعیت را به answered تغییر بده
+        // If replied, change status to answered
         if (!empty($data['admin_reply'])) {
-            // ذخیره پاسخ در جدول replies
+            // Save reply in replies table
             \App\Models\TicketReply::create([
                 'support_ticket_id' => $this->record->id,
                 'user_id' => null, // admin
@@ -31,12 +31,12 @@ class EditSupportTicket extends EditRecord
             
             $data['status'] = 'answered';
             
-            // اگر قبلاً پاسخ داده نشده، زمان پاسخ را ثبت کن
+            // If not replied before, set replied_at
             if (empty($this->record->replied_at)) {
                 $data['replied_at'] = now();
             }
             
-            // پاک کردن admin_reply چون در جدول replies ذخیره شد
+            // Clear admin_reply as it is saved in replies table
             $data['admin_reply'] = null;
         }
 

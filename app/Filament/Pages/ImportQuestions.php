@@ -23,8 +23,8 @@ class ImportQuestions extends Page implements HasTable
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
     protected static string $view = 'filament.pages.import-questions';
-    protected static ?string $navigationLabel = 'ایمپورت سوالات';
-    protected static ?string $navigationGroup = 'آزمون‌ها';
+    protected static ?string $navigationLabel = 'Import Questions';
+    protected static ?string $navigationGroup = 'Exams';
     protected static ?int $navigationSort = 4;
 
     public function table(Table $table): Table
@@ -33,11 +33,11 @@ class ImportQuestions extends Page implements HasTable
             ->query(Exam::query())
             ->columns([
                 TextColumn::make('title')
-                    ->label('عنوان آزمون')
+                    ->label('Exam Title')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('questions_count')
-                    ->label('تعداد سوالات')
+                    ->label('Questions Count')
                     ->getStateUsing(fn (Exam $record) => $record->questions()
                         ->where(function ($q) {
                             $q->where('is_deleted', false)->orWhereNull('is_deleted');
@@ -45,24 +45,24 @@ class ImportQuestions extends Page implements HasTable
                         ->count())
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('تاریخ ایجاد')
+                    ->label('Created At')
                     ->formatStateUsing(fn ($state) => formatDateTime($state))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
                 Action::make('import')
-                    ->label('وارد کردن سوال')
+                    ->label('Import Questions')
                     ->icon('heroicon-o-arrow-up-tray')
                     ->color('primary')
                     ->form([
                         Section::make()
                             ->schema([
                                 FileUpload::make('csv_file')
-                                    ->label('فایل CSV')
+                                    ->label('CSV File')
                                     ->acceptedFileTypes(['text/csv', 'text/plain', 'application/csv'])
                                     ->required()
-                                    ->helperText('فایل CSV باید شامل 7 ستون باشد: شماره سوال، متن سوال، گزینه 1-4، شماره گزینه صحیح')
+                                    ->helperText('CSV file must have 7 columns: Question No, Text, Options 1-4, Correct Option No')
                                     ->disk('local')
                                     ->directory('temp-imports')
                                     ->maxSize(5120),
@@ -72,17 +72,17 @@ class ImportQuestions extends Page implements HasTable
                         $this->importQuestions($record->id, $data['csv_file']);
                     }),
                 Action::make('import_explanations')
-                    ->label('وارد کردن پاسخ تشریحی')
+                    ->label('Import Explanations')
                     ->icon('heroicon-o-document-text')
                     ->color('success')
                     ->form([
                         Section::make()
                             ->schema([
                                 FileUpload::make('explanation_csv_file')
-                                    ->label('فایل CSV پاسخ تشریحی')
+                                    ->label('Explanation CSV File')
                                     ->acceptedFileTypes(['text/csv', 'text/plain', 'application/csv'])
                                     ->required()
-                                    ->helperText('فایل CSV باید شامل 2 ستون باشد: شماره سوال، متن پاسخ تشریحی')
+                                    ->helperText('CSV file must have 2 columns: Question No, Explanation Text')
                                     ->disk('local')
                                     ->directory('temp-imports')
                                     ->maxSize(5120),
@@ -92,7 +92,7 @@ class ImportQuestions extends Page implements HasTable
                         $this->importExplanations($record->id, $data['explanation_csv_file']);
                     }),
                 Action::make('view_questions')
-                    ->label('سوالات')
+                    ->label('Questions')
                     ->icon('heroicon-o-list-bullet')
                     ->color('info')
                     ->url(fn (Exam $record): string => 
@@ -114,7 +114,7 @@ class ImportQuestions extends Page implements HasTable
             $filePath = Storage::disk('local')->path($csvFile);
             
             if (!file_exists($filePath)) {
-                throw new \Exception('فایل یافت نشد');
+                throw new \Exception('File not found');
             }
 
             $file = fopen($filePath, 'r');
@@ -139,7 +139,7 @@ class ImportQuestions extends Page implements HasTable
 
                 // Validate row has at least 2 columns
                 if (count($row) < 2) {
-                    $errors[] = "خط {$lineNumber}: تعداد ستون‌ها کافی نیست (باید حداقل 2 ستون باشد)";
+                    $errors[] = "Line {$lineNumber}: Not enough columns (must be at least 2 columns)";
                     continue;
                 }
 
@@ -158,10 +158,10 @@ class ImportQuestions extends Page implements HasTable
                         ]);
                         $importedCount++;
                     } else {
-                        $errors[] = "خط {$lineNumber}: سوال شماره {$orderColumn} در این آزمون یافت نشد";
+                        $errors[] = "Line {$lineNumber}: Question number {$orderColumn} not found in this exam";
                     }
                 } catch (\Exception $e) {
-                    $errors[] = "خط {$lineNumber}: " . $e->getMessage();
+                    $errors[] = "Line {$lineNumber}: " . $e->getMessage();
                 }
             }
 
@@ -172,30 +172,30 @@ class ImportQuestions extends Page implements HasTable
 
             // Show result notification
             if ($importedCount > 0) {
-                $message = "{$importedCount} پاسخ تشریحی با موفقیت وارد شد";
+                $message = "{$importedCount} explanations imported successfully";
                 if (!empty($errors)) {
-                    $message .= "\n\nخطاها:\n" . implode("\n", array_slice($errors, 0, 5));
+                    $message .= "\n\nErrors:\n" . implode("\n", array_slice($errors, 0, 5));
                     if (count($errors) > 5) {
-                        $message .= "\n... و " . (count($errors) - 5) . " خطای دیگر";
+                        $message .= "\n... and " . (count($errors) - 5) . " more errors";
                     }
                 }
                 
                 Notification::make()
-                    ->title('ایمپورت موفق')
+                    ->title('Import Successful')
                     ->body($message)
                     ->success()
                     ->send();
             } else {
                 Notification::make()
-                    ->title('خطا')
-                    ->body('هیچ پاسخی وارد نشد. خطاها: ' . implode(', ', $errors))
+                    ->title('Error')
+                    ->body('No explanations imported. Errors: ' . implode(', ', $errors))
                     ->danger()
                     ->send();
             }
 
         } catch (\Exception $e) {
             Notification::make()
-                ->title('خطا در پردازش فایل')
+                ->title('File Processing Error')
                 ->body($e->getMessage())
                 ->danger()
                 ->send();
@@ -208,7 +208,7 @@ class ImportQuestions extends Page implements HasTable
             $filePath = Storage::disk('local')->path($csvFile);
             
             if (!file_exists($filePath)) {
-                throw new \Exception('فایل یافت نشد');
+                throw new \Exception('File not found');
             }
 
             $file = fopen($filePath, 'r');
@@ -233,7 +233,7 @@ class ImportQuestions extends Page implements HasTable
 
                 // Validate row has 7 columns
                 if (count($row) < 7) {
-                    $errors[] = "خط {$lineNumber}: تعداد ستون‌ها کافی نیست (باید 7 ستون باشد)";
+                    $errors[] = "Line {$lineNumber}: Not enough columns (must be 7 columns)";
                     continue;
                 }
 
@@ -248,7 +248,7 @@ class ImportQuestions extends Page implements HasTable
 
                     // Validate correct answer is between 1-4
                     if ($correctAnswer < 1 || $correctAnswer > 4) {
-                        $errors[] = "خط {$lineNumber}: شماره گزینه صحیح باید بین 1 تا 4 باشد";
+                        $errors[] = "Line {$lineNumber}: Correct option number must be between 1 and 4";
                         continue;
                     }
 
@@ -277,7 +277,7 @@ class ImportQuestions extends Page implements HasTable
 
                     $importedCount++;
                 } catch (\Exception $e) {
-                    $errors[] = "خط {$lineNumber}: " . $e->getMessage();
+                    $errors[] = "Line {$lineNumber}: " . $e->getMessage();
                 }
             }
 
@@ -288,30 +288,30 @@ class ImportQuestions extends Page implements HasTable
 
             // Show result notification
             if ($importedCount > 0) {
-                $message = "{$importedCount} سوال با موفقیت وارد شد";
+                $message = "{$importedCount} questions imported successfully";
                 if (!empty($errors)) {
-                    $message .= "\n\nخطاها:\n" . implode("\n", array_slice($errors, 0, 5));
+                    $message .= "\n\nErrors:\n" . implode("\n", array_slice($errors, 0, 5));
                     if (count($errors) > 5) {
-                        $message .= "\n... و " . (count($errors) - 5) . " خطای دیگر";
+                        $message .= "\n... and " . (count($errors) - 5) . " more errors";
                     }
                 }
                 
                 Notification::make()
-                    ->title('ایمپورت موفق')
+                    ->title('Import Successful')
                     ->body($message)
                     ->success()
                     ->send();
             } else {
                 Notification::make()
-                    ->title('خطا')
-                    ->body('هیچ سوالی وارد نشد. خطاها: ' . implode(', ', $errors))
+                    ->title('Error')
+                    ->body('No questions imported. Errors: ' . implode(', ', $errors))
                     ->danger()
                     ->send();
             }
 
         } catch (\Exception $e) {
             Notification::make()
-                ->title('خطا در پردازش فایل')
+                ->title('File Processing Error')
                 ->body($e->getMessage())
                 ->danger()
                 ->send();

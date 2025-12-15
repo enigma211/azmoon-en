@@ -18,7 +18,7 @@ class BrandingSettings extends Page implements HasForms
 
     protected static string $view = 'filament.pages.branding-settings';
 
-    protected static ?string $navigationGroup = 'تنظیمات';
+    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 11;
 
@@ -26,7 +26,7 @@ class BrandingSettings extends Page implements HasForms
 
     public static function getNavigationLabel(): string
     {
-        return 'تنظیمات برندینگ (لوگو و آیکن)';
+        return 'Branding Settings (Logo & Icon)';
     }
 
     public static function getSlug(): string
@@ -47,18 +47,18 @@ class BrandingSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('تنظیمات لوگو و آیکن')
-                    ->description('لوگو و favicon سایت را در اینجا آپلود کنید.')
+                Forms\Components\Section::make('Logo & Icon Settings')
+                    ->description('Upload site logo and favicon here.')
                     ->schema([
                         Forms\Components\FileUpload::make('logo')
-                            ->label('لوگو سایت (PNG)')
+                            ->label('Site Logo (PNG)')
                             ->image()
                             ->acceptedFileTypes(['image/png'])
                             ->directory('branding')
                             ->disk('public')
                             ->visibility('public')
                             ->maxSize(2048)
-                            ->helperText('فایل PNG با حداکثر حجم 2MB')
+                            ->helperText('PNG file with max size 2MB')
                             ->imageEditor()
                             ->imageEditorAspectRatios([
                                 null,
@@ -68,14 +68,14 @@ class BrandingSettings extends Page implements HasForms
                             ]),
 
                         Forms\Components\FileUpload::make('favicon')
-                            ->label('Favicon (PNG یا ICO)')
+                            ->label('Favicon (PNG or ICO)')
                             ->image()
                             ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/vnd.microsoft.icon'])
                             ->directory('branding')
                             ->disk('public')
                             ->visibility('public')
                             ->maxSize(512)
-                            ->helperText('فایل PNG یا ICO با حداکثر حجم 512KB (توصیه: 32x32 یا 64x64 پیکسل)'),
+                            ->helperText('PNG or ICO file, max 512KB (Recommended: 32x32 or 64x64 pixels)'),
                     ])
                     ->columns(2),
             ])
@@ -86,7 +86,7 @@ class BrandingSettings extends Page implements HasForms
     {
         return [
             Action::make('save')
-                ->label('ذخیره تغییرات')
+                ->label('Save Changes')
                 ->submit('save'),
         ];
     }
@@ -107,8 +107,8 @@ class BrandingSettings extends Page implements HasForms
 
         Notification::make()
             ->success()
-            ->title('تنظیمات برندینگ ذخیره شد')
-            ->body('لوگو و favicon با موفقیت به‌روزرسانی شدند.')
+            ->title('Branding settings saved')
+            ->body('Logo and favicon updated successfully.')
             ->send();
     }
 }

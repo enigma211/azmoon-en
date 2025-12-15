@@ -22,12 +22,12 @@ class CreateQuestion extends CreateRecord
         if (in_array($type, ['single_choice','true_false'])) {
             if ($choices->count() < 2) {
                 throw ValidationException::withMessages([
-                    'choices' => 'برای سوال تک‌گزینه‌ای/صحیح‌غلط حداقل دو گزینه لازم است.',
+                    'choices' => 'Single choice/True-False questions require at least two options.',
                 ]);
             }
             if ($correctCount !== 1) {
                 throw ValidationException::withMessages([
-                    'choices' => 'برای سوال تک‌گزینه‌ای/صحیح‌غلط باید دقیقاً یک گزینه صحیح باشد.',
+                    'choices' => 'Single choice/True-False questions must have exactly one correct option.',
                 ]);
             }
         }
@@ -35,12 +35,12 @@ class CreateQuestion extends CreateRecord
         if ($type === 'multi_choice') {
             if ($choices->count() < 2) {
                 throw ValidationException::withMessages([
-                    'choices' => 'برای سوال چندگزینه‌ای حداقل دو گزینه لازم است.',
+                    'choices' => 'Multiple choice questions require at least two options.',
                 ]);
             }
             if ($correctCount < 1) {
                 throw ValidationException::withMessages([
-                    'choices' => 'برای سوال چندگزینه‌ای حداقل یک گزینه باید صحیح باشد.',
+                    'choices' => 'Multiple choice questions must have at least one correct option.',
                 ]);
             }
         }

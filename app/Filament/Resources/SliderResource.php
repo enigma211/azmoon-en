@@ -23,74 +23,74 @@ class SliderResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'اسلایدرها';
+        return 'Sliders';
     }
 
     public static function getModelLabel(): string
     {
-        return 'اسلایدر';
+        return 'Slider';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'اسلایدرها';
+        return 'Sliders';
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'محتوا';
+        return 'Content';
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('راهنمای تصویر')
-                    ->description('📱 برای نمایش بهینه در موبایل عمودی، از تصاویر با نسبت 16:9 استفاده کنید. سایز پیشنهادی: 1080×600 پیکسل')
+                Forms\Components\Section::make('Image Guide')
+                    ->description('📱 For optimal mobile display, use 16:9 aspect ratio. Recommended size: 1080x600 pixels')
                     ->collapsed()
                     ->schema([
                         Forms\Components\Placeholder::make('image_guide')
                             ->label('')
                             ->content('
-                                ✅ سایز پیشنهادی: 1080×600 پیکسل (نسبت 16:9)
-                                ✅ فرمت: JPG یا PNG
-                                ✅ حجم: حداکثر 2 مگابایت (توصیه: کمتر از 500KB)
-                                ✅ متن مهم را در مرکز تصویر قرار دهید
-                                ✅ از رنگ‌های متضاد برای خوانایی بهتر استفاده کنید
+                                ✅ Recommended size: 1080x600 pixels (16:9 aspect ratio)
+                                ✅ Format: JPG or PNG
+                                ✅ Max size: 2MB (Recommended: under 500KB)
+                                ✅ Place important text in the center
+                                ✅ Use contrasting colors for better readability
                             '),
                     ]),
 
-                Forms\Components\Section::make('اطلاعات اسلایدر')
+                Forms\Components\Section::make('Slider Information')
                     ->schema([
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان')
+                            ->label('Title')
                             ->maxLength(255)
-                            ->helperText('عنوان اختیاری برای اسلایدر'),
+                            ->helperText('Optional title for the slider'),
 
                         Forms\Components\FileUpload::make('image')
-                            ->label('تصویر')
+                            ->label('Image')
                             ->image()
                             ->required()
                             ->directory('sliders')
                             ->imageEditor()
                             ->maxSize(2048)
-                            ->helperText('📱 سایز پیشنهادی: 1080×600 پیکسل (نسبت 16:9) | حداکثر حجم: 2 مگابایت | برای موبایل عمودی بهینه شده است'),
+                            ->helperText('📱 Recommended size: 1080x600 pixels (16:9) | Max size: 2MB'),
 
                         Forms\Components\TextInput::make('link')
-                            ->label('لینک')
+                            ->label('Link')
                             ->url()
                             ->maxLength(255)
-                            ->helperText('لینک اختیاری که با کلیک روی اسلایدر باز می‌شود'),
+                            ->helperText('Optional link to open when clicking the slider'),
 
                         Forms\Components\TextInput::make('order')
-                            ->label('ترتیب نمایش')
+                            ->label('Sort Order')
                             ->required()
                             ->numeric()
                             ->default(0)
-                            ->helperText('عدد کوچکتر = نمایش زودتر'),
+                            ->helperText('Lower number = Shows first'),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('فعال')
+                            ->label('Active')
                             ->default(true)
                             ->required(),
                     ]),
@@ -102,25 +102,25 @@ class SliderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('تصویر')
+                    ->label('Image')
                     ->size(80),
 
                 Tables\Columns\TextColumn::make('order')
-                    ->label('ترتیب')
+                    ->label('Order')
                     ->numeric()
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('فعال')
+                    ->label('Active')
                     ->boolean(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاریخ ایجاد')
+                    ->label('Created At')
                     ->formatStateUsing(fn ($state) => formatDate($state))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

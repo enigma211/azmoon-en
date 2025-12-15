@@ -21,22 +21,22 @@ class ExamSectionResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'بخش‌های آزمون';
+        return 'Exam Sections';
     }
 
     public static function getModelLabel(): string
     {
-        return 'بخش آزمون';
+        return 'Exam Section';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'بخش‌های آزمون';
+        return 'Exam Sections';
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'آزمون‌ها';
+        return 'Exam Section';
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -49,27 +49,27 @@ class ExamSectionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('اطلاعات بخش آزمون')
+                Forms\Components\Section::make('Exam Section Information')
                     ->schema([
                         Forms\Components\Select::make('exam_id')
                             ->relationship('exam', 'title')
-                            ->label('آزمون')
+                            ->label('Exam')
                             ->searchable()
                             ->preload()
                             ->required(),
 
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان بخش')
+                            ->label('Section Title')
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('order')
-                            ->label('ترتیب نمایش')
+                            ->label('Sort Order')
                             ->numeric()
                             ->minValue(0)
                             ->step(1)
                             ->default(0)
-                            ->helperText('عدد کوچکتر یعنی نمایش بالاتر'),
+                            ->helperText('Lower number means higher priority'),
                     ])
                     ->columns(3),
             ]);
@@ -80,23 +80,23 @@ class ExamSectionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('exam.title')
-                    ->label('آزمون')
+                    ->label('Exam')
                     ->toggleable()
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('order')
-                    ->label('ترتیب')
+                    ->label('Order')
                     ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('ایجاد')
+                    ->label('Created At')
                     ->formatStateUsing(fn ($state) => formatDateTime($state))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

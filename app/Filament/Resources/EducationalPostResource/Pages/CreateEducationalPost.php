@@ -11,11 +11,11 @@ class CreateEducationalPost extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // محاسبه حجم فایل PDF
+        // Calculate PDF file size
         if (isset($data['pdf_file']) && $data['pdf_file']) {
             $filePath = storage_path('app/public/' . $data['pdf_file']);
             if (file_exists($filePath)) {
-                $data['file_size'] = round(filesize($filePath) / 1024); // به کیلوبایت
+                $data['file_size'] = round(filesize($filePath) / 1024); // in KB
             }
         }
 

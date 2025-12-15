@@ -14,11 +14,11 @@ class DatabaseBackup extends Page
 
     protected static string $view = 'filament.pages.database-backup';
 
-    protected static ?string $navigationLabel = 'پشتیبان‌گیری';
+    protected static ?string $navigationLabel = 'Backups';
 
-    protected static ?string $title = 'پشتیبان‌گیری دیتابیس';
+    protected static ?string $title = 'Database Backup';
 
-    protected static ?string $navigationGroup = 'تنظیمات';
+    protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 99;
 
@@ -71,24 +71,24 @@ class DatabaseBackup extends Page
     {
         return [
             Action::make('create_backup')
-                ->label('ایجاد بک‌آپ جدید')
+                ->label('Create New Backup')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalHeading('ایجاد بک‌آپ دیتابیس')
-                ->modalDescription('آیا مطمئن هستید که می‌خواهید از دیتابیس بک‌آپ بگیرید؟')
-                ->modalSubmitActionLabel('بله، بک‌آپ بگیر')
+                ->modalHeading('Create Database Backup')
+                ->modalDescription('Are you sure you want to create a database backup?')
+                ->modalSubmitActionLabel('Yes, create backup')
                 ->action(function () {
                     try {
                         $this->createBackup();
                         
                         Notification::make()
-                            ->title('بک‌آپ با موفقیت ایجاد شد')
+                            ->title('Backup created successfully')
                             ->success()
                             ->send();
                     } catch (\Exception $e) {
                         Notification::make()
-                            ->title('خطا در ایجاد بک‌آپ')
+                            ->title('Error creating backup')
                             ->body($e->getMessage())
                             ->danger()
                             ->send();
@@ -118,7 +118,7 @@ class DatabaseBackup extends Page
 
         if (!$disk->exists($path)) {
             Notification::make()
-                ->title('فایل بک‌آپ یافت نشد')
+                ->title('Backup file not found')
                 ->danger()
                 ->send();
 
@@ -136,12 +136,12 @@ class DatabaseBackup extends Page
             $disk->delete($path);
 
             Notification::make()
-                ->title('بک‌آپ با موفقیت حذف شد')
+                ->title('Backup deleted successfully')
                 ->success()
                 ->send();
         } else {
             Notification::make()
-                ->title('فایل بک‌آپ یافت نشد')
+                ->title('Backup file not found')
                 ->danger()
                 ->send();
         }

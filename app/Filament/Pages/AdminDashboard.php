@@ -8,8 +8,8 @@ class AdminDashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static string $view = 'filament.pages.admin-dashboard';
-    protected static ?string $navigationLabel = 'داشبورد مدیریتی';
-    protected static ?string $navigationGroup = 'گزارش‌ها و KPI';
+    protected static ?string $navigationLabel = 'Admin Dashboard';
+    protected static ?string $navigationGroup = 'Reports & KPI';
     
     // Hide from navigation
     public static function shouldRegisterNavigation(): bool

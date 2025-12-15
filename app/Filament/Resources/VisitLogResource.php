@@ -18,23 +18,23 @@ class VisitLogResource extends Resource
     protected static ?string $model = VisitLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-eye';
-    protected static ?string $navigationLabel = 'لیست بازدیدها';
-    protected static ?string $modelLabel = 'بازدید';
-    protected static ?string $pluralModelLabel = 'لیست بازدیدها';
-    protected static ?string $navigationGroup = 'گزارشات';
+    protected static ?string $navigationLabel = 'Visit Logs';
+    protected static ?string $modelLabel = 'Visit Log';
+    protected static ?string $pluralModelLabel = 'Visit Logs';
+    protected static ?string $navigationGroup = 'Reports';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('ip')
-                    ->label('آی‌پی')
+                    ->label('IP Address')
                     ->disabled(),
                 Forms\Components\Textarea::make('user_agent')
-                    ->label('مرورگر')
+                    ->label('Browser')
                     ->disabled(),
                 Forms\Components\DateTimePicker::make('created_at')
-                    ->label('تاریخ بازدید')
+                    ->label('Visit Date')
                     ->disabled(),
             ]);
     }
@@ -44,19 +44,19 @@ class VisitLogResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('شناسه')
+                    ->label('ID')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('ip')
-                    ->label('آی‌پی')
+                    ->label('IP Address')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user_agent')
-                    ->label('مرورگر / دستگاه')
+                    ->label('Browser / Device')
                     ->limit(50)
                     ->searchable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('زمان بازدید')
+                    ->label('Visit Time')
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
             ])

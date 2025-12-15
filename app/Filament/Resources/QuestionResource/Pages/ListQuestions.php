@@ -24,11 +24,11 @@ class ListQuestions extends ListRecords
         return [
             Actions\CreateAction::make(),
             Actions\Action::make('import')
-                ->label('ایمپورت سوالات')
+                ->label('Import Questions')
                 ->icon('heroicon-m-arrow-down-tray')
                 ->form([
                     Forms\Components\FileUpload::make('file')
-                        ->label('فایل CSV/XLSX')
+                        ->label('CSV/XLSX File')
                         ->acceptedFileTypes(['text/csv','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
                         ->directory('imports')
                         ->disk('public')
@@ -37,7 +37,7 @@ class ListQuestions extends ListRecords
                 ->action(function (array $data) {
                     $path = Storage::disk('public')->path($data['file']);
                     Excel::import(new QuestionsImport, $path);
-                    $this->notify('success', 'ایمپورت با موفقیت انجام شد.');
+                    $this->notify('success', 'Import completed successfully.');
                 }),
         ];
     }

@@ -18,13 +18,13 @@ class ExamTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     
-    protected static ?string $navigationLabel = 'انواع آزمون';
+    protected static ?string $navigationLabel = 'Exam Types';
     
-    protected static ?string $modelLabel = 'نوع آزمون';
+    protected static ?string $modelLabel = 'Exam Type';
     
-    protected static ?string $pluralModelLabel = 'انواع آزمون';
+    protected static ?string $pluralModelLabel = 'Exam Types';
     
-    protected static ?string $navigationGroup = 'منابع آموزشی';
+    protected static ?string $navigationGroup = 'Educational Resources';
     
     protected static ?int $navigationSort = 1;
 
@@ -32,40 +32,40 @@ class ExamTypeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('اطلاعات اصلی')
+                Forms\Components\Section::make('Main Information')
                     ->schema([
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان')
+                            ->label('Title')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', \Illuminate\Support\Str::slug($state))),
                         
                         Forms\Components\TextInput::make('slug')
-                            ->label('نامک (Slug)')
+                            ->label('Slug')
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
-                            ->helperText('به صورت خودکار از عنوان ساخته می‌شود'),
+                            ->helperText('Automatically generated from title'),
                         
                         Forms\Components\Textarea::make('description')
-                            ->label('توضیحات')
+                            ->label('Description')
                             ->rows(3)
                             ->columnSpanFull(),
                         
                         Forms\Components\TextInput::make('icon')
-                            ->label('آیکون')
-                            ->helperText('نام آیکون Heroicon (مثال: academic-cap)')
+                            ->label('Icon')
+                            ->helperText('Heroicon name (e.g. academic-cap)')
                             ->maxLength(255),
                         
                         Forms\Components\TextInput::make('sort_order')
-                            ->label('ترتیب نمایش')
+                            ->label('Sort Order')
                             ->numeric()
                             ->default(0)
                             ->required(),
                         
                         Forms\Components\Toggle::make('is_active')
-                            ->label('فعال')
+                            ->label('Active')
                             ->default(true)
                             ->required(),
                     ])
@@ -78,31 +78,31 @@ class ExamTypeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('نامک')
+                    ->label('Slug')
                     ->searchable()
                     ->copyable(),
                 
                 Tables\Columns\TextColumn::make('resourceCategories_count')
-                    ->label('تعداد دسته‌بندی‌ها')
+                    ->label('Category Count')
                     ->counts('resourceCategories')
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('sort_order')
-                    ->label('ترتیب')
+                    ->label('Order')
                     ->sortable(),
                 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->boolean()
                     ->sortable(),
                 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاریخ ایجاد')
+                    ->label('Created At')
                     ->dateTime('Y-m-d H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -110,10 +110,10 @@ class ExamTypeResource extends Resource
             ->defaultSort('sort_order')
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('وضعیت')
-                    ->placeholder('همه')
-                    ->trueLabel('فعال')
-                    ->falseLabel('غیرفعال'),
+                    ->label('Status')
+                    ->placeholder('All')
+                    ->trueLabel('Active')
+                    ->falseLabel('Inactive'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -25,22 +25,22 @@ class QuestionAssetResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'فایل‌های سوال';
+        return 'Question Assets';
     }
 
     public static function getModelLabel(): string
     {
-        return 'فایل سوال';
+        return 'Question Asset';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'فایل‌های سوال';
+        return 'Question Assets';
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'بانک سوالات';
+        return 'Question Bank';
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -55,24 +55,24 @@ class QuestionAssetResource extends Resource
             ->schema([
                 Select::make('question_id')
                     ->relationship('question', 'text')
-                    ->label('سوال')
+                    ->label('Question')
                     ->searchable()
                     ->preload()
                     ->required(),
 
                 Select::make('type')
-                    ->label('نوع')
+                    ->label('Type')
                     ->options([
-                        'image' => 'تصویر',
-                        'file' => 'فایل',
+                        'image' => 'Image',
+                        'file' => 'File',
                         'pdf' => 'PDF',
-                        'video' => 'ویدیو',
+                        'video' => 'Video',
                     ])
                     ->default('image')
                     ->required(),
 
                 FileUpload::make('path')
-                    ->label('فایل')
+                    ->label('File')
                     ->directory('question-assets')
                     ->image()
                     ->openable()
@@ -80,11 +80,11 @@ class QuestionAssetResource extends Resource
                     ->required(),
 
                 TextInput::make('caption')
-                    ->label('توضیح')
+                    ->label('Caption')
                     ->nullable(),
 
                 TextInput::make('order')
-                    ->label('ترتیب')
+                    ->label('Order')
                     ->numeric()
                     ->default(0),
             ]);
@@ -95,10 +95,10 @@ class QuestionAssetResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->label('ID')->sortable(),
-                TextColumn::make('question.text')->label('سوال')->limit(40)->searchable(),
-                TextColumn::make('type')->label('نوع')->sortable(),
-                TextColumn::make('caption')->label('توضیح')->limit(40),
-                TextColumn::make('updated_at')->formatStateUsing(fn ($state) => formatDateTime($state))->label('ویرایش')->sortable(),
+                TextColumn::make('question.text')->label('Question')->limit(40)->searchable(),
+                TextColumn::make('type')->label('Type')->sortable(),
+                TextColumn::make('caption')->label('Caption')->limit(40),
+                TextColumn::make('updated_at')->formatStateUsing(fn ($state) => formatDateTime($state))->label('Updated At')->sortable(),
             ])
             ->filters([
                 //

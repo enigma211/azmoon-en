@@ -18,9 +18,9 @@ class AdminSettingsPage extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static string $view = 'filament.pages.admin-settings-page';
-    protected static ?string $navigationLabel = 'تنظیمات سیستم';
-    protected static ?string $title = 'تنظیمات سیستم';
-    protected static ?string $navigationGroup = 'سیستم';
+    protected static ?string $navigationLabel = 'System Settings';
+    protected static ?string $title = 'System Settings';
+    protected static ?string $navigationGroup = 'System';
     protected static ?int $navigationSort = 99;
 
     public ?array $data = [];
@@ -40,50 +40,50 @@ class AdminSettingsPage extends Page implements HasForms
     {
         return $form
             ->schema([
-                Section::make('تنظیمات برندینگ')
-                    ->description('تنظیمات هویت بصری و عناوین اصلی سایت')
+                Section::make('Branding Settings')
+                    ->description('Visual identity and main site titles settings')
                     ->schema([
                         TextInput::make('site_name')
-                            ->label('نام سایت')
+                            ->label('Site Name')
                             ->required()
                             ->maxLength(255),
                         TextInput::make('hero_title')
-                            ->label('تیتر اصلی صفحه اول')
-                            ->helperText('متنی که در بنر اصلی صفحه اول نمایش داده می‌شود')
+                            ->label('Hero Title')
+                            ->helperText('Text displayed in the main hero banner')
                             ->maxLength(255),
                         TextInput::make('hero_description')
-                            ->label('توضیحات زیر تیتر')
-                            ->helperText('توضیحات کوتاهی که زیر تیتر اصلی نمایش داده می‌شود')
+                            ->label('Hero Description')
+                            ->helperText('Short description displayed below the main title')
                             ->maxLength(500),
                     ]),
 
-                Section::make('تنظیمات سئو')
-                    ->description('تنظیمات موتورهای جستجو و متا تگ‌ها')
+                Section::make('SEO Settings')
+                    ->description('Search engine and meta tag settings')
                     ->schema([
                         TextInput::make('seo_title')
-                            ->label('عنوان سئو (Title Tag)')
-                            ->helperText('عنوانی که در تب مرورگر و نتایج گوگل نمایش داده می‌شود')
+                            ->label('SEO Title (Title Tag)')
+                            ->helperText('Title displayed in browser tab and Google results')
                             ->maxLength(70),
                         TextInput::make('site_description')
-                            ->label('توضیحات متا (Meta Description)')
-                            ->helperText('توضیحاتی که در نتایج جستجو زیر عنوان نمایش داده می‌شود')
+                            ->label('Meta Description')
+                            ->helperText('Description displayed in search results below the title')
                             ->maxLength(160),
                         TextInput::make('seo_keywords')
-                            ->label('کلمات کلیدی')
-                            ->helperText('کلمات کلیدی را با ویرگول جدا کنید')
+                            ->label('Keywords')
+                            ->helperText('Separate keywords with commas')
                             ->maxLength(500),
                     ]),
 
-                Section::make('محتوای صفحات')
-                    ->description('مدیریت متن صفحات ثابت سایت')
+                Section::make('Page Content')
+                    ->description('Manage static page content')
                     ->collapsed()
                     ->schema([
                         TinyEditor::make('terms_content')
-                            ->label('متن قوانین و مقررات')
+                            ->label('Terms and Conditions Content')
                             ->columnSpanFull(),
                         
                         TinyEditor::make('about_content')
-                            ->label('متن درباره ما')
+                            ->label('About Us Content')
                             ->columnSpanFull(),
                     ]),
             ])
@@ -96,7 +96,7 @@ class AdminSettingsPage extends Page implements HasForms
         $settings->update($this->form->getState());
 
         Notification::make() 
-            ->title('تنظیمات با موفقیت ذخیره شد')
+            ->title('Settings saved successfully')
             ->success()
             ->send();
     }

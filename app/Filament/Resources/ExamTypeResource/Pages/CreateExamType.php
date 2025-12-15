@@ -12,28 +12,28 @@ class CreateExamType extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // ایجاد خودکار دو دسته‌بندی: ویدیو و جزوه
+        // Automatically create two categories: video and document
         $examType = $this->record;
 
-        // دسته‌بندی ویدیوهای آموزشی
+        // Educational Videos Category
         ResourceCategory::create([
             'exam_type_id' => $examType->id,
             'type' => 'video',
-            'title' => 'ویدیوهای آموزشی',
+            'title' => 'Educational Videos',
             'slug' => $examType->slug . '-videos',
-            'description' => 'ویدیوهای آموزشی ' . $examType->title,
+            'description' => 'Educational videos for ' . $examType->title,
             'icon' => 'play-circle',
             'sort_order' => 1,
             'is_active' => true,
         ]);
 
-        // دسته‌بندی جزوات آموزشی
+        // Educational Documents Category
         ResourceCategory::create([
             'exam_type_id' => $examType->id,
             'type' => 'document',
-            'title' => 'جزوات آموزشی',
+            'title' => 'Educational Documents',
             'slug' => $examType->slug . '-documents',
-            'description' => 'جزوات و فایل‌های آموزشی ' . $examType->title,
+            'description' => 'Educational documents and files for ' . $examType->title,
             'icon' => 'document-text',
             'sort_order' => 2,
             'is_active' => true,

@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('ExamApp')
+            ->brandName('allexam24')
             ->colors([
                 'primary' => Color::Amber,
             ])

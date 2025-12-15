@@ -19,13 +19,13 @@ class QuestionReportResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
     
-    protected static ?string $navigationLabel = 'گزارش ایرادات';
+    protected static ?string $navigationLabel = 'Question Reports';
     
-    protected static ?string $modelLabel = 'گزارش ایراد';
+    protected static ?string $modelLabel = 'Question Report';
     
-    protected static ?string $pluralModelLabel = 'گزارش ایرادات';
+    protected static ?string $pluralModelLabel = 'Question Reports';
     
-    protected static ?string $navigationGroup = 'پشتیبانی';
+    protected static ?string $navigationGroup = 'Support';
     
     protected static ?int $navigationSort = 2;
 
@@ -44,45 +44,45 @@ class QuestionReportResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('کاربر')
+                    ->label('User')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->disabled(),
                 Forms\Components\Select::make('question_id')
-                    ->label('سوال')
+                    ->label('Question')
                     ->relationship('question', 'id')
                     ->required()
                     ->disabled(),
                 Forms\Components\Placeholder::make('question_preview')
-                    ->label('پیش‌نمایش سوال')
+                    ->label('Question Preview')
                     ->content(function ($record) {
                         if (!$record || !$record->question) {
-                            return 'سوال یافت نشد';
+                            return 'Question not found';
                         }
                         $text = strip_tags($record->question->text);
                         return strlen($text) > 200 ? substr($text, 0, 200) . '...' : $text;
                     }),
                 Forms\Components\Select::make('exam_id')
-                    ->label('آزمون')
+                    ->label('Exam')
                     ->relationship('exam', 'title')
                     ->searchable()
                     ->disabled(),
                 Forms\Components\Textarea::make('report')
-                    ->label('متن گزارش')
+                    ->label('Report Text')
                     ->required()
                     ->disabled()
                     ->rows(4),
                 Forms\Components\Select::make('status')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->options([
-                        'pending' => 'در انتظار بررسی',
-                        'reviewed' => 'بررسی شده',
-                        'resolved' => 'حل شده',
+                        'pending' => 'Pending Review',
+                        'reviewed' => 'Reviewed',
+                        'resolved' => 'Resolved',
                     ])
                     ->required()
                     ->default('pending'),
                 Forms\Components\Textarea::make('admin_notes')
-                    ->label('یادداشت مدیر')
+                    ->label('Admin Notes')
                     ->rows(3),
             ]);
     }
@@ -92,19 +92,19 @@ class QuestionReportResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label('شناسه')
+                    ->label('ID')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('کاربر')
+                    ->label('User')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('exam.title')
-                    ->label('آزمون')
+                    ->label('Exam')
                     ->searchable()
                     ->sortable()
                     ->limit(30),
                 Tables\Columns\TextColumn::make('question_id')
-                    ->label('شماره سوال')
+                    ->label('Question ID')
                     ->sortable()
                     ->url(fn ($record) => $record->question_id 
                         ? route('filament.admin.resources.questions.edit', ['record' => $record->question_id])
@@ -112,39 +112,39 @@ class QuestionReportResource extends Resource
                     ->color('primary')
                     ->icon('heroicon-o-pencil-square'),
                 Tables\Columns\TextColumn::make('report')
-                    ->label('گزارش')
+                    ->label('Report')
                     ->limit(50)
                     ->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->colors([
                         'warning' => 'pending',
                         'primary' => 'reviewed',
                         'success' => 'resolved',
                     ])
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'در انتظار',
-                        'reviewed' => 'بررسی شده',
-                        'resolved' => 'حل شده',
+                        'pending' => 'Pending',
+                        'reviewed' => 'Reviewed',
+                        'resolved' => 'Resolved',
                         default => $state,
                     }),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('تاریخ ثبت')
+                    ->label('Created At')
                     ->dateTime('Y-m-d H:i')
                     ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
-                    ->label('وضعیت')
+                    ->label('Status')
                     ->options([
-                        'pending' => 'در انتظار بررسی',
-                        'reviewed' => 'بررسی شده',
-                        'resolved' => 'حل شده',
+                        'pending' => 'Pending Review',
+                        'reviewed' => 'Reviewed',
+                        'resolved' => 'Resolved',
                     ]),
             ])
             ->actions([
                 Tables\Actions\Action::make('edit_question')
-                    ->label('ویرایش سوال')
+                    ->label('Edit Question')
                     ->icon('heroicon-o-pencil-square')
                     ->color('warning')
                     ->url(fn ($record) => $record->question_id 

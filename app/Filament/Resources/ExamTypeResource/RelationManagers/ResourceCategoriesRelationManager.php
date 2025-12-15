@@ -16,7 +16,7 @@ class ResourceCategoriesRelationManager extends RelationManager
 
     public static function getTitle(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): string
     {
-        return 'دسته‌بندی‌های منابع';
+        return 'Resource Categories';
     }
 
     public function form(Form $form): Form
@@ -24,25 +24,25 @@ class ResourceCategoriesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\Select::make('type')
-                    ->label('نوع')
+                    ->label('Type')
                     ->options([
-                        'video' => 'ویدیو آموزشی',
-                        'document' => 'جزوه آموزشی',
+                        'video' => 'Educational Video',
+                        'document' => 'Educational Document',
                     ])
                     ->required()
                     ->disabled(),
                 
                 Forms\Components\TextInput::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->required()
                     ->maxLength(255),
                 
                 Forms\Components\Textarea::make('description')
-                    ->label('توضیحات')
+                    ->label('Description')
                     ->rows(2),
                 
                 Forms\Components\Toggle::make('is_active')
-                    ->label('فعال')
+                    ->label('Active')
                     ->default(true),
             ]);
     }
@@ -52,7 +52,7 @@ class ResourceCategoriesRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('type')
-                    ->label('نوع')
+                    ->label('Type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'video' => 'success',
@@ -60,22 +60,22 @@ class ResourceCategoriesRelationManager extends RelationManager
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'video' => 'ویدیو',
-                        'document' => 'جزوه',
+                        'video' => 'Video',
+                        'document' => 'Document',
                         default => $state,
                     }),
                 
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable(),
                 
                 Tables\Columns\TextColumn::make('posts_count')
-                    ->label('تعداد پست‌ها')
+                    ->label('Posts Count')
                     ->counts('posts')
                     ->sortable(),
                 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('فعال')
+                    ->label('Active')
                     ->boolean(),
             ])
             ->defaultSort('sort_order')
@@ -83,7 +83,7 @@ class ResourceCategoriesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // دسته‌بندی‌ها به صورت خودکار ایجاد می‌شوند
+                // Categories are automatically created
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -95,11 +95,11 @@ class ResourceCategoriesRelationManager extends RelationManager
 
     public function canCreate(): bool
     {
-        return false; // دسته‌بندی‌ها به صورت خودکار ایجاد می‌شوند
+        return false; // Categories are automatically created
     }
 
     public function canDelete($record): bool
     {
-        return false; // جلوگیری از حذف دسته‌بندی‌های اصلی
+        return false; // Prevent deletion of main categories
     }
 }

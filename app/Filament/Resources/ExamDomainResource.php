@@ -23,63 +23,63 @@ class ExamDomainResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return 'دامنه‌های آزمون';
+        return 'Exam Domains';
     }
 
     public static function getModelLabel(): string
     {
-        return 'دامنه آزمون';
+        return 'Exam Domain';
     }
 
     public static function getPluralModelLabel(): string
     {
-        return 'دامنه‌های آزمون';
+        return 'Exam Domains';
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return 'آزمون‌ها';
+        return 'Exams';
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('اطلاعات دامنه')
+                Forms\Components\Section::make('Domain Information')
                     ->schema([
                         Forms\Components\TextInput::make('title')
-                            ->label('عنوان')
+                            ->label('Title')
                             ->required()
                             ->maxLength(255),
 
                         Forms\Components\TextInput::make('slug')
-                            ->label('اسلاگ')
+                            ->label('Slug')
                             ->required()
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             // Allow Unicode letters/numbers and dashes (supports Persian). No auto-changes.
                             ->regex('/^[\p{L}\p{N}\-]+$/u')
-                            ->helperText('اسلاگ را دستی وارد کنید: حروف/اعداد و خط‌تیره.'),
+                            ->helperText('Enter slug manually: letters/numbers and dashes.'),
 
                         Forms\Components\Toggle::make('is_active')
-                            ->label('فعال؟')
+                            ->label('Active?')
                             ->default(true),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('تنظیمات سئو')
-                    ->description('این اطلاعات برای بهبود رتبه صفحه در موتورهای جستجو استفاده می‌شود.')
+                Forms\Components\Section::make('SEO Settings')
+                    ->description('This information is used to improve page ranking in search engines.')
                     ->schema([
                         Forms\Components\TextInput::make('seo_title')
-                            ->label('عنوان سئو (Meta Title)')
+                            ->label('SEO Title (Meta Title)')
                             ->maxLength(60)
-                            ->helperText('توصیه می‌شود بین 50 تا 60 کاراکتر باشد.'),
+                            ->helperText('Recommended length is 50-60 characters.'),
 
                         Forms\Components\Textarea::make('seo_description')
-                            ->label('توضیحات سئو (Meta Description)')
+                            ->label('SEO Description (Meta Description)')
                             ->rows(3)
                             ->maxLength(250)
-                            ->helperText('توصیه می‌شود بین 200 تا 250 کاراکتر باشد.'),
+                            ->helperText('Recommended length is 200-250 characters.'),
                     ])->collapsible(),
             ]);
     }
@@ -89,25 +89,25 @@ class ExamDomainResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label('عنوان')
+                    ->label('Title')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('اسلاگ')
+                    ->label('Slug')
                     ->badge()
                     ->copyable()
-                    ->copyMessage('کپی شد')
+                    ->copyMessage('Copied')
                     ->copyMessageDuration(1500)
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\IconColumn::make('is_active')
-                    ->label('فعال')
+                    ->label('Active')
                     ->boolean(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('ایجاد')
+                    ->label('Created At')
                     ->formatStateUsing(fn ($state) => formatDate($state))
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

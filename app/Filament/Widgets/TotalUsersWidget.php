@@ -13,8 +13,8 @@ class TotalUsersWidget extends BaseWidget
         $totalUsers = User::count();
 
         return [
-            Stat::make('تعداد کاربران ثبت‌نام شده', $totalUsers)
-                ->description('کل کاربران سیستم')
+            Stat::make('Registered Users', $totalUsers)
+                ->description('Total system users')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('success'),
         ];
