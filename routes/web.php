@@ -18,10 +18,10 @@ use App\Http\Controllers\SitemapController;
 use App\Livewire\AttemptsPage;
 use App\Livewire\SupportTicketsPage;
 use App\Livewire\Admin\LogsPage as AdminLogsPage;
-use App\Livewire\EducationalResourcesPage;
-use App\Livewire\ResourceCategoriesPage;
-use App\Livewire\ResourcePostsPage;
-use App\Livewire\ResourcePostDetailPage;
+// use App\Livewire\EducationalResourcesPage;
+// use App\Livewire\ResourceCategoriesPage;
+// use App\Livewire\ResourcePostsPage;
+// use App\Livewire\ResourcePostDetailPage;
 
 use App\Livewire\BlogPage;
 use App\Livewire\BlogPostPage;
@@ -34,7 +34,7 @@ Route::get('/blog/tags/{tag}', \App\Livewire\BlogTagPage::class)->name('blog.tag
 Route::get('/blog/{category}', \App\Livewire\BlogCategoryPage::class)->name('blog.category');
 Route::get('/blog/{category}/{slug}', BlogPostPage::class)->name('blog.show');
 Route::get('/domains', DomainsPage::class)->name('domains');
-Route::get('/resources', EducationalResourcesPage::class)->name('resources'); // تغییر به سیستم جدید
+// Route::get('/resources', EducationalResourcesPage::class)->name('resources'); // تغییر به سیستم جدید
 Route::get('/profile', ProfilePage::class)->name('profile');
 Route::get('/attempts', AttemptsPage::class)->middleware(['auth'])->name('attempts');
 Route::get('/support-tickets', SupportTicketsPage::class)->middleware(['auth'])->name('support-tickets');
