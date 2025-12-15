@@ -11,7 +11,7 @@ use App\Livewire\ExamLanding;
 use App\Livewire\ExamPlayer;
 use App\Livewire\ExamResult;
 use App\Livewire\StudyPlayer;
-use App\Livewire\ResourceDetail;
+// use App\Livewire\ResourceDetail;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SitemapController;
@@ -81,14 +81,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('exam.finish');
 });
 
-// Resource detail
-Route::get('/resource/{resource}', ResourceDetail::class)->name('resource.detail');
+// Educational Resources Routes (Removed)
+// Route::get('/educational-resources', EducationalResourcesPage::class)->name('educational-resources');
+// Route::get('/educational-resources/{slug}', ResourceCategoriesPage::class)->name('educational-resources.categories');
+// Route::get('/educational-resources/{examTypeSlug}/{categorySlug}', ResourcePostsPage::class)->name('educational-resources.posts');
+// Route::get('/educational-resources/{examTypeSlug}/{categorySlug}/{postSlug}', ResourcePostDetailPage::class)->name('educational-resources.post');
 
-// Educational Resources Routes
-Route::get('/educational-resources', EducationalResourcesPage::class)->name('educational-resources');
-Route::get('/educational-resources/{slug}', ResourceCategoriesPage::class)->name('educational-resources.categories');
-Route::get('/educational-resources/{examTypeSlug}/{categorySlug}', ResourcePostsPage::class)->name('educational-resources.posts');
-Route::get('/educational-resources/{examTypeSlug}/{categorySlug}/{postSlug}', ResourcePostDetailPage::class)->name('educational-resources.post');
+// Flashcards / Leitner System
+Route::get('/flashcards', \App\Livewire\Flashcard\DeckList::class)->name('flashcards.index');
+Route::get('/flashcards/{deck}/study', \App\Livewire\Flashcard\StudyDeck::class)->name('flashcards.study');
 
 // Alias for Breeze/legacy links expecting a dashboard route
 Route::get('/dashboard', HomePage::class)->name('dashboard');

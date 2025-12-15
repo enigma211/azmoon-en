@@ -6,8 +6,6 @@ use App\Models\Exam;
 use App\Models\ExamBatch;
 use App\Models\ExamDomain;
 use App\Models\ExamType;
-use App\Models\ResourceCategory;
-use App\Models\EducationalPost;
 use App\Models\Post as BlogPost;
 use App\Models\Category as BlogCategory;
 use Illuminate\Http\Response;
@@ -35,8 +33,9 @@ class SitemapController extends Controller
                 'priority' => '0.8',
             ];
 
+            // Flashcards Main Page
             $urls[] = [
-                'loc' => route('resources'), // Educational Resources
+                'loc' => route('flashcards.index'),
                 'lastmod' => now()->toAtomString(),
                 'changefreq' => 'weekly',
                 'priority' => '0.8',

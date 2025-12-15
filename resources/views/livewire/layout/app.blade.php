@@ -63,9 +63,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m6-6H6" /></svg>
                 <span>Exams</span>
             </a>
-            <a href="{{ route('resources') }}" wire:navigate class="py-2 flex flex-col items-center gap-1 touchable">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.5 5.25h15m-15 4.5h15m-15 4.5h15m-15 4.5h15" /></svg>
-                <span>Resources</span>
+            <a href="{{ route('flashcards.index') }}" wire:navigate class="py-2 flex flex-col items-center gap-1 touchable">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 14.25h2.25S9 14.25 9 20.25m7.5-12v8.25M20.25 12v8.25" />
+                </svg>
+                <span>Flashcards</span>
             </a>
             <a href="{{ route('profile') }}" wire:navigate class="py-2 flex flex-col items-center gap-1 touchable">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" /></svg>

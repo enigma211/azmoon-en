@@ -194,12 +194,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url('/resources') }}" wire:navigate class="flex flex-col items-center gap-1 py-2 md:py-3 text-gray-600 hover:text-indigo-600">
-                            <!-- Heroicon: squares-2x2 -->
+                        <a href="{{ route('flashcards.index') }}" wire:navigate class="flex flex-col items-center gap-1 py-2 md:py-3 text-gray-600 hover:text-indigo-600">
+                            <!-- Heroicon: rectangle-stack -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.75H4.5v5.25h5.25V3.75zm9.75 0h-5.25v5.25H19.5V3.75zM9.75 15H4.5v5.25h5.25V15zm9.75 0h-5.25v5.25H19.5V15z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 14.25h2.25S9 14.25 9 20.25m7.5-12v8.25M20.25 12v8.25" />
                             </svg>
-                            <span>Resources</span>
+                            <span>Flashcards</span>
                         </a>
                     </li>
                     <li>
