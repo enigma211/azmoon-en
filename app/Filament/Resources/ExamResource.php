@@ -159,7 +159,7 @@ class ExamResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('seo_title')
                             ->label('SEO Title')
-                            ->maxLength(60)
+                            ->maxLength(255)
                             ->helperText('Recommended between 50 and 60 chars.'),
                         Forms\Components\Textarea::make('seo_description')
                             ->label('SEO Description')

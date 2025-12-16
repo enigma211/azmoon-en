@@ -63,7 +63,7 @@ class AdminSettingsPage extends Page implements HasForms
                         TextInput::make('seo_title')
                             ->label('SEO Title (Title Tag)')
                             ->helperText('Title displayed in browser tab and Google results')
-                            ->maxLength(70),
+                            ->maxLength(255),
                         TextInput::make('site_description')
                             ->label('Meta Description')
                             ->helperText('Description displayed in search results below the title')

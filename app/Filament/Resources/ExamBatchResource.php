@@ -86,7 +86,7 @@ class ExamBatchResource extends Resource
                     ->schema([
                         TextInput::make('seo_title')
                             ->label('SEO Title (Meta Title)')
-                            ->maxLength(60)
+                            ->maxLength(255)
                             ->helperText('Recommended 50-60 chars.'),
                         Forms\Components\Textarea::make('seo_description')
                             ->label('SEO Description (Meta Description)')
