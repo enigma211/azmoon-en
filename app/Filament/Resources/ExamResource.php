@@ -49,12 +49,21 @@ class ExamResource extends Resource
             ->schema([
                 Forms\Components\Fieldset::make('Basic Info')
                     ->schema([
-                        Forms\Components\Select::make('exam_batch_id')
-                            ->relationship('batch', 'title')
-                            ->label('Exam Batch')
+                        Forms\Components\Select::make('exam_domain_id')
+                            ->relationship('domain', 'title')
+                            ->label('Exam Domain (Global)')
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->live()
+                            ->helperText('Select a Domain to make this exam available in ALL batches (states) of that domain.'),
+
+                        Forms\Components\Select::make('exam_batch_id')
+                            ->relationship('batch', 'title')
+                            ->label('Exam Batch (Specific)')
+                            ->searchable()
+                            ->preload()
+                            ->helperText('Select a Batch if this exam is specific to one state/batch.')
+                            ->visible(fn (Forms\Get $get) => empty($get('exam_domain_id'))),
 
                         Forms\Components\TextInput::make('title')
                             ->label('Title')

@@ -33,7 +33,10 @@ class ExamPlayer extends Component
     public ?int $attemptId = null;
     protected array $dirtyQueue = [];
 
-    public array $checkedQuestions = []; 
+    public array $checkedQuestions = [];
+    
+    // Store the randomized order of question IDs for this session
+    public array $questionOrder = [];
 
     public bool $requireAllAnswered = false;
     
@@ -45,16 +48,22 @@ class ExamPlayer extends Component
         // Questions are linked directly to Exam now
         $this->exam = $exam->load(['questions.choices']);
 
+        // Initialize question order (randomized)
+        // We filter deleted questions first
+        $questions = $this->exam->questions->where('is_deleted', false)->values();
+        
+        // Shuffle questions to ensure random order for every new attempt/session
+        $this->questionOrder = $questions->shuffle()->pluck('id')->toArray();
+
         // If a specific question is requested, start from that question index
         if ($this->questionId) {
-            $questions = $this->exam->questions->where('is_deleted', false)->values();
-            $position = $questions->search(fn ($q) => $q->id === $this->questionId);
+            $position = array_search($this->questionId, $this->questionOrder);
             if ($position !== false) {
                 $this->page = (int) $position + 1;
             }
         } else {
             // Ensure page is within bounds if set via URL
-            $this->page = max(1, min($this->page, $this->questionsCount()));
+            $this->page = max(1, min($this->page, count($this->questionOrder)));
         }
 
         // Always start with a clean state on each entry (as per requirement)
@@ -105,17 +114,16 @@ class ExamPlayer extends Component
 
     public function questionsCount(): int
     {
-        return $this->exam->questions->where('is_deleted', false)->count();
+        return count($this->questionOrder);
     }
 
     public function unansweredCount(): int
     {
         $count = 0;
-        foreach ($this->exam->questions as $q) {
-            // Skip deleted questions
-            if ($q->is_deleted) {
-                continue;
-            }
+        // Iterate over the ordered questions
+        foreach ($this->questionOrder as $qid) {
+            $q = $this->findQuestion($qid);
+            if (!$q) continue;
             
             $ans = $this->answers[$q->id] ?? null;
             $answered = false;
@@ -246,11 +254,11 @@ class ExamPlayer extends Component
 
     public function checkAnswer(): void
     {
-        $currentQuestion = $this->exam->questions[$this->page - 1] ?? null;
-        if (!$currentQuestion) return;
+        $currentQuestionId = $this->questionOrder[$this->page - 1] ?? null;
+        if (!$currentQuestionId) return;
         
         // Mark as checked
-        $this->checkedQuestions[$currentQuestion->id] = true;
+        $this->checkedQuestions[$currentQuestionId] = true;
     }
 
     public function isQuestionCorrect($questionId): bool
@@ -301,31 +309,11 @@ class ExamPlayer extends Component
             }
         }
         
-        // Skipped: Questions passed (up to current page) minus those we have checked
-        $questionsSeen = $this->page - 1; // Previous pages
-        // But wait, if I am on page 5, I have seen 1,2,3,4.
-        // If I checked 1 and 3. Correct/Wrong sum is 2.
-        // Skipped is 4 - 2 = 2.
-        // But what if I checked current page (5)?
-        // If current page is checked, it contributes to correct/wrong.
-        // My "seen" count should probably include current page if it's checked? 
-        // Or just "Skipped" = (Index of current page) - (Count of checked questions before current page).
-        
-        // Let's define "Skipped" as "Unanswered questions among those visited".
-        // Assuming linear progression: Skipped = (Current Page Number - 1) - (Count of checked questions in 1..(Page-1))
-        // This is a bit complex to calculate if checking is random.
-        
-        // Simpler metric requested: "how many correct, how many wrong, how many skipped".
-        // "Skipped" usually means "Total Attempted - Total Answered".
-        // But here we don't have "Attempted" except by page navigation.
-        // Let's use: Skipped = (Current Page Index - 1) - (Number of Checked Questions excluding current if checked)
-        // OR better: Skipped = Total questions previous to this one that are NOT checked.
-        
         $skipped = 0;
-        $questions = $this->exam->questions;
+        // Use questionOrder for iteration to match user flow
         for ($i = 0; $i < $this->page - 1; $i++) {
-            $q = $questions[$i] ?? null;
-            if ($q && !isset($this->checkedQuestions[$q->id])) {
+            $qid = $this->questionOrder[$i] ?? null;
+            if ($qid && !isset($this->checkedQuestions[$qid])) {
                 $skipped++;
             }
         }
@@ -358,10 +346,7 @@ class ExamPlayer extends Component
         }
         return null;
     }
-
-    /**
-     * Check if current user can interact with exam (answer questions, submit, etc.)
-     */
+    
     public function canUserInteract(): bool
     {
         return Auth::check();
@@ -459,17 +444,16 @@ class ExamPlayer extends Component
             'reportText.max' => 'Report must not exceed 1000 characters.',
         ]);
 
-        $questions = $this->exam->questions->where('is_deleted', false)->values();
-        $currentQuestion = $questions[$this->page - 1] ?? null;
+        $currentQuestionId = $this->questionOrder[$this->page - 1] ?? null;
 
-        if (!$currentQuestion) {
+        if (!$currentQuestionId) {
             session()->flash('error', 'Question not found.');
             return;
         }
 
         \App\Models\QuestionReport::create([
             'user_id' => auth()->id(),
-            'question_id' => $currentQuestion->id,
+            'question_id' => $currentQuestionId,
             'exam_id' => $this->exam->id,
             'report' => $this->reportText,
             'status' => 'pending',
@@ -482,14 +466,14 @@ class ExamPlayer extends Component
 
     public function render()
     {
-        // Questions are directly on Exam, filter out deleted questions
-        $questions = $this->exam->questions->where('is_deleted', false)->values();
-        $question = $questions[$this->page - 1] ?? null;
+        // Fetch current question based on randomized order
+        $currentQuestionId = $this->questionOrder[$this->page - 1] ?? null;
+        $question = $currentQuestionId ? $this->findQuestion($currentQuestionId) : null;
 
         return view('livewire.exam-player', [
             'question' => $question,
             'index' => $this->page - 1,
-            'total' => $questions->count(),
+            'total' => count($this->questionOrder),
         ])->layout('layouts.app', [
             'seoTitle' => $this->exam->seo_title ?: ($this->exam->title . ' - AllExam24'),
             'seoDescription' => $this->exam->seo_description ?? '',

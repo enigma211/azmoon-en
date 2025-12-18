@@ -16,8 +16,17 @@ class ExamsPage extends Component
 
     public function render()
     {
+        $exams = \App\Models\Exam::query()
+            ->where('is_published', true)
+            ->where(function ($query) {
+                $query->where('exam_batch_id', $this->batch->id)
+                      ->orWhere('exam_domain_id', $this->batch->exam_domain_id);
+            })
+            ->orderBy('sort_order')
+            ->get();
+
         return view('livewire.exams-page', [
-            'exams' => $this->batch->exams()->orderBy('sort_order')->get(),
+            'exams' => $exams,
         ])->layout('layouts.app', [
             'seoTitle' => $this->batch->seo_title ?: $this->batch->title,
             'seoDescription' => $this->batch->seo_description ?: 'AllExam24: The largest exam simulator. Practice with real past questions in an environment similar to the actual exam and get your pass/fail results immediately.',

@@ -35,6 +35,11 @@ class Exam extends Model
         return $this->belongsTo(ExamBatch::class, 'exam_batch_id');
     }
 
+    public function domain()
+    {
+        return $this->belongsTo(ExamDomain::class, 'exam_domain_id');
+    }
+
     public function sections()
     {
         return $this->hasMany(ExamSection::class);
