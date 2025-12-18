@@ -70,6 +70,10 @@ class ExamDomainResource extends Resource
                             ->helperText('If checked, an Exam Batch will be created for each US State automatically.')
                             ->default(false)
                             ->dehydrated(false),
+
+                        TinyEditor::make('description')
+                            ->label('Description')
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 

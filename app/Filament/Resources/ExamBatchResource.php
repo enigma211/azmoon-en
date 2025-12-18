@@ -7,6 +7,7 @@ use App\Filament\Resources\ExamBatchResource\RelationManagers;
 use App\Models\ExamBatch;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -79,6 +80,10 @@ class ExamBatchResource extends Resource
                             ->default(0)
                             ->helperText('Lower number = shown first. e.g.: 1, 2, 3...')
                             ->required(),
+
+                        TinyEditor::make('description')
+                            ->label('Description')
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                 Section::make('SEO Settings')

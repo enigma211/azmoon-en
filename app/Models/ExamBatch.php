@@ -13,6 +13,7 @@ class ExamBatch extends Model
         'exam_domain_id',
         'title',
         'slug',
+        'description',
         'is_active',
         'is_free',
         'sort_order',
