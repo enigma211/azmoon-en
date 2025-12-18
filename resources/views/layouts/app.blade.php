@@ -1,3 +1,15 @@
+@php
+    $currentYear = date('Y');
+    if(isset($seoTitle)) {
+        $seoTitle = str_replace('[year]', $currentYear, $seoTitle);
+    }
+    if(isset($seoDescription)) {
+        $seoDescription = str_replace('[year]', $currentYear, $seoDescription);
+    }
+    if(isset($seoKeywords)) {
+        $seoKeywords = str_replace('[year]', $currentYear, $seoKeywords);
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>

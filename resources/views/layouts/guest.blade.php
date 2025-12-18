@@ -1,3 +1,17 @@
+@php
+    $currentYear = date('Y');
+    if(isset($title)) {
+        $title = str_replace('[year]', $currentYear, $title);
+    }
+    if(isset($seoTitle)) {
+        $seoTitle = str_replace('[year]', $currentYear, $seoTitle);
+        // Fallback for title if not set explicitly but seoTitle is
+        if(!isset($title)) $title = $seoTitle;
+    }
+    if(isset($seoDescription)) {
+        $seoDescription = str_replace('[year]', $currentYear, $seoDescription);
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,7 +24,11 @@
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
 
-        <title>{{ config('app.name', 'allexam24') }}</title>
+        @if(isset($seoDescription))
+            <meta name="description" content="{{ $seoDescription }}">
+        @endif
+
+        <title>{{ $title ?? config('app.name', 'allexam24') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

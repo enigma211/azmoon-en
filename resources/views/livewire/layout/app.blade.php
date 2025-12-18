@@ -1,21 +1,38 @@
+@php
+    $currentYear = date('Y');
+    if(isset($title)) {
+        $title = str_replace('[year]', $currentYear, $title);
+    }
+    if(isset($seoTitle)) {
+        $seoTitle = str_replace('[year]', $currentYear, $seoTitle);
+        if(!isset($title)) $title = $seoTitle;
+    }
+    if(isset($seoDescription)) {
+        $seoDescription = str_replace('[year]', $currentYear, $seoDescription);
+    }
+    if(isset($description)) {
+        $description = str_replace('[year]', $currentYear, $description);
+        if(!isset($seoDescription)) $seoDescription = $description;
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta name="description" content="{{ $seoDescription ?? 'allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.' }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
     <title>{{ $title ?? config('app.name', 'allexam24') }}</title>
     <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $title ?? config('app.name', 'allexam24') }}">
-    <meta property="og:description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta property="og:description" content="{{ $seoDescription ?? 'allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.' }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:site_name" content="{{ config('app.name', 'allexam24') }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $title ?? config('app.name', 'allexam24') }}">
-    <meta name="twitter:description" content="allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.">
+    <meta name="twitter:description" content="{{ $seoDescription ?? 'allexam24: The largest exam simulation platform. Practice with real past questions and get your results immediately.' }}">
     @php
         $favicon = \App\Helpers\BrandingHelper::getFavicon();
     @endphp
