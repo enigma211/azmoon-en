@@ -134,7 +134,7 @@ class ExamResource extends Resource
                         Forms\Components\TextInput::make('negative_score_ratio')
                             ->label('Negative Score Ratio')
                             ->numeric()
-                            ->default(3)
+                            ->default(0)
                             ->required()
                             ->minValue(0)
                             ->helperText('How many wrong answers deduct one correct answer? (e.g. 3 means 3 wrong = -1 correct)'),

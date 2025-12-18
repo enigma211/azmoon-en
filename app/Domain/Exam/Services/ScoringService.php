@@ -27,7 +27,7 @@ class ScoringService
         // Use exam-level scoring configuration
         $totalScore = (float) ($exam->total_score ?? 100);
         $scorePerQuestion = $totalScore / $totalQuestions;
-        $negativeRatio = (int) ($exam->negative_score_ratio ?? 3); // e.g., 3 wrong = -1 correct
+        $negativeRatio = 0; // e.g., 3 wrong = -1 correct
 
         $correct = 0;
         $wrong = 0;
