@@ -13,7 +13,6 @@
                             $accentColor = 'bg-indigo-600';
                             $shadowColor = 'shadow-indigo-100';
                             $btnBgClass = 'bg-indigo-600 group-hover:bg-indigo-700';
-                            if (!$subtitle) $subtitle = 'Practice with real exam questions';
                         @endphp
                         
                         <a href="{{ route('batches', $domain) }}" wire:navigate class="group relative block w-full bg-white rounded-2xl p-5 shadow-lg {{ $shadowColor }} hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-50">
