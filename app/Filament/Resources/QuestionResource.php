@@ -104,7 +104,8 @@ class QuestionResource extends Resource
                                     ->required(),
 
                                 TinyEditor::make('explanation')
-                                    ->label('Explanation'),
+                                    ->label('Answer Explanation')
+                                    ->helperText('Shown immediately after the user clicks "Check Answer"'),
                             ])
                             ->columnSpan(8),
 

@@ -33,6 +33,8 @@ class ExamPlayer extends Component
     public ?int $attemptId = null;
     protected array $dirtyQueue = [];
 
+    public array $checkedQuestions = []; 
+
     public bool $requireAllAnswered = false;
     
     public string $reportText = '';
@@ -240,6 +242,95 @@ class ExamPlayer extends Component
 
         // Clear queue after flush
         $this->dirtyQueue = [];
+    }
+
+    public function checkAnswer(): void
+    {
+        $currentQuestion = $this->exam->questions[$this->page - 1] ?? null;
+        if (!$currentQuestion) return;
+        
+        // Mark as checked
+        $this->checkedQuestions[$currentQuestion->id] = true;
+    }
+
+    public function isQuestionCorrect($questionId): bool
+    {
+        $q = $this->findQuestion($questionId);
+        if (!$q) return false;
+
+        $ans = $this->answers[$questionId] ?? null;
+        
+        // Logic adapted from ScoringService
+        switch ($q->type) {
+            case 'single_choice':
+            case 'true_false':
+                $selectedIds = collect($ans ?? [])->filter()->keys();
+                if ($selectedIds->count() === 0) return false;
+                $correctIds = $q->choices->where('is_correct', true)->pluck('id');
+                return $selectedIds->count() === 1 && $selectedIds->diff($correctIds)->isEmpty() && $correctIds->diff($selectedIds)->isEmpty();
+            
+            case 'multi_choice':
+                $selectedIds = collect($ans ?? [])->filter()->keys();
+                if ($selectedIds->count() === 0) return false;
+                $correctIds = $q->choices->where('is_correct', true)->pluck('id');
+                return $selectedIds->diff($correctIds)->isEmpty() && $correctIds->diff($selectedIds)->isEmpty();
+                
+            case 'short_answer':
+                $text = is_array($ans) ? ($ans['text'] ?? '') : (string) $ans;
+                $text = trim(mb_strtolower($text));
+                if ($text === '') return false;
+                $keys = collect([$q->explanation])->filter()->map(fn($s) => trim(mb_strtolower((string)$s)))->filter();
+                return $keys->contains($text);
+                
+            default:
+                return false;
+        }
+    }
+
+    public function getStatsProperty(): array
+    {
+        $correct = 0;
+        $wrong = 0;
+        
+        foreach ($this->checkedQuestions as $qId => $isChecked) {
+            if (!$isChecked) continue;
+            if ($this->isQuestionCorrect($qId)) {
+                $correct++;
+            } else {
+                $wrong++;
+            }
+        }
+        
+        // Skipped: Questions passed (up to current page) minus those we have checked
+        $questionsSeen = $this->page - 1; // Previous pages
+        // But wait, if I am on page 5, I have seen 1,2,3,4.
+        // If I checked 1 and 3. Correct/Wrong sum is 2.
+        // Skipped is 4 - 2 = 2.
+        // But what if I checked current page (5)?
+        // If current page is checked, it contributes to correct/wrong.
+        // My "seen" count should probably include current page if it's checked? 
+        // Or just "Skipped" = (Index of current page) - (Count of checked questions before current page).
+        
+        // Let's define "Skipped" as "Unanswered questions among those visited".
+        // Assuming linear progression: Skipped = (Current Page Number - 1) - (Count of checked questions in 1..(Page-1))
+        // This is a bit complex to calculate if checking is random.
+        
+        // Simpler metric requested: "how many correct, how many wrong, how many skipped".
+        // "Skipped" usually means "Total Attempted - Total Answered".
+        // But here we don't have "Attempted" except by page navigation.
+        // Let's use: Skipped = (Current Page Index - 1) - (Number of Checked Questions excluding current if checked)
+        // OR better: Skipped = Total questions previous to this one that are NOT checked.
+        
+        $skipped = 0;
+        $questions = $this->exam->questions;
+        for ($i = 0; $i < $this->page - 1; $i++) {
+            $q = $questions[$i] ?? null;
+            if ($q && !isset($this->checkedQuestions[$q->id])) {
+                $skipped++;
+            }
+        }
+        
+        return compact('correct', 'wrong', 'skipped');
     }
 
     public function tick(): void

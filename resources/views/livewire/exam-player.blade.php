@@ -29,25 +29,41 @@
         </div>
     @endif
     
-    <!-- Progress bar -->
-    <div>
-        @php $pct = ($total ?? 0) > 0 ? intval((($index ?? 0)+1) / ($total ?? 1) * 100) : 0; @endphp
-        <div class="h-2 w-full rounded bg-gray-200">
-            <div class="h-2 rounded bg-indigo-600" style="width: {{ $pct }}%"></div>
+    <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-lg shadow-sm">
+        <div class="flex gap-4 text-sm font-medium">
+            <div class="text-green-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Correct: {{ $this->stats['correct'] }}</span>
+            </div>
+            <div class="text-red-600 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <span>Wrong: {{ $this->stats['wrong'] }}</span>
+            </div>
+            <div class="text-gray-500 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Skipped: {{ $this->stats['skipped'] }}</span>
+            </div>
         </div>
-        <div class="mt-1 text-[11px] text-gray-500">Progress: {{ $pct }}%</div>
-    </div>
-
-    <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-600">Question {{ ($index ?? 0) + 1 }} of {{ $total ?? 0 }}</div>
         <div class="text-xs text-gray-700">
             @if(!is_null($durationSeconds))
                 <span wire:poll.1s="tick">
-                    Time Remaining: {{ floor($remainingSeconds / 60) }} min
+                    Time: {{ floor($remainingSeconds / 60) }}:{{ sprintf('%02d', $remainingSeconds % 60) }}
                 </span>
             @else
                 <span>No Time Limit</span>
             @endif
+        </div>
+    </div>
+    
+    <!-- Progress bar -->
+    <div class="mb-4">
+        @php $pct = ($total ?? 0) > 0 ? intval((($index ?? 0)+1) / ($total ?? 1) * 100) : 0; @endphp
+        <div class="h-2 w-full rounded bg-gray-200">
+            <div class="h-2 rounded bg-indigo-600" style="width: {{ $pct }}%"></div>
+        </div>
+        <div class="mt-1 flex justify-between text-[11px] text-gray-500">
+            <span>Progress: {{ $pct }}%</span>
+            <span>Question {{ ($index ?? 0) + 1 }} of {{ $total ?? 0 }}</span>
         </div>
     </div>
 
@@ -69,6 +85,11 @@
             </div>
         @endif
 
+        @php
+            $isChecked = $checkedQuestions[$q->id] ?? false;
+            $userCorrect = $isChecked ? $this->isQuestionCorrect($q->id) : false;
+        @endphp
+
         @if($q->is_deleted)
             <div class="mt-6 rounded-lg border-2 border-amber-400 bg-amber-50 p-6 text-center">
                 <div class="flex items-center justify-center gap-2 text-amber-700">
@@ -83,72 +104,127 @@
             <div class="mt-3 space-y-2">
                 @if($canInteract)
                     @foreach($q->choices as $choice)
-                        <label wire:key="choice-{{ $q->id }}-{{ $choice->id }}" class="flex items-start gap-3 rounded-lg border-2 p-4 cursor-pointer hover:bg-gray-50 hover:border-indigo-300 transition {{ ($answers[$q->id][$choice->id] ?? false) ? 'bg-indigo-50 border-indigo-400' : 'border-gray-200' }}">
+                        @php 
+                            $isSelected = ($answers[$q->id][$choice->id] ?? false) === true;
+                            $isCorrectChoice = (bool)$choice->is_correct;
+                            
+                            // Determine style class
+                            $class = 'border-gray-200 hover:bg-gray-50';
+                            if ($isChecked) {
+                                if ($isCorrectChoice) {
+                                    $class = 'bg-green-50 border-green-500 ring-1 ring-green-500';
+                                } elseif ($isSelected && !$isCorrectChoice) {
+                                    $class = 'bg-red-50 border-red-500';
+                                } else {
+                                    $class = 'border-gray-200 opacity-75';
+                                }
+                            } elseif ($isSelected) {
+                                $class = 'bg-indigo-50 border-indigo-400';
+                            }
+                        @endphp
+                        <label wire:key="choice-{{ $q->id }}-{{ $choice->id }}" class="relative flex items-start gap-3 rounded-lg border-2 p-4 cursor-pointer transition {{ $class }}">
                             @php $inputId = 'q'.$q->id.'_c'.$choice->id; @endphp
                             <input type="radio"
                                    id="{{ $inputId }}"
                                    name="question_{{ $q->id }}"
                                    value="{{ $choice->id }}"
-                                   class="h-5 w-5 mt-0.5 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                   @checked(($answers[$q->id][$choice->id] ?? false) === true)
+                                   class="h-5 w-5 mt-0.5 border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:cursor-not-allowed"
+                                   @checked($isSelected)
+                                   @disabled($isChecked)
                                    wire:click="saveAnswer({{ $q->id }}, {{ $choice->id }}, true)" />
                             <div class="flex-1 text-sm leading-relaxed choice-text" dir="ltr">
                                 {!! $choice->text !!}
                             </div>
+                            
+                            @if($isChecked)
+                                @if($isCorrectChoice)
+                                    <svg class="w-6 h-6 text-green-500 absolute right-4 top-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                @elseif($isSelected && !$isCorrectChoice)
+                                    <svg class="w-6 h-6 text-red-500 absolute right-4 top-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                @endif
+                            @endif
                         </label>
                     @endforeach
                 @else
                     <div class="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center bg-gray-50">
+                        <!-- Guest view ... -->
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                         <h3 class="mt-2 text-sm font-medium text-gray-900">Choices are hidden</h3>
-                        <p class="mt-1 text-sm text-gray-500">To view options and answer the question, please login with your email and password.</p>
+                        <p class="mt-1 text-sm text-gray-500">To view options and answer the question, please login.</p>
                         <div class="mt-6">
-                            @guest
-                                <a href="{{ route('login') }}" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                    Login / Register
-                                </a>
-                            @else
-                                <a href="{{ route('profile') }}" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                    View Profile
-                                </a>
-                            @endguest
+                            <a href="{{ route('login') }}" class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700">Login</a>
                         </div>
                     </div>
                 @endif
             </div>
+            
+            <!-- Immediate Feedback / Check Answer -->
+            @if($canInteract && !$q->is_deleted)
+                <div class="mt-4">
+                    @if(!$isChecked)
+                        <button wire:click="checkAnswer" 
+                                class="w-full sm:w-auto rounded-lg bg-blue-600 px-6 py-2 text-white font-bold hover:bg-blue-700 transition shadow-md">
+                            Check Answer
+                        </button>
+                    @else
+                        <!-- Explanation -->
+                        <div class="rounded-lg p-4 {{ $userCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' }}">
+                            <div class="flex items-center gap-2 mb-2">
+                                @if($userCorrect)
+                                    <span class="text-green-700 font-bold flex items-center gap-1">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        Correct!
+                                    </span>
+                                @else
+                                    <span class="text-red-700 font-bold flex items-center gap-1">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        Incorrect
+                                    </span>
+                                @endif
+                            </div>
+                            
+                            @if($q->explanation || $q->explanation_image_path)
+                                <div class="prose prose-sm max-w-none text-gray-800 mt-2">
+                                    <strong class="block text-gray-900 mb-1">Explanation:</strong>
+                                    @if($q->explanation)
+                                        {!! $q->explanation !!}
+                                    @endif
+                                    
+                                    @if($q->explanation_image_path)
+                                        <div class="mt-3">
+                                            <img src="{{ Storage::url($q->explanation_image_path) }}" alt="Explanation" class="max-w-full h-auto rounded border border-gray-200" />
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="text-sm text-gray-500">No explanation provided for this question.</p>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            @endif
         @endif
 
         <div class="mt-8 space-y-4">
             <!-- Navigation buttons -->
-            <div class="flex items-center justify-center gap-6">
+            <div class="flex items-center justify-between border-t border-gray-100 pt-6">
                 <button wire:click="prev" 
-                        class="rounded bg-gray-100 px-8 py-2 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition font-medium" 
+                        class="flex items-center gap-2 rounded-lg bg-gray-100 px-6 py-2.5 text-gray-700 disabled:opacity-50 hover:bg-gray-200 transition font-medium" 
                         @disabled(($index ?? 0) === 0)>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     Previous
                 </button>
                 <button wire:click="next" 
-                        class="rounded bg-indigo-600 px-8 py-2 text-white hover:bg-indigo-700 transition font-medium" 
+                        class="flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-white hover:bg-indigo-700 transition font-medium shadow-md" 
                         @disabled((($index ?? 0) + 1) >= ($total ?? 0))>
                     Next
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
             
-            <!-- Submit button -->
-            <div class="flex justify-center pt-4 border-t border-gray-200">
-                @if($canInteract)
-                    <form method="POST" action="{{ route('exam.finish', ['exam' => $this->exam->id]) }}" id="finishForm-{{ $this->exam->id }}" class="inline" data-loading-delay="4000">
-                        @csrf
-                        <input type="hidden" name="answers" value="{{ json_encode($this->answers) }}">
-                        <button type="submit"
-                                class="rounded-lg px-6 py-2 text-white font-medium text-sm {{ ($this->requireAllAnswered && $this->unansweredCount() > 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 shadow hover:shadow-lg' }} transition-all"
-                                @disabled($this->requireAllAnswered && $this->unansweredCount() > 0)>
-                            Finish Exam & View Result
-                        </button>
-                    </form>
-                @endif
-            </div>
+            <!-- Finish button REMOVED as requested -->
             
     @if($canInteract)
         <!-- Report Issue Button -->
