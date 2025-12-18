@@ -1,19 +1,6 @@
 <div class="min-h-screen bg-gray-50">
     <div class="mx-auto max-w-md px-4 py-8">
-        <!-- Header -->
-        <header class="mb-8 text-center">
-            <h1 class="text-lg font-bold text-gray-900">Official Past Exams</h1>
-            @if(isset($domain) && $domain->id == 1)
-                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-left">
-                    All questions are obtained from the National Building Regulations Office website, which are available to engineers for free.
-                </div>
-            @elseif(isset($domain) && $domain->id == 3)
-                <div class="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 text-left">
-                    All questions are obtained from the High Council of Official Experts of Justice website, which are available to engineers for free.
-                </div>
-            @endif
-        </header>
-
+        
         <!-- Batches List -->
         <div class="flex flex-col gap-5">
             @php
