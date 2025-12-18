@@ -64,6 +64,12 @@ class ExamDomainResource extends Resource
                         Forms\Components\Toggle::make('is_active')
                             ->label('Active?')
                             ->default(true),
+
+                        Forms\Components\Toggle::make('generate_us_states')
+                            ->label('Generate Batches for 50 US States')
+                            ->helperText('If checked, an Exam Batch will be created for each US State automatically.')
+                            ->default(false)
+                            ->dehydrated(false),
                     ])
                     ->columns(2),
 
