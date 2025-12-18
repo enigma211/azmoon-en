@@ -9,7 +9,6 @@
                 <div class="flex flex-col gap-5">
                     @foreach ($domains as $domain)
                         @php
-                            $subtitle = $domain->seo_description;
                             $accentColor = 'bg-indigo-600';
                             $shadowColor = 'shadow-indigo-100';
                             $btnBgClass = 'bg-indigo-600 group-hover:bg-indigo-700';
@@ -20,7 +19,6 @@
                             <div class="flex items-center justify-between relative z-10 pl-3">
                                 <div class="flex flex-col items-start gap-1.5 flex-1">
                                     <h3 class="text-lg font-bold text-gray-800 leading-tight">{{ $domain->title }}</h3>
-                                    <p class="text-gray-500 text-xs sm:text-sm font-medium leading-relaxed">{{ $subtitle }}</p>
                                 </div>
                                 <div class="shrink-0">
                                     <div class="flex items-center gap-1 {{ $btnBgClass }} text-white text-sm font-bold py-2 px-3 sm:px-4 rounded-lg shadow-md transition-colors">
