@@ -8,16 +8,41 @@
         </div>
 
         <!-- States Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            @foreach($batches as $batch)
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            @php
+                $colors = [
+                    'bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-100',
+                    'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-100',
+                    'bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-100',
+                    'bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-100',
+                    'bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-100',
+                    'bg-cyan-50 text-cyan-700 hover:bg-cyan-100 border-cyan-100',
+                    'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-100',
+                    'bg-teal-50 text-teal-700 hover:bg-teal-100 border-teal-100',
+                    'bg-fuchsia-50 text-fuchsia-700 hover:bg-fuchsia-100 border-fuchsia-100',
+                    'bg-orange-50 text-orange-700 hover:bg-orange-100 border-orange-100',
+                    'bg-sky-50 text-sky-700 hover:bg-sky-100 border-sky-100',
+                    'bg-lime-50 text-lime-700 hover:bg-lime-100 border-lime-100',
+                ];
+            @endphp
+
+            @foreach($batches as $index => $batch)
+                @php
+                    $colorClass = $colors[$index % count($colors)];
+                @endphp
                 <a href="{{ route('exams', ['batch' => $batch->id]) }}" 
                    wire:navigate 
-                   class="group relative px-4 py-3 bg-white rounded-lg border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 hover:shadow-sm">
-                    <span class="text-slate-700 group-hover:text-indigo-600 font-medium text-sm transition-colors">
+                   class="group relative px-5 py-4 rounded-xl border {{ $colorClass }} transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                    <span class="font-bold text-sm md:text-base flex items-center justify-between">
                         {{ $batch->title }}
+                        @if($batch->is_active)
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+                        @endif
                     </span>
                     @if(!$batch->is_active)
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-gray-300 rounded-full" title="Inactive"></span>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-gray-400 rounded-full" title="Inactive"></span>
                     @endif
                 </a>
             @endforeach
