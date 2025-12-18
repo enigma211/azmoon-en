@@ -135,7 +135,6 @@ class ExamResource extends Resource
                             ->label('Negative Score Ratio')
                             ->numeric()
                             ->default(0)
-                            ->required()
                             ->minValue(0)
                             ->helperText('How many wrong answers deduct one correct answer? (e.g. 3 means 3 wrong = -1 correct)'),
 
