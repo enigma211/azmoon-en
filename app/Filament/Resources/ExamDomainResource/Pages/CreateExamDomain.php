@@ -16,7 +16,10 @@ class CreateExamDomain extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $this->shouldGenerateStates = $data['generate_us_states'] ?? false;
+        // Use the data argument or fallback to component state
+        $this->shouldGenerateStates = $data['generate_us_states'] ?? $this->data['generate_us_states'] ?? false;
+        
+        // Remove from data to prevent model fill error
         unset($data['generate_us_states']);
         
         return $data;
@@ -37,10 +40,19 @@ class CreateExamDomain extends CreateRecord
                 // Use Domain SEO Title as the base suffix, or fallback to a default
                 $baseSeoTitle = $this->record->seo_title ?? "Practice Test [year]";
 
+                // Generate unique slug: state-domain_slug
+                $slug = Str::slug($state . '-' . $this->record->slug);
+                $originalSlug = $slug;
+                $counter = 1;
+                while (ExamBatch::where('slug', $slug)->exists()) {
+                    $slug = $originalSlug . '-' . $counter;
+                    $counter++;
+                }
+
                 ExamBatch::create([
                     'exam_domain_id' => $this->record->id,
                     'title' => $state,
-                    'slug' => Str::slug($state),
+                    'slug' => $slug,
                     'is_active' => true,
                     'sort_order' => $index + 1,
                     'seo_title' => "$state $baseSeoTitle",
