@@ -68,5 +68,12 @@
                 <p class="text-gray-500">Currently, there are no exam batches available in this domain.</p>
             </div>
         @endif
+
+        <!-- Domain Description -->
+        @if($domain->description)
+            <div class="mt-8 prose prose-slate max-w-none bg-white p-6 rounded-2xl shadow-sm">
+                {!! $domain->description !!}
+            </div>
+        @endif
     </div>
 </div>

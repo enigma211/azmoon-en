@@ -9,7 +9,7 @@
                 <div class="flex flex-col gap-5">
                     @foreach ($domains as $domain)
                         @php
-                            $subtitle = $domain->description;
+                            $subtitle = $domain->seo_description;
                             $accentColor = 'bg-indigo-600';
                             $shadowColor = 'shadow-indigo-100';
                             $btnBgClass = 'bg-indigo-600 group-hover:bg-indigo-700';
