@@ -3,11 +3,6 @@
     <div class="mb-8 text-center">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $batch->title }}</h1>
         
-        @if($batch->description)
-            <div class="prose prose-slate prose-sm mx-auto mt-4 text-gray-600 max-w-2xl bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                {!! $batch->description !!}
-            </div>
-        @endif
         
         <!-- Alerts Container -->
         <div class="mt-6 space-y-3">
@@ -104,6 +99,16 @@
                 </svg>
             </div>
             <p class="text-gray-500">No exams available in this batch yet.</p>
+        </div>
+    @endif
+
+    <!-- Batch Description -->
+    @if($batch->description)
+        <div class="mt-12 border-t border-gray-100 pt-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Description</h2>
+            <div class="prose prose-slate max-w-none bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-gray-600">
+                {!! $batch->description !!}
+            </div>
         </div>
     @endif
 </div>
