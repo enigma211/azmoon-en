@@ -12,6 +12,16 @@ class ExamsPage extends Component
     public function mount(ExamBatch $batch): void
     {
         $this->batch = $batch->load('exams');
+
+        // Replace [year] placeholder with current year
+        $year = date('Y');
+        $fields = ['seo_title', 'seo_description', 'description', 'title'];
+
+        foreach ($fields as $field) {
+            if ($this->batch->$field) {
+                $this->batch->$field = str_replace('[year]', $year, $this->batch->$field);
+            }
+        }
     }
 
     public function render()
