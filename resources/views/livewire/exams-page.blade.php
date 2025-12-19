@@ -1,7 +1,13 @@
 <div class="mx-auto max-w-md p-4 sm:p-6">
     <!-- Header -->
     <div class="mb-8 text-center">
-        <h1 class="text-lg font-bold text-gray-900">Exam List</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $batch->title }}</h1>
+        
+        @if($batch->description)
+            <div class="prose prose-slate prose-sm mx-auto mt-4 text-gray-600 max-w-2xl bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                {!! $batch->description !!}
+            </div>
+        @endif
         
         <!-- Alerts Container -->
         <div class="mt-6 space-y-3">
