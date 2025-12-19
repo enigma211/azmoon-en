@@ -1,7 +1,7 @@
 <div class="mx-auto max-w-7xl p-4 sm:p-6">
     <!-- Header -->
     <div class="mb-8 text-center">
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $batch->title }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $batch->seo_title ?? $batch->title }}</h1>
         
         
         <!-- Alerts Container -->
