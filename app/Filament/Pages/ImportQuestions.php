@@ -62,7 +62,7 @@ class ImportQuestions extends Page implements HasTable
                                     ->label('CSV File')
                                     ->acceptedFileTypes(['text/csv', 'text/plain', 'application/csv'])
                                     ->required()
-                                    ->helperText('CSV file must have 7 columns: Question No, Text, Options 1-4, Correct Option No')
+                                    ->helperText('CSV Format: No, Question, Option A, Option B, Option C, Option D, Correct (A/B/C/D), Explanation')
                                     ->disk('local')
                                     ->directory('temp-imports')
                                     ->maxSize(5120),
@@ -72,9 +72,9 @@ class ImportQuestions extends Page implements HasTable
                         $this->importQuestions($record->id, $data['csv_file']);
                     }),
                 Action::make('import_explanations')
-                    ->label('Import Explanations')
+                    ->label('Import Explanations (Legacy)')
                     ->icon('heroicon-o-document-text')
-                    ->color('success')
+                    ->color('secondary')
                     ->form([
                         Section::make()
                             ->schema([
@@ -244,11 +244,36 @@ class ImportQuestions extends Page implements HasTable
                     $choice2 = trim($row[3]);
                     $choice3 = trim($row[4]);
                     $choice4 = trim($row[5]);
-                    $correctAnswer = (int) trim($row[6]);
+                    $correctAnswerRaw = trim($row[6]);
+                    $explanation = isset($row[7]) ? trim($row[7]) : null;
 
-                    // Validate correct answer is between 1-4
-                    if ($correctAnswer < 1 || $correctAnswer > 4) {
-                        $errors[] = "Line {$lineNumber}: Correct option number must be between 1 and 4";
+                    // Clean up Explanation prefix if present
+                    if ($explanation) {
+                        $explanation = preg_replace('/^Explanation:\s*/i', '', $explanation);
+                    }
+
+                    // Convert correct answer (A/B/C/D or 1/2/3/4) to index
+                    $correctAnswer = null;
+                    $cleanRaw = strtoupper($correctAnswerRaw);
+                    
+                    // Map letters to numbers
+                    $map = ['A' => 1, 'B' => 2, 'C' => 3, 'D' => 4];
+
+                    // 1. Check for exact match (A, B, C, D)
+                    if (isset($map[$cleanRaw])) {
+                        $correctAnswer = $map[$cleanRaw];
+                    }
+                    // 2. Check for numeric (1, 2, 3, 4)
+                    elseif (is_numeric($cleanRaw) && $cleanRaw >= 1 && $cleanRaw <= 4) {
+                        $correctAnswer = (int) $cleanRaw;
+                    }
+                    // 3. Check for pattern "Correct Answer: X" or similar where X is at the end
+                    elseif (preg_match('/(?:^|[\s:])([A-D])[\.\)]?$/', $cleanRaw, $matches)) {
+                        $correctAnswer = $map[$matches[1]];
+                    }
+
+                    if (!$correctAnswer) {
+                        $errors[] = "Line {$lineNumber}: Invalid correct answer '{$correctAnswerRaw}'. Must be A, B, C, D or 1-4.";
                         continue;
                     }
 
@@ -257,6 +282,7 @@ class ImportQuestions extends Page implements HasTable
                         'exam_id' => $examId,
                         'type' => 'single_choice',
                         'text' => $questionText,
+                        'explanation' => $explanation,
                         'order_column' => $orderColumn,
                         'difficulty' => 'easy',
                         'score' => 1,
