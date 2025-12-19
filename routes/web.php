@@ -10,7 +10,6 @@ use App\Livewire\ExamsPage;
 use App\Livewire\ExamLanding;
 use App\Livewire\ExamPlayer;
 use App\Livewire\ExamResult;
-use App\Livewire\StudyPlayer;
 // use App\Livewire\ResourceDetail;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\AuthController;
@@ -72,7 +71,6 @@ Route::get('/batches/{batch}/exams', ExamsPage::class)->name('exams');
 // Exam journey
 Route::get('/exam/{exam}', ExamLanding::class)->name('exam.landing');
 Route::get('/exam/{exam}/play', ExamPlayer::class)->name('exam.play');
-Route::get('/exam/{exam}/study', StudyPlayer::class)->name('exam.study');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/exam/{exam}/result', ExamResult::class)->name('exam.result');

@@ -68,19 +68,10 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-3 w-full">
-                        <a href="{{ route('exam.play', ['exam' => $exam->id]) }}" wire:navigate class="w-full">
-                            <div class="w-full {{ $accentColor }} text-white font-bold text-sm sm:text-base py-2.5 rounded-xl shadow-md text-center transition-transform hover:scale-[1.02]">
+                    <div class="w-full">
+                        <a href="{{ route('exam.play', ['exam' => $exam->id]) }}" wire:navigate class="block w-full">
+                            <div class="w-full {{ $accentColor }} text-white font-bold text-sm sm:text-base py-3 rounded-xl shadow-md text-center transition-transform hover:scale-[1.02]">
                                 Start Exam
-                            </div>
-                        </a>
-                        
-                        <a href="{{ route('exam.study', ['exam' => $exam->id]) }}" wire:navigate class="w-full">
-                            <div class="w-full bg-emerald-100 text-emerald-800 hover:bg-emerald-200 font-bold text-sm sm:text-base py-2.5 rounded-xl shadow-sm border border-emerald-200 text-center transition-transform hover:scale-[1.02] flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                                </svg>
-                                Study Mode
                             </div>
                         </a>
                     </div>
