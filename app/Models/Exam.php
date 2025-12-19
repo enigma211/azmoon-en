@@ -24,6 +24,9 @@ class Exam extends Model
         'seo_title',
         'seo_description',
         'sort_order',
+        'thumbnail',
+        'badge_text',
+        'badge_color',
     ];
 
     protected $casts = [

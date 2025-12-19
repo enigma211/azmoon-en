@@ -94,6 +94,26 @@ class ExamResource extends Resource
                     ])
                     ->columns(2),
 
+                Forms\Components\Fieldset::make('Visual Style')
+                    ->schema([
+                        Forms\Components\FileUpload::make('thumbnail')
+                            ->label('Thumbnail Image')
+                            ->image()
+                            ->directory('exam-thumbnails')
+                            ->columnSpanFull()
+                            ->helperText('Recommended size: 400x250px'),
+
+                        Forms\Components\TextInput::make('badge_text')
+                            ->label('Badge Text')
+                            ->placeholder('e.g. Recommended for Class A')
+                            ->maxLength(50),
+
+                        Forms\Components\ColorPicker::make('badge_color')
+                            ->label('Badge Color')
+                            ->helperText('Background color for the top badge'),
+                    ])
+                    ->columns(2),
+
                 Forms\Components\Fieldset::make('Settings')
                     ->schema([
                         Forms\Components\TextInput::make('duration_minutes')

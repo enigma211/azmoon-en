@@ -11,67 +11,71 @@
     </div>
 
     <!-- Exams List -->
-    <div class="flex flex-col gap-5">
-        @php
-            $styles = [
-                ['color' => 'bg-rose-500', 'text' => 'text-rose-600', 'border' => 'border-rose-100', 'shadow' => 'shadow-rose-100'],
-                ['color' => 'bg-violet-600', 'text' => 'text-violet-600', 'border' => 'border-violet-100', 'shadow' => 'shadow-violet-100'],
-                ['color' => 'bg-blue-600', 'text' => 'text-blue-600', 'border' => 'border-blue-100', 'shadow' => 'shadow-blue-100'],
-                ['color' => 'bg-teal-600', 'text' => 'text-teal-600', 'border' => 'border-teal-100', 'shadow' => 'shadow-teal-100'],
-                ['color' => 'bg-amber-500', 'text' => 'text-amber-600', 'border' => 'border-amber-100', 'shadow' => 'shadow-amber-100'],
-            ];
-        @endphp
-        
-        @foreach($exams as $index => $exam)
-            @php
-                $style = $styles[$index % count($styles)];
-                $accentColor = $style['color'];
-                $textColor = $style['text'];
-                $shadowColor = $style['shadow'];
-            @endphp
-
-            <div class="group relative block bg-white rounded-2xl p-6 shadow-lg {{ $shadowColor }} hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-50">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach($exams as $exam)
+            <div class="group relative flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 h-full">
                 
-                <!-- Left Accent Bar -->
-                <div class="absolute left-0 top-3 bottom-3 w-1.5 rounded-r-full {{ $accentColor }}"></div>
+                <!-- Badge (Optional) -->
+                @if($exam->badge_text)
+                    <div class="py-2 px-4 text-center text-white font-bold text-sm tracking-wide" 
+                         style="background-color: {{ $exam->badge_color ?? '#6366f1' }}">
+                        {{ $exam->badge_text }}
+                    </div>
+                @endif
+
+                <!-- Thumbnail (Optional) -->
+                @if($exam->thumbnail)
+                    <div class="aspect-video w-full overflow-hidden bg-gray-100 relative">
+                        <img src="{{ asset('storage/' . $exam->thumbnail) }}" 
+                             alt="{{ $exam->title }}" 
+                             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                @endif
                 
                 <!-- Content Container -->
-                <div class="relative z-10 pl-3 flex flex-col items-center">
+                <div class="p-6 flex flex-col flex-grow">
                     
                     <!-- Title -->
-                    <h3 class="font-bold text-lg text-gray-800 mb-4 text-center leading-tight">
+                    <h3 class="font-bold text-lg text-gray-800 mb-3 leading-tight">
                         {{ $exam->title }}
                     </h3>
+
+                    <!-- Description -->
+                    @if($exam->description)
+                        <p class="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-3">
+                            {{ $exam->description }}
+                        </p>
+                    @endif
                     
-                    <!-- Meta Info -->
-                    <div class="flex items-center justify-center gap-6 mb-6 w-full">
-                        <!-- Question Count -->
-                        @php
-                            $questionCount = $exam->questions()->where('is_deleted', false)->count();
-                        @endphp
-                        <div class="flex items-center gap-1.5 text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-                            </svg>
-                            <span class="text-sm font-bold">{{ $questionCount }} Qs</span>
+                    <div class="mt-auto">
+                        <!-- Meta Info -->
+                        <div class="flex items-center gap-4 mb-6 pt-4 border-t border-gray-50">
+                            <!-- Question Count -->
+                            @php
+                                $questionCount = $exam->questions()->where('is_deleted', false)->count();
+                            @endphp
+                            <div class="flex items-center gap-1.5 text-gray-600" title="Questions Count">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                                </svg>
+                                <span class="text-sm font-medium">Questions: {{ $questionCount }}</span>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="flex items-center gap-1.5 text-gray-600" title="Duration">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <span class="text-sm font-medium">
+                                    {{ $exam->duration_minutes ? $exam->duration_minutes . 'm' : 'No Limit' }}
+                                </span>
+                            </div>
                         </div>
 
-                        <!-- Duration -->
-                        <div class="flex items-center gap-1.5 text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            <span class="text-sm font-bold">
-                                {{ $exam->duration_minutes ? $exam->duration_minutes . ' mins' : 'No Limit' }}
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="w-full">
+                        <!-- Action Button -->
                         <a href="{{ route('exam.play', ['exam' => $exam->id]) }}" wire:navigate class="block w-full">
-                            <div class="w-full {{ $accentColor }} text-white font-bold text-sm sm:text-base py-3 rounded-xl shadow-md text-center transition-transform hover:scale-[1.02]">
-                                Start Exam
+                            <div class="w-full bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-600 hover:text-white font-bold text-sm py-3 rounded-full shadow-sm text-center transition-all duration-300 uppercase tracking-wider">
+                                Start Test
                             </div>
                         </a>
                     </div>
