@@ -313,7 +313,23 @@ class ExamPlayer extends Component
         // Use questionOrder for iteration to match user flow
         for ($i = 0; $i < $this->page - 1; $i++) {
             $qid = $this->questionOrder[$i] ?? null;
-            if ($qid && !isset($this->checkedQuestions[$qid])) {
+            if (!$qid) continue;
+
+            // Check if answered (even if not checked)
+            $q = $this->findQuestion($qid);
+            if (!$q) continue;
+            
+            $ans = $this->answers[$qid] ?? null;
+            $answered = false;
+            
+            if (in_array($q->type, ['single_choice','multi_choice','true_false'])) {
+                $answered = is_array($ans) && collect($ans)->filter()->count() > 0;
+            } else {
+                $text = is_array($ans) ? ($ans['text'] ?? '') : (string) $ans;
+                $answered = trim((string)$text) !== '';
+            }
+            
+            if (!$answered) {
                 $skipped++;
             }
         }
