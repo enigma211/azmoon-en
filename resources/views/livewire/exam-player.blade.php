@@ -107,6 +107,8 @@
                         @php 
                             $isSelected = ($answers[$q->id][$choice->id] ?? false) === true;
                             $isCorrectChoice = (bool)$choice->is_correct;
+                            $isMulti = $q->type === 'multi_choice';
+                            $inputType = $isMulti ? 'checkbox' : 'radio';
                             
                             // Determine style class
                             $class = 'border-gray-200 hover:bg-gray-50';
@@ -124,14 +126,19 @@
                         @endphp
                         <label wire:key="choice-{{ $q->id }}-{{ $choice->id }}" class="relative flex items-start gap-3 rounded-lg border-2 p-4 cursor-pointer transition {{ $class }}">
                             @php $inputId = 'q'.$q->id.'_c'.$choice->id; @endphp
-                            <input type="radio"
+                            <input type="{{ $inputType }}"
                                    id="{{ $inputId }}"
-                                   name="question_{{ $q->id }}"
+                                   name="question_{{ $q->id }}{{ $isMulti ? '[]' : '' }}"
                                    value="{{ $choice->id }}"
                                    class="h-5 w-5 mt-0.5 border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:cursor-not-allowed"
                                    @checked($isSelected)
                                    @disabled($isChecked)
-                                   wire:click="saveAnswer({{ $q->id }}, {{ $choice->id }}, true)" />
+                                   @if($isMulti)
+                                       wire:change="saveAnswer({{ $q->id }}, {{ $choice->id }}, $event.target.checked)"
+                                   @else
+                                       wire:click="saveAnswer({{ $q->id }}, {{ $choice->id }}, true)"
+                                   @endif
+                                   />
                             <div class="flex-1 text-sm leading-relaxed choice-text" dir="ltr">
                                 {!! $choice->text !!}
                             </div>

@@ -76,7 +76,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75V21a.75.75 0 00.75.75h4.5a.75.75 0 00.75-.75v-3.75a.75.75 0 01.75-.75h2.25a.75.75 0 01.75.75V21a.75.75 0 00.75.75h4.5A.75.75 0 0021 21V9.75" /></svg>
                 <span>Home</span>
             </a>
-            <a href="{{ route('exams') }}" wire:navigate class="py-2 flex flex-col items-center gap-1 touchable">
+            <a href="{{ route('domains') }}" wire:navigate class="py-2 flex flex-col items-center gap-1 touchable">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m6-6H6" /></svg>
                 <span>Exams</span>
             </a>

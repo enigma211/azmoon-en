@@ -31,6 +31,10 @@
 
     <div class="flex gap-3">
         <a href="{{ route('exam.play', ['exam' => $exam->id]) }}" wire:navigate class="rounded bg-indigo-600 px-4 py-2 text-white">Start Exam</a>
-        <a href="{{ route('exams', ['batch' => optional($exam->batch)->id]) }}" wire:navigate class="rounded bg-gray-100 px-4 py-2 text-gray-700">Back</a>
+        @if($exam->batch)
+            <a href="{{ route('exams', ['batch' => $exam->batch->id]) }}" wire:navigate class="rounded bg-gray-100 px-4 py-2 text-gray-700">Back</a>
+        @else
+            <a href="{{ route('domains') }}" wire:navigate class="rounded bg-gray-100 px-4 py-2 text-gray-700">Back</a>
+        @endif
     </div>
 </div>

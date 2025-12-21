@@ -153,10 +153,10 @@ class ExamPlayer extends Component
             return;
         }
 
-        // Rate limit: max 10 calls per minute per user/exam
+        // Rate limit: max 120 calls per minute per user/exam (approx 2 per second)
         $who = 'user:'.Auth::id();
         $rateKey = sprintf('saveAnswer:%d:%s', $this->exam->id, $who);
-        if (RateLimiter::tooManyAttempts($rateKey, 10)) {
+        if (RateLimiter::tooManyAttempts($rateKey, 120)) {
             return; // silently drop to protect server
         }
         RateLimiter::hit($rateKey, 60);
