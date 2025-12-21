@@ -216,15 +216,30 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     Previous
                 </button>
-                <button wire:click="next" 
-                        class="flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-white hover:bg-indigo-700 transition font-medium shadow-md" 
-                        @disabled((($index ?? 0) + 1) >= ($total ?? 0))>
-                    Next
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </button>
+                
+                <div class="flex gap-3">
+                    @if((($index ?? 0) + 1) < ($total ?? 0))
+                        <button wire:click="next" 
+                                class="flex items-center gap-2 rounded-lg bg-white border border-gray-300 px-6 py-2.5 text-gray-700 hover:bg-gray-50 transition font-medium shadow-sm">
+                            Skip
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        </button>
+
+                        <button wire:click="next" 
+                                class="flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-white hover:bg-indigo-700 transition font-medium shadow-md">
+                            Next
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    @else
+                        <button wire:click="submit" 
+                                wire:confirm="Are you sure you want to submit your exam?"
+                                class="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-2.5 text-white hover:bg-green-700 transition font-bold shadow-md">
+                            Finish & See Result
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                    @endif
+                </div>
             </div>
-            
-            <!-- Finish button REMOVED as requested -->
             
     @if($canInteract)
         <!-- Report Issue Button -->
