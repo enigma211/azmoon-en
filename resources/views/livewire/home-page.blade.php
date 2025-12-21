@@ -6,7 +6,7 @@
                 <!-- Slider Container -->
                 <div class="relative overflow-hidden rounded-xl shadow-lg bg-white" x-data="slider({{ $sliders->count() }})">
                     <!-- Slides -->
-                    <div class="relative h-48 sm:h-56 md:h-64 lg:h-64">
+                    <div class="relative w-full" style="padding-top: 56.25%;">
                         @foreach ($sliders as $index => $slider)
                             <div 
                                 x-show="currentSlide === {{ $index }}"
