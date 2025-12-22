@@ -29,8 +29,8 @@
         </div>
     @endif
     
-    <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-lg shadow-sm">
-        <div class="flex gap-4 text-sm font-medium">
+    <div class="flex flex-col sm:flex-row items-center justify-between mb-4 bg-white p-3 rounded-lg shadow-sm gap-3 sm:gap-0">
+        <div class="flex flex-wrap justify-center sm:justify-start gap-4 text-sm font-medium w-full sm:w-auto">
             <div class="text-green-600 flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 <span>Correct: {{ $this->stats['correct'] }}</span>
