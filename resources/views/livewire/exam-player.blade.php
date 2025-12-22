@@ -2,7 +2,7 @@
     // Defensive checks to avoid errors before data is fully wired
     $q = $question ?? null;
     // Check if user can interact (logged in)
-    $canInteract = Auth::check();
+    $canInteract = true;
 @endphp
 <div class="mx-auto max-w-2xl p-4 space-y-4" 
      oncontextmenu="return false;" 
@@ -248,7 +248,7 @@
                 </div>
             </div>
             
-    @if($canInteract)
+    @auth
         <!-- Report Issue Button -->
         <div class="flex justify-center pt-2">
             <button wire:click="$set('showReportModal', true)" 
@@ -256,7 +256,7 @@
                 Report Issue
             </button>
         </div>
-    @endif
+    @endauth
         </div>
     </div>
     @else
@@ -344,9 +344,9 @@
     @endauth
 
     <!-- Periodic autosave flush (debounced) - only for subscribed users -->
-    @if($canInteract)
+    @auth
         <div wire:poll.2s="flushDirty" class="hidden" aria-hidden="true"></div>
-    @endif
+    @endauth
 
     <!-- Assumptions Modal -->
     @if($this->exam->assumptions_text || $this->exam->assumptions_image)

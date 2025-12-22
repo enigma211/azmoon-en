@@ -154,7 +154,7 @@ class ExamPlayer extends Component
         }
 
         // Rate limit: max 120 calls per minute per user/exam (approx 2 per second)
-        $who = 'user:'.Auth::id();
+        $who = Auth::check() ? 'user:'.Auth::id() : 'session:'.Session::getId();
         $rateKey = sprintf('saveAnswer:%d:%s', $this->exam->id, $who);
         if (RateLimiter::tooManyAttempts($rateKey, 120)) {
             return; // silently drop to protect server
@@ -365,7 +365,7 @@ class ExamPlayer extends Component
     
     public function canUserInteract(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     public function submit(ScoringService $scoring = null)
@@ -447,7 +447,7 @@ class ExamPlayer extends Component
     public function submitReport(): void
     {
         // Only allow logged-in users to submit reports
-        if (!$this->canUserInteract()) {
+        if (!Auth::check()) {
             session()->flash('error', 'Please login to submit a report.');
             return;
         }
