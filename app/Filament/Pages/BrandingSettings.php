@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class BrandingSettings extends Page implements HasForms
 {
@@ -104,6 +105,19 @@ class BrandingSettings extends Page implements HasForms
             'logo' => $data['logo'] ?? $settings->logo,
             'favicon' => $data['favicon'] ?? $settings->favicon,
         ]);
+
+        // Sync favicon to public root for SEO and browser compatibility
+        if (!empty($data['favicon'])) {
+            try {
+                $path = Storage::disk('public')->path($data['favicon']);
+                if (file_exists($path)) {
+                    @copy($path, public_path('favicon.png'));
+                    @copy($path, public_path('favicon.ico'));
+                }
+            } catch (\Exception $e) {
+                // Ignore copy errors to prevent blocking the save
+            }
+        }
 
         Notification::make()
             ->success()

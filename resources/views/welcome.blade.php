@@ -6,6 +6,17 @@
 
         <title>{{ config('app.name', 'allexam24') }}</title>
 
+        <!-- Favicon -->
+        @php
+            $favicon = \App\Helpers\BrandingHelper::getFavicon();
+        @endphp
+        @if($favicon)
+            <link rel="icon" href="{{ $favicon }}">
+        @else
+            <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+            <link rel="icon" href="{{ asset('favicon.ico') }}">
+        @endif
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />

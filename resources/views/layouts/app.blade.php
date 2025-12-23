@@ -62,7 +62,10 @@
             $favicon = \App\Helpers\BrandingHelper::getFavicon();
         @endphp
         @if($favicon)
-            <link rel="icon" type="image/png" href="{{ $favicon }}">
+            <link rel="icon" href="{{ $favicon }}">
+        @else
+            <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+            <link rel="icon" href="{{ asset('favicon.ico') }}">
         @endif
 
         <!-- KaTeX for high-performance LaTeX rendering -->

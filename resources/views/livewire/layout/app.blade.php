@@ -37,7 +37,10 @@
         $favicon = \App\Helpers\BrandingHelper::getFavicon();
     @endphp
     @if($favicon)
-        <link rel="icon" type="image/png" href="{{ $favicon }}">
+        <link rel="icon" href="{{ $favicon }}">
+    @else
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+        <link rel="icon" href="{{ asset('favicon.ico') }}">
     @endif
     @vite(['resources/css/app.css','resources/js/app.js'])
     @livewireStyles
