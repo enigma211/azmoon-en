@@ -102,8 +102,8 @@ class BrandingSettings extends Page implements HasForms
         }
         
         $settings->update([
-            'logo' => $data['logo'] ?? $settings->logo,
-            'favicon' => $data['favicon'] ?? $settings->favicon,
+            'logo' => $data['logo'],
+            'favicon' => $data['favicon'],
         ]);
 
         // Sync favicon to public root for SEO and browser compatibility
@@ -117,6 +117,10 @@ class BrandingSettings extends Page implements HasForms
             } catch (\Exception $e) {
                 // Ignore copy errors to prevent blocking the save
             }
+        } else {
+            // Remove public favicons if deleted from settings
+            @unlink(public_path('favicon.png'));
+            @unlink(public_path('favicon.ico'));
         }
 
         Notification::make()
