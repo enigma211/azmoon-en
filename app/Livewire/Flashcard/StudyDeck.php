@@ -19,6 +19,9 @@ class StudyDeck extends Component
     public $cardsNewCount = 0;
     public $sessionCompleted = false;
 
+    // Track when the session started to distinguish "old due" vs "just wrong due"
+    public $sessionStartTime;
+
     // Leitner Box Intervals (in days)
     protected $intervals = [
         1 => 1,
@@ -31,6 +34,9 @@ class StudyDeck extends Component
     public function mount(FlashcardDeck $deck)
     {
         $this->deck = $deck;
+        // Fix the session start time to now
+        $this->sessionStartTime = now()->toDateTimeString();
+
         if (!Auth::check()) {
             return redirect()->route('login');
         }
@@ -41,12 +47,12 @@ class StudyDeck extends Component
     public function loadStats()
     {
         $userId = Auth::id();
-        
+
         // Count due cards (progress exists and next_review_at <= now)
         $this->cardsDueCount = Flashcard::where('deck_id', $this->deck->id)
             ->whereHas('progress', function ($q) use ($userId) {
                 $q->where('user_id', $userId)
-                  ->where('next_review_at', '<=', now());
+                    ->where('next_review_at', '<=', now());
             })->count();
 
         // Count new cards (no progress record)
@@ -61,18 +67,18 @@ class StudyDeck extends Component
         $userId = Auth::id();
         $this->isFlipped = false;
 
-        // Priority 1: Due cards
-        $card = Flashcard::where('deck_id', $this->deck->id)
-            ->whereHas('progress', function ($q) use ($userId) {
-                $q->where('user_id', $userId)
-                  ->where('next_review_at', '<=', now());
-            })
-            ->with(['progress' => function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            }])
+        // Priority 1: Due cards (Older than session start)
+        // Ensure "wrong" cards from this session are pushed to the end
+        $card = Flashcard::select('flashcards.*')
+            ->join('leitner_progress', 'flashcards.id', '=', 'leitner_progress.flashcard_id')
+            ->where('flashcards.deck_id', $this->deck->id)
+            ->where('leitner_progress.user_id', $userId)
+            ->where('leitner_progress.next_review_at', '<=', now())
+            ->where('leitner_progress.next_review_at', '<', $this->sessionStartTime) // Only cards due BEFORE we started
+            ->orderBy('leitner_progress.next_review_at', 'asc') // Oldest first
             ->first();
 
-        // Priority 2: New cards
+        // Priority 2: New cards (If no "old due" cards left)
         if (!$card) {
             $card = Flashcard::where('deck_id', $this->deck->id)
                 ->whereDoesntHave('progress', function ($q) use ($userId) {
@@ -81,11 +87,23 @@ class StudyDeck extends Component
                 ->first();
         }
 
+        // Priority 3: Wrong cards from THIS session (Re-review)
+        if (!$card) {
+            $card = Flashcard::select('flashcards.*')
+                ->join('leitner_progress', 'flashcards.id', '=', 'leitner_progress.flashcard_id')
+                ->where('flashcards.deck_id', $this->deck->id)
+                ->where('leitner_progress.user_id', $userId)
+                ->where('leitner_progress.next_review_at', '<=', now())
+                ->where('leitner_progress.next_review_at', '>=', $this->sessionStartTime) // Cards we just got wrong
+                ->orderBy('leitner_progress.next_review_at', 'asc')
+                ->first();
+        }
+
         if (!$card) {
             $this->sessionCompleted = true;
             $this->currentCard = null;
         } else {
-            $this->currentCard = $card;
+            $this->currentCard = $card; // This is a raw model from select, ensure relations if needed, but here mostly text
             $this->sessionCompleted = false;
         }
     }
@@ -97,7 +115,8 @@ class StudyDeck extends Component
 
     public function processResult($known)
     {
-        if (!$this->currentCard) return;
+        if (!$this->currentCard)
+            return;
 
         $userId = Auth::id();
         $progress = LeitnerProgress::firstOrNew([
@@ -107,21 +126,20 @@ class StudyDeck extends Component
 
         if ($known) {
             // Move to next box
-            // Treat new cards (not exists) as effectively being in Box 1 currently.
-            // If Known, they graduate to Box 2.
-            $currentBox = $progress->exists ? $progress->box_number : 1; 
+            $currentBox = $progress->exists ? $progress->box_number : 1;
             $nextBox = min($currentBox + 1, 5); // Max box 5
-            
+
             $progress->box_number = $nextBox;
-            
+
             // Calculate next review date
             $days = $this->intervals[$nextBox] ?? 1;
             $progress->next_review_at = Carbon::now()->addDays($days);
-            
+
         } else {
-            // Reset to box 1
+            // Wrong answer: Reset to box 1
             $progress->box_number = 1;
-            $progress->next_review_at = Carbon::now(); // Review again immediately or next session
+            // It becomes due immediately (now), so it will be caught by "Priority 3" logic
+            $progress->next_review_at = Carbon::now();
         }
 
         $progress->save();
