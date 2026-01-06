@@ -34,7 +34,7 @@ Route::get('/blog/{category}', \App\Livewire\BlogCategoryPage::class)->name('blo
 Route::get('/blog/{category}/{slug}', BlogPostPage::class)->name('blog.show');
 Route::get('/domains', DomainsPage::class)->name('domains');
 // Route::get('/resources', EducationalResourcesPage::class)->name('resources'); // تغییر به سیستم جدید
-Route::get('/profile', ProfilePage::class)->name('profile');
+Route::get('/profile', ProfilePage::class)->middleware(['auth'])->name('profile');
 Route::get('/attempts', AttemptsPage::class)->middleware(['auth'])->name('attempts');
 Route::get('/support-tickets', SupportTicketsPage::class)->middleware(['auth'])->name('support-tickets');
 
@@ -93,7 +93,7 @@ Route::get('/flashcards/{deck}/study', \App\Livewire\Flashcard\StudyDeck::class)
 Route::get('/dashboard', HomePage::class)->name('dashboard');
 
 // Breeze auth routes
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Privacy Policy
 Route::get('/privacy-policy', function () {
@@ -114,13 +114,13 @@ Route::get('/about', function () {
 Route::prefix('push')->name('push.')->group(function () {
     Route::get('/vapid-public-key', [\App\Http\Controllers\PushNotificationController::class, 'getPublicKey'])
         ->name('vapid-key');
-    
+
     Route::post('/subscribe', [\App\Http\Controllers\PushNotificationController::class, 'subscribe'])
         ->name('subscribe');
-    
+
     Route::post('/unsubscribe', [\App\Http\Controllers\PushNotificationController::class, 'unsubscribe'])
         ->name('unsubscribe');
-    
+
     Route::post('/send-test', [\App\Http\Controllers\PushNotificationController::class, 'sendTest'])
         ->middleware(['auth'])
         ->name('send-test');
