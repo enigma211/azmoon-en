@@ -34,7 +34,11 @@ class ExamResult extends Component
         if (!is_null($this->attempt)) {
             $query = ExamAttempt::query()->where('id', $this->attempt)->where('exam_id', $this->exam->id);
             if (Auth::check()) {
+                // Authenticated user can ONLY see their own attempts
                 $query->where('user_id', Auth::id());
+            } else {
+                // Guest can ONLY see guest attempts (where user_id is null)
+                $query->whereNull('user_id');
             }
             $attempt = $query->first();
             // If attempt id is provided but not found or not owned, show friendly message
@@ -66,15 +70,15 @@ class ExamResult extends Component
 
             // Compute stats using ScoringService
             $scores = app(ScoringService::class)->compute($this->exam, $this->userAnswers);
-            $percentage = (float)($scores['percentage'] ?? 0.0);
+            $percentage = (float) ($scores['percentage'] ?? 0.0);
             $this->stats = [
                 'percentage' => $percentage,
-                'earned' => (float)($scores['earned'] ?? 0.0),
-                'total' => (float)($scores['total'] ?? 100.0),
-                'correct' => (int)($scores['correct'] ?? 0),
-                'wrong' => (int)($scores['wrong'] ?? 0),
-                'unanswered' => (int)($scores['unanswered'] ?? 0),
-                'passed' => $percentage >= (float)($this->exam->pass_threshold ?? 0),
+                'earned' => (float) ($scores['earned'] ?? 0.0),
+                'total' => (float) ($scores['total'] ?? 100.0),
+                'correct' => (int) ($scores['correct'] ?? 0),
+                'wrong' => (int) ($scores['wrong'] ?? 0),
+                'unanswered' => (int) ($scores['unanswered'] ?? 0),
+                'passed' => $percentage >= (float) ($this->exam->pass_threshold ?? 0),
             ];
 
             // Log viewing result with attempt
@@ -88,7 +92,7 @@ class ExamResult extends Component
 
             if (!empty($this->stats)) {
                 ActivityLogger::log('result_viewed_session', [
-                    'percentage' => (float)($this->stats['percentage'] ?? 0.0),
+                    'percentage' => (float) ($this->stats['percentage'] ?? 0.0),
                 ], $this->exam->id, null);
             }
         }
@@ -110,14 +114,14 @@ class ExamResult extends Component
 
         foreach ($this->exam->questions as $q) {
             $ans = $this->userAnswers[$q->id] ?? [];
-            $userSelected = collect($ans)->filter()->keys()->map(fn($v) => (int)$v);
+            $userSelected = collect($ans)->filter()->keys()->map(fn($v) => (int) $v);
             $isAnswered = $userSelected->count() > 0;
             if (!$isAnswered) {
                 continue; // show only answered ones
             }
 
             $correctChoices = $q->choices->where('is_correct', true);
-            $correctIds = $correctChoices->pluck('id')->map(fn($v) => (int)$v);
+            $correctIds = $correctChoices->pluck('id')->map(fn($v) => (int) $v);
 
             $isCorrect = $userSelected->count() > 0
                 && $userSelected->diff($correctIds)->isEmpty()
@@ -125,16 +129,16 @@ class ExamResult extends Component
 
             $userPickedId = $userSelected->first();
             $orderMap = $q->choices->values()->pluck('id')->flip();
-            $userNo = $orderMap->has($userPickedId) ? ((int)$orderMap->get($userPickedId) + 1) : null;
+            $userNo = $orderMap->has($userPickedId) ? ((int) $orderMap->get($userPickedId) + 1) : null;
             $correctChoice = $correctChoices->first();
-            $correctNo = ($correctChoice && $orderMap->has($correctChoice->id)) ? ((int)$orderMap->get($correctChoice->id) + 1) : null;
+            $correctNo = ($correctChoice && $orderMap->has($correctChoice->id)) ? ((int) $orderMap->get($correctChoice->id) + 1) : null;
             $userChoiceModel = $userPickedId ? $q->choices->firstWhere('id', $userPickedId) : null;
 
             $this->review[] = [
                 'question_number' => $q->order_column ?? ($this->exam->questions->search($q) + 1),
-                'is_deleted' => (bool)$q->is_deleted,
-                'text_html' => (string)$q->text,
-                'is_correct' => (bool)$isCorrect,
+                'is_deleted' => (bool) $q->is_deleted,
+                'text_html' => (string) $q->text,
+                'is_correct' => (bool) $isCorrect,
                 'user_no' => $userNo,
                 'user_choice_text' => $userChoiceModel?->text,
                 'correct_no' => $correctNo,
@@ -143,16 +147,17 @@ class ExamResult extends Component
         }
     }
 
+    #[Layout('layouts.app')]
     public function render()
     {
         return view('livewire.exam-result', [
             'stats' => $this->stats,
             'userAnswers' => $this->userAnswers,
             'review' => $this->review,
-            'passThreshold' => (float)($this->exam->pass_threshold ?? 50),
-        ])->layout('layouts.app', [
-            'seoTitle' => $this->exam->seo_title ?: 'Exam Result: ' . $this->exam->title . ' - AllExam24',
-            'seoDescription' => $this->exam->seo_description ?? '',
-        ]);
+            'passThreshold' => (float) ($this->exam->pass_threshold ?? 50),
+        ])->with([
+                    'seoTitle' => $this->exam->seo_title ?: 'Exam Result: ' . $this->exam->title . ' - AllExam24',
+                    'seoDescription' => $this->exam->seo_description ?? '',
+                ]);
     }
 }

@@ -5,8 +5,14 @@
         $ok = $stats && is_array($stats);
     @endphp
     
+    @if (session()->has('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
     {{-- Debug: Show if stats exist --}}
-    @if(config('app.debug') && !$ok)
+    @if(config('app.debug') && !$ok && !session()->has('error'))
         <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
             <strong>Debug:</strong> No stats found in session. 
             Session keys: {{ implode(', ', array_keys(session()->all())) }}

@@ -63,10 +63,12 @@ test('pages have canonical tags', function () {
 });
 
 test('pages have open graph social tags', function () {
-    $response = get(route('home'));
+    $this->get('/')
+        ->assertSee('<meta property="og:title"', false)
+        ->assertSee('<meta property="og:description"', false)
+        ->assertSee('<meta property="og:image"', false);
+});
 
-    $response->assertSee('property="og:title"', false);
-    $response->assertSee('property="og:description"', false);
-    // og:image is optional but recommended, let's keep it strict if user wants "Advanced" SEO
-    $response->assertSee('property="og:image"', false);
+test('sensitive files are protected', function () {
+    $this->get('/.env')->assertStatus(404);
 });

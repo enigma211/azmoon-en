@@ -87,6 +87,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get user's exam attempts
+     */
+    public function examAttempts()
+    {
+        return $this->hasMany(ExamAttempt::class);
+    }
+
+    /**
      * Get the user's role status for display.
      */
     public function getRoleStatus(): string

@@ -11,6 +11,7 @@ use App\Models\AttemptAnswer;
 use App\Models\Question;
 use App\Domain\Exam\Services\ScoringService;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Support\ActivityLogger;
@@ -34,12 +35,12 @@ class ExamPlayer extends Component
     protected array $dirtyQueue = [];
 
     public array $checkedQuestions = [];
-    
+
     // Store the randomized order of question IDs for this session
     public array $questionOrder = [];
 
     public bool $requireAllAnswered = false;
-    
+
     public string $reportText = '';
     public bool $showReportModal = false;
 
@@ -51,7 +52,7 @@ class ExamPlayer extends Component
         // Initialize question order (randomized)
         // We filter deleted questions first
         $questions = $this->exam->questions->where('is_deleted', false)->values();
-        
+
         // Shuffle questions to ensure random order for every new attempt/session
         $this->questionOrder = $questions->shuffle()->pluck('id')->toArray();
 
@@ -70,30 +71,34 @@ class ExamPlayer extends Component
         $this->answers = [];
         Session::forget($this->sessionKey());
 
-        // Initialize or create DB attempt only for logged-in users
-        if (Auth::check() && $this->canUserInteract()) {
+        // Initialize or create DB attempt for BOTH logged-in and guest users
+        if ($this->canUserInteract()) {
             // Cancel any existing in-progress attempts for this exam
-            // Each entry to the exam page starts a fresh attempt
-            ExamAttempt::where('exam_id', $this->exam->id)
-                ->where('user_id', Auth::id())
-                ->where('status', 'in_progress')
-                ->update(['status' => 'cancelled']);
+            $query = ExamAttempt::where('exam_id', $this->exam->id)
+                ->where('status', 'in_progress');
+
+            if (Auth::check()) {
+                $query->where('user_id', Auth::id());
+                $query->update(['status' => 'cancelled']);
+            }
 
             // Always create a fresh attempt
             $attempt = ExamAttempt::create([
                 'exam_id' => $this->exam->id,
-                'user_id' => Auth::id(),
+                'user_id' => Auth::id(), // Can be null now
                 'started_at' => now(),
                 'status' => 'in_progress',
             ]);
             $this->attemptId = $attempt->id;
 
-            // Log start
-            ActivityLogger::log('exam_started', [
-                'page' => $this->page,
-                'duration_seconds' => $this->durationSeconds,
-                'remaining_seconds' => $this->remainingSeconds,
-            ], $this->exam->id, $this->attemptId);
+            // Log start (ActivityLogger handles nullable user_id internally usually, or we pass null)
+            if (Auth::check()) {
+                ActivityLogger::log('exam_started', [
+                    'page' => $this->page,
+                    'duration_seconds' => $this->durationSeconds,
+                    'remaining_seconds' => $this->remainingSeconds,
+                ], $this->exam->id, $this->attemptId);
+            }
         }
 
         // Initialize countdown timer based on duration_minutes
@@ -123,17 +128,20 @@ class ExamPlayer extends Component
         // Iterate over the ordered questions
         foreach ($this->questionOrder as $qid) {
             $q = $this->findQuestion($qid);
-            if (!$q) continue;
-            
+            if (!$q)
+                continue;
+
             $ans = $this->answers[$q->id] ?? null;
             $answered = false;
-            if (in_array($q->type, ['single_choice','multi_choice','true_false'])) {
+            if (in_array($q->type, ['single_choice', 'multi_choice', 'true_false'])) {
                 $answered = is_array($ans) && collect($ans)->filter()->count() > 0;
             } else {
                 $text = is_array($ans) ? ($ans['text'] ?? '') : (string) $ans;
-                $answered = trim((string)$text) !== '';
+                $answered = trim((string) $text) !== '';
             }
-            if (! $answered) { $count++; }
+            if (!$answered) {
+                $count++;
+            }
         }
         return $count;
     }
@@ -148,18 +156,19 @@ class ExamPlayer extends Component
 
     public function saveAnswer(int $questionId, int $choiceId, bool $checked): void
     {
-        // Only allow logged-in users to save answers
+        // Allow guests to save answers too
         if (!$this->canUserInteract()) {
             return;
         }
 
         // Rate limit: max 120 calls per minute per user/exam (approx 2 per second)
-        $who = Auth::check() ? 'user:'.Auth::id() : 'session:'.Session::getId();
+        $who = Auth::check() ? 'user:' . Auth::id() : 'session:' . Session::getId();
         $rateKey = sprintf('saveAnswer:%d:%s', $this->exam->id, $who);
         if (RateLimiter::tooManyAttempts($rateKey, 120)) {
             return; // silently drop to protect server
         }
         RateLimiter::hit($rateKey, 60);
+
         // Enforce single vs multi choice based on question type
         $question = $this->findQuestion($questionId);
         $current = $this->answers[$questionId] ?? [];
@@ -201,16 +210,18 @@ class ExamPlayer extends Component
         // Group dirty by question id
         $byQuestion = [];
         foreach ($this->dirtyQueue as $item) {
-            $qid = (int)$item['question_id'];
+            $qid = (int) $item['question_id'];
             $byQuestion[$qid] = true;
         }
 
         foreach (array_keys($byQuestion) as $qid) {
             $question = $this->findQuestion($qid);
-            if (!$question) { continue; }
+            if (!$question) {
+                continue;
+            }
 
             // For single choice/true_false: delete all existing rows for this question and reinsert current selections
-            if (in_array($question->type, ['single_choice','true_false'], true)) {
+            if (in_array($question->type, ['single_choice', 'true_false'], true)) {
                 AttemptAnswer::where('exam_attempt_id', $this->attemptId)
                     ->where('question_id', $qid)
                     ->delete();
@@ -222,7 +233,7 @@ class ExamPlayer extends Component
                             [
                                 'exam_attempt_id' => $this->attemptId,
                                 'question_id' => $qid,
-                                'choice_id' => (int)$cid,
+                                'choice_id' => (int) $cid,
                             ],
                             [
                                 'selected' => true,
@@ -238,10 +249,10 @@ class ExamPlayer extends Component
                         [
                             'exam_attempt_id' => $this->attemptId,
                             'question_id' => $qid,
-                            'choice_id' => (int)$cid,
+                            'choice_id' => (int) $cid,
                         ],
                         [
-                            'selected' => (bool)$isOn,
+                            'selected' => (bool) $isOn,
                         ]
                     );
                 }
@@ -255,8 +266,9 @@ class ExamPlayer extends Component
     public function checkAnswer(): void
     {
         $currentQuestionId = $this->questionOrder[$this->page - 1] ?? null;
-        if (!$currentQuestionId) return;
-        
+        if (!$currentQuestionId)
+            return;
+
         // Mark as checked
         $this->checkedQuestions[$currentQuestionId] = true;
     }
@@ -264,32 +276,36 @@ class ExamPlayer extends Component
     public function isQuestionCorrect($questionId): bool
     {
         $q = $this->findQuestion($questionId);
-        if (!$q) return false;
+        if (!$q)
+            return false;
 
         $ans = $this->answers[$questionId] ?? null;
-        
+
         // Logic adapted from ScoringService
         switch ($q->type) {
             case 'single_choice':
             case 'true_false':
                 $selectedIds = collect($ans ?? [])->filter()->keys();
-                if ($selectedIds->count() === 0) return false;
+                if ($selectedIds->count() === 0)
+                    return false;
                 $correctIds = $q->choices->where('is_correct', true)->pluck('id');
                 return $selectedIds->count() === 1 && $selectedIds->diff($correctIds)->isEmpty() && $correctIds->diff($selectedIds)->isEmpty();
-            
+
             case 'multi_choice':
                 $selectedIds = collect($ans ?? [])->filter()->keys();
-                if ($selectedIds->count() === 0) return false;
+                if ($selectedIds->count() === 0)
+                    return false;
                 $correctIds = $q->choices->where('is_correct', true)->pluck('id');
                 return $selectedIds->diff($correctIds)->isEmpty() && $correctIds->diff($selectedIds)->isEmpty();
-                
+
             case 'short_answer':
                 $text = is_array($ans) ? ($ans['text'] ?? '') : (string) $ans;
                 $text = trim(mb_strtolower($text));
-                if ($text === '') return false;
-                $keys = collect([$q->explanation])->filter()->map(fn($s) => trim(mb_strtolower((string)$s)))->filter();
+                if ($text === '')
+                    return false;
+                $keys = collect([$q->explanation])->filter()->map(fn($s) => trim(mb_strtolower((string) $s)))->filter();
                 return $keys->contains($text);
-                
+
             default:
                 return false;
         }
@@ -299,41 +315,44 @@ class ExamPlayer extends Component
     {
         $correct = 0;
         $wrong = 0;
-        
+
         foreach ($this->checkedQuestions as $qId => $isChecked) {
-            if (!$isChecked) continue;
+            if (!$isChecked)
+                continue;
             if ($this->isQuestionCorrect($qId)) {
                 $correct++;
             } else {
                 $wrong++;
             }
         }
-        
+
         $skipped = 0;
         // Use questionOrder for iteration to match user flow
         for ($i = 0; $i < $this->page - 1; $i++) {
             $qid = $this->questionOrder[$i] ?? null;
-            if (!$qid) continue;
+            if (!$qid)
+                continue;
 
             // Check if answered (even if not checked)
             $q = $this->findQuestion($qid);
-            if (!$q) continue;
-            
+            if (!$q)
+                continue;
+
             $ans = $this->answers[$qid] ?? null;
             $answered = false;
-            
-            if (in_array($q->type, ['single_choice','multi_choice','true_false'])) {
+
+            if (in_array($q->type, ['single_choice', 'multi_choice', 'true_false'])) {
                 $answered = is_array($ans) && collect($ans)->filter()->count() > 0;
             } else {
                 $text = is_array($ans) ? ($ans['text'] ?? '') : (string) $ans;
-                $answered = trim((string)$text) !== '';
+                $answered = trim((string) $text) !== '';
             }
-            
+
             if (!$answered) {
                 $skipped++;
             }
         }
-        
+
         return compact('correct', 'wrong', 'skipped');
     }
 
@@ -358,11 +377,12 @@ class ExamPlayer extends Component
     protected function findQuestion(int $id): ?Question
     {
         foreach ($this->exam->questions as $q) {
-            if ($q->id === $id) return $q;
+            if ($q->id === $id)
+                return $q;
         }
         return null;
     }
-    
+
     public function canUserInteract(): bool
     {
         return true;
@@ -370,40 +390,42 @@ class ExamPlayer extends Component
 
     public function submit(ScoringService $scoring = null)
     {
-        // Only allow logged-in users to submit
+        // Allow guests to submit
         if (!$this->canUserInteract()) {
-            return redirect()->route('login')->with('warning', 'Please login to submit the exam.');
+            return;
         }
 
         // Fail-safe: If attemptId is lost, try to recover the active attempt
-        if (!$this->attemptId && Auth::check()) {
-            $this->attemptId = ExamAttempt::where('exam_id', $this->exam->id)
-                ->where('user_id', Auth::id())
-                ->where('status', 'in_progress')
-                ->latest('id')
-                ->first()?->id;
+        if (!$this->attemptId) {
+            if (Auth::check()) {
+                $this->attemptId = ExamAttempt::where('exam_id', $this->exam->id)
+                    ->where('user_id', Auth::id())
+                    ->where('status', 'in_progress')
+                    ->latest('id')
+                    ->first()?->id;
+            }
         }
 
         // Ensure pending changes are saved to DB before scoring/redirect
         $this->flushDirty();
         if ($this->requireAllAnswered && $this->unansweredCount() > 0) {
-            // Still allow submission based on request, just proceed
+            // Proceed
         }
 
         // Compute score using the updated ScoringService with exam-level rules
         $service = $scoring ?: app(ScoringService::class);
         $scores = $service->compute($this->exam, $this->answers);
-        
-        $percentage = (float)($scores['percentage'] ?? 0.0);
-        $correct = (int)($scores['correct'] ?? 0);
-        $wrong = (int)($scores['wrong'] ?? 0);
-        $unanswered = (int)($scores['unanswered'] ?? 0);
-        $earned = (float)($scores['earned'] ?? 0.0);
-        $total = (float)($scores['total'] ?? 100.0);
+
+        $percentage = (float) ($scores['percentage'] ?? 0.0);
+        $correct = (int) ($scores['correct'] ?? 0);
+        $wrong = (int) ($scores['wrong'] ?? 0);
+        $unanswered = (int) ($scores['unanswered'] ?? 0);
+        $earned = (float) ($scores['earned'] ?? 0.0);
+        $total = (float) ($scores['total'] ?? 100.0);
 
         if ($this->attemptId) {
             $passThreshold = property_exists($this->exam, 'pass_threshold') ? ((float) ($this->exam->pass_threshold ?? 0)) : 0.0;
-            
+
             ExamAttempt::where('id', $this->attemptId)->update([
                 'submitted_at' => now(),
                 'score' => $percentage,
@@ -411,15 +433,17 @@ class ExamPlayer extends Component
                 'status' => 'submitted',
             ]);
 
-            ActivityLogger::log('exam_finished', [
-                'percentage' => $percentage,
-                'correct' => $correct,
-                'wrong' => $wrong,
-                'unanswered' => $unanswered,
-            ], $this->exam->id, $this->attemptId);
+            if (Auth::check()) {
+                ActivityLogger::log('exam_finished', [
+                    'percentage' => $percentage,
+                    'correct' => $correct,
+                    'wrong' => $wrong,
+                    'unanswered' => $unanswered,
+                ], $this->exam->id, $this->attemptId);
+            }
         }
 
-        // Persist results for result page (not flash to be safe with SPA navigation)
+        // Persist results for result page
         session()->put('exam_result_stats', [
             'percentage' => $percentage,
             'earned' => $earned,
@@ -427,16 +451,16 @@ class ExamPlayer extends Component
             'correct' => $correct,
             'wrong' => $wrong,
             'unanswered' => $unanswered,
-            'passed' => $percentage >= (float)($this->exam->pass_threshold ?? 0),
+            'passed' => $percentage >= (float) ($this->exam->pass_threshold ?? 0),
         ]);
 
         // Save user answers for review
         session()->put('exam_user_answers', $this->answers);
-        
+
         // Force session save before redirect
         session()->save();
 
-        // Server-side redirect ensures a full navigation without relying on Alpine/Livewire SPA
+        // Redirect
         $params = ['exam' => $this->exam->id];
         if ($this->attemptId) {
             $params['attempt'] = $this->attemptId;
@@ -480,6 +504,7 @@ class ExamPlayer extends Component
         session()->flash('success', 'Your report has been submitted successfully.');
     }
 
+    #[Layout('layouts.app')]
     public function render()
     {
         // Fetch current question based on randomized order
@@ -490,10 +515,10 @@ class ExamPlayer extends Component
             'question' => $question,
             'index' => $this->page - 1,
             'total' => count($this->questionOrder),
-        ])->layout('layouts.app', [
-            'seoTitle' => $this->exam->seo_title ?: ($this->exam->title . ' - AllExam24'),
-            'seoDescription' => $this->exam->seo_description ?? '',
-            'seoCanonical' => route('exam.play', ['exam' => $this->exam->id, 'page' => $this->page]),
-        ]);
+        ])->with([
+                    'seoTitle' => $this->exam->seo_title ?: ($this->exam->title . ' - AllExam24'),
+                    'seoDescription' => $this->exam->seo_description ?? '',
+                    'seoCanonical' => route('exam.play', ['exam' => $this->exam->id, 'page' => $this->page]),
+                ]);
     }
 }
