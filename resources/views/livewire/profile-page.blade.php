@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         @if (session()->has('warning'))
             <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
                 <div class="flex">
@@ -38,7 +38,7 @@
 
         @if ($isGuest)
             {{-- Guest User: Show Login/Register Form --}}
-            <div class="max-w-md mx-auto mb-12">
+            <div class="mb-12">
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300">
                     <!-- Tab Header -->
                     <div class="flex border-b border-gray-100">
