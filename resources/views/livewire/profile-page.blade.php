@@ -37,17 +37,137 @@
         @endif
 
         @if ($isGuest)
-            {{-- Guest User: Show Login Form --}}
-            <header class="mb-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-900">User Profile</h1>
-                <p class="text-sm text-gray-600 mt-2">To access your profile, please login with your email and password</p>
-            </header>
+            {{-- Guest User: Show Login/Register Form --}}
+            <div class="max-w-md mx-auto mb-12">
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300">
+                    <!-- Tab Header -->
+                    <div class="flex border-b border-gray-100">
+                        <button wire:click="$set('showRegister', false)" 
+                                class="flex-1 py-4 text-sm font-bold transition-all duration-200 {{ !$showRegister ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' : 'text-gray-400 hover:text-gray-600 bg-white' }}">
+                            Login
+                        </button>
+                        <button wire:click="$set('showRegister', true)" 
+                                class="flex-1 py-4 text-sm font-bold transition-all duration-200 {{ $showRegister ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' : 'text-gray-400 hover:text-gray-600 bg-white' }}">
+                            Register
+                        </button>
+                    </div>
 
-            <div class="flex justify-center mt-4">
-                <a href="{{ route('login') }}"
-                    class="inline-flex items-center rounded-lg bg-indigo-600 px-6 py-2.5 text-white text-sm font-medium hover:bg-indigo-700 transition shadow-md hover:shadow-lg">
-                    Login with Email
-                </a>
+                    <div class="p-8">
+                        @if (!$showRegister)
+                            <!-- Login Form -->
+                            <form wire:submit.prevent="login" class="space-y-5">
+                                <header class="text-center mb-6">
+                                    <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                                    <p class="text-gray-500 text-sm mt-1">Please enter your details to login</p>
+                                </header>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                                        </span>
+                                        <input type="email" wire:model="email" 
+                                            class="block w-full pl-10 pr-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="you@example.com">
+                                    </div>
+                                    @error('email') <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Password</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                        </span>
+                                        <input type="password" wire:model="password" 
+                                            class="block w-full pl-10 pr-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="••••••••">
+                                    </div>
+                                    @error('password') <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <label class="flex items-center space-x-2 cursor-pointer group">
+                                        <input type="checkbox" wire:model="remember" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors ml-2">Remember me</span>
+                                    </label>
+                                    <a href="{{ route('password.request') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition">Forgot?</a>
+                                </div>
+
+                                <button type="submit" wire:loading.attr="disabled"
+                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 group">
+                                    <span wire:loading.remove wire:target="login">Login to your Account</span>
+                                    <span wire:loading wire:target="login" class="flex items-center gap-2">
+                                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        Signing in...
+                                    </span>
+                                    <svg wire:loading.remove wire:target="login" class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                                </button>
+                            </form>
+                        @else
+                            <!-- Register Form -->
+                            <form wire:submit.prevent="register" class="space-y-5">
+                                <header class="text-center mb-6">
+                                    <h2 class="text-2xl font-bold text-gray-900">Create Account</h2>
+                                    <p class="text-gray-500 text-sm mt-1">Join thousands of students today</p>
+                                </header>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                        </span>
+                                        <input type="text" wire:model="name" 
+                                            class="block w-full pl-10 pr-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="John Doe">
+                                    </div>
+                                    @error('name') <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Email Address</label>
+                                    <div class="relative">
+                                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                                        </span>
+                                        <input type="email" wire:model="register_email" 
+                                            class="block w-full pl-10 pr-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="you@example.com">
+                                    </div>
+                                    @error('register_email') <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Password</label>
+                                        <input type="password" wire:model="register_password" 
+                                            class="block w-full px-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="••••••••">
+                                        @error('register_password') <span class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Confirm</label>
+                                        <input type="password" wire:model="register_password_confirmation" 
+                                            class="block w-full px-4 py-3 border-gray-200 rounded-xl text-sm focus:ring-indigo-500 focus:border-indigo-500 transition-shadow bg-gray-50/50" 
+                                            placeholder="••••••••">
+                                    </div>
+                                </div>
+
+                                <button type="submit" wire:loading.attr="disabled"
+                                    class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2 group">
+                                    <span wire:loading.remove wire:target="register">Create Account</span>
+                                    <span wire:loading wire:target="register" class="flex items-center gap-2">
+                                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        Creating...
+                                    </span>
+                                    <svg wire:loading.remove wire:target="register" class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
             </div>
         @else
             {{-- Logged In User: Show Profile --}}
