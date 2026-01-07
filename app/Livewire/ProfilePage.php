@@ -84,21 +84,51 @@ class ProfilePage extends Component
 
     public function login()
     {
+        // Bot detection: Honeypot
+        if (!empty($this->honeypot)) {
+            return;
+        }
+
+        // Rate limiting: 5 attempts per HOUR per IP
+        $rateLimitKey = 'login_attempt_' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($rateLimitKey);
+            $minutes = ceil($seconds / 60);
+            session()->flash('warning', "Too many login attempts. Please try again in {$minutes} minutes.");
+            return;
+        }
+
         $this->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+            \Illuminate\Support\Facades\RateLimiter::clear($rateLimitKey);
             session()->regenerate();
             return redirect()->route('profile');
         }
 
+        \Illuminate\Support\Facades\RateLimiter::hit($rateLimitKey, 3600); // Lock for 1 hour on failure
         $this->addError('email', trans('auth.failed'));
     }
 
     public function register()
     {
+        // Bot detection: Honeypot
+        if (!empty($this->honeypot)) {
+            return;
+        }
+
+        // Rate limiting: 3 registrations per hour per IP
+        $rateLimitKey = 'register_attempt_' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($rateLimitKey);
+            $minutes = ceil($seconds / 60);
+            session()->flash('warning', "Too many registration attempts. Please try again in {$minutes} minutes.");
+            return;
+        }
+
         $this->validate([
             'name' => 'required|string|max:255',
             'register_email' => 'required|string|email|max:255|unique:users,email',
@@ -112,6 +142,7 @@ class ProfilePage extends Component
             'password' => \Illuminate\Support\Facades\Hash::make($this->register_password),
         ]);
 
+        \Illuminate\Support\Facades\RateLimiter::hit($rateLimitKey, 3600); // Lock for 1 hour
         event(new \Illuminate\Auth\Events\Registered($user));
 
         Auth::login($user);
