@@ -66,3 +66,18 @@ test('support tickets page handles submission and validation', function () {
         'subject' => 'Help me',
     ]);
 });
+
+test('guest feedback system sends message', function () {
+    Livewire::test(\App\Livewire\ProfilePage::class)
+        ->set('guest_email', 'guest@example.com')
+        ->set('guest_message', 'This is a test feedback message from a guest.')
+        ->call('submitGuestFeedback')
+        ->assertHasNoErrors()
+        ->assertSee('Thank you! Your feedback has been received.');
+
+    $this->assertDatabaseHas('support_tickets', [
+        'guest_email' => 'guest@example.com',
+        'message' => 'This is a test feedback message from a guest.',
+        'user_id' => null,
+    ]);
+});

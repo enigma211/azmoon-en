@@ -19,6 +19,23 @@
             </div>
         @endif
 
+        @if (session()->has('message'))
+            <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg shadow-sm">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="mr-3">
+                        <p class="text-sm text-green-700 font-bold">
+                            {{ session('message') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         @if ($isGuest)
             {{-- Guest User: Show Login Form --}}
             <header class="mb-8 text-center">
@@ -224,6 +241,49 @@
         </div>
 
 
+
+        @if($isGuest)
+            <div class="mt-12 bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                        Send us your Feedback
+                    </h3>
+                    <form wire:submit.prevent="submitGuestFeedback" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Name (Optional)</label>
+                                <input type="text" wire:model="guest_name" class="w-full rounded-lg border-gray-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Your Name">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Email <span class="text-red-500">*</span></label>
+                                <input type="email" wire:model="guest_email" class="w-full rounded-lg border-gray-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="email@example.com">
+                                @error('guest_email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                        
+                        {{-- Honeypot --}}
+                        <div class="hidden">
+                            <input type="text" wire:model="honeypot">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Message <span class="text-red-500">*</span></label>
+                            <textarea wire:model="guest_message" rows="4" class="w-full rounded-lg border-gray-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Write your feedback or questions here..."></textarea>
+                            @error('guest_message') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors shadow-sm text-sm">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
 
     </div>
 </div>
