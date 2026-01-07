@@ -23,7 +23,7 @@ class ProfilePage extends Component
     public $showRegister = false;
     public $email;
     public $password;
-    public $remember = false;
+    public $remember = true;
 
     public $name;
     public $register_email;
@@ -145,7 +145,7 @@ class ProfilePage extends Component
         \Illuminate\Support\Facades\RateLimiter::hit($rateLimitKey, 3600); // Lock for 1 hour
         event(new \Illuminate\Auth\Events\Registered($user));
 
-        Auth::login($user);
+        Auth::login($user, $this->remember);
 
         return redirect()->route('profile');
     }
