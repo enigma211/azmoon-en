@@ -127,6 +127,10 @@
                             </div>
                         </div>
                     @endif
+
+                    <div class="mt-4">
+                        <livewire:question-vote :question="App\Models\Question::find($item['question_id'])" :key="'vote-result-'.$item['question_id']" />
+                    </div>
                 </div>
             @endforeach
         </div>

@@ -135,6 +135,7 @@ class ExamResult extends Component
             $userChoiceModel = $userPickedId ? $q->choices->firstWhere('id', $userPickedId) : null;
 
             $this->review[] = [
+                'question_id' => $q->id,
                 'question_number' => $q->order_column ?? ($this->exam->questions->search($q) + 1),
                 'is_deleted' => (bool) $q->is_deleted,
                 'text_html' => (string) $q->text,

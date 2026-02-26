@@ -42,4 +42,19 @@ class Question extends Model
     {
         return $this->hasMany(QuestionAsset::class);
     }
+
+    public function votes()
+    {
+        return $this->hasMany(QuestionVote::class);
+    }
+
+    public function getLikesCountAttribute()
+    {
+        return $this->votes()->where('vote_type', 1)->count();
+    }
+
+    public function getDislikesCountAttribute()
+    {
+        return $this->votes()->where('vote_type', -1)->count();
+    }
 }
