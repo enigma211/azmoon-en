@@ -74,7 +74,7 @@ class BlogAutopilotSettings extends Page implements HasForms
                             ->helperText("This prompt will be sent to the AI along with the fetched news content. Ask it to output JSON with 'title', 'summary', and 'content' keys."),
                         Select::make('autopilot_category_id')
                             ->label('Default Category for Auto-Generated Posts')
-                            ->options(Category::pluck('name', 'id'))
+                            ->options(Category::pluck('title', 'id'))
                             ->searchable()
                             ->required(),
                     ]),
