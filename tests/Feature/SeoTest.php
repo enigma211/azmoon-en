@@ -16,11 +16,30 @@ test('main public pages are accessible (HTTP 200)', function () {
 
 test('critical seo files are accessible', function () {
     // robots.txt is a static file, so we check its existence on disk
-    // because Feature tests mock the router and don't serve static files directly.
     $this->assertTrue(file_exists(public_path('robots.txt')), 'robots.txt file missing');
 
     // Sitemap is a route handled by controller, so we verify HTTP 200
-    get(route('sitemap'))->assertStatus(200);
+    $response = get(route('sitemap'));
+    $response->assertStatus(200);
+
+    // Verify static pages are in the sitemap
+    $response->assertSee(route('about'));
+    $response->assertSee(route('terms'));
+    $response->assertSee(route('privacy-policy'));
+});
+
+test('informational pages are accessible and indexable', function () {
+    $infoPages = [
+        route('about'),
+        route('terms'),
+        route('privacy-policy'),
+    ];
+
+    foreach ($infoPages as $page) {
+        $response = get($page);
+        $response->assertStatus(200);
+        $response->assertDontSee('noindex'); // Ensure they are not blocked by accidental meta tag
+    }
 });
 
 test('homepage has critical seo tags', function () {
@@ -48,8 +67,8 @@ test('blog page has critical seo tags', function () {
 });
 
 test('private pages are protected from guests (Redirects)', function () {
-    // Guests trying to access profile should be redirected to login
-    get(route('profile'))
+    // Guests trying to access attempts should be redirected to login
+    get(route('attempts'))
         ->assertStatus(302)
         ->assertRedirect(route('login'));
 });

@@ -47,36 +47,50 @@ class SupportTicketResource extends Resource
                             ->label('Ticket Number')
                             ->disabled()
                             ->dehydrated(false),
-                        
+
                         Forms\Components\Select::make('user_id')
                             ->label('User')
                             ->relationship('user', 'name')
                             ->disabled()
-                            ->dehydrated(false),
-                        
+                            ->dehydrated(false)
+                            ->visible(fn($record) => $record && $record->user_id),
+
+                        Forms\Components\TextInput::make('guest_name')
+                            ->label('Guest Name')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->visible(fn($record) => $record && !$record->user_id),
+
+                        Forms\Components\TextInput::make('guest_email')
+                            ->label('Guest Email')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->visible(fn($record) => $record && !$record->user_id),
+
                         Forms\Components\TextInput::make('subject')
                             ->label('Subject')
                             ->disabled()
                             ->dehydrated(false),
-                        
+
                         Forms\Components\Textarea::make('message')
                             ->label('User Message')
                             ->disabled()
                             ->dehydrated(false)
                             ->rows(5),
-                        
+
                         Forms\Components\Placeholder::make('status_display')
                             ->label('Current Status')
-                            ->content(fn ($record) => $record ? 
-                                ($record->status === 'pending' ? 'Awaiting Reply' : 'Answered') 
+                            ->content(
+                                fn($record) => $record ?
+                                ($record->status === 'pending' ? 'Awaiting Reply' : 'Answered')
                                 : 'New'
                             ),
-                        
+
                         Forms\Components\Hidden::make('status')
                             ->default('pending'),
                     ])
                     ->columns(1),
-                
+
                 Forms\Components\Section::make('Conversation')
                     ->schema([
                         Forms\Components\Placeholder::make('conversation')
@@ -85,13 +99,13 @@ class SupportTicketResource extends Resource
                                 if (!$record || !$record->replies()->exists()) {
                                     return 'No replies yet.';
                                 }
-                                
+
                                 $html = '<div class="space-y-3">';
                                 foreach ($record->replies()->orderBy('created_at')->get() as $reply) {
                                     $color = $reply->is_admin ? 'bg-green-50 border-green-500' : 'bg-blue-50 border-blue-500';
                                     $sender = $reply->is_admin ? 'Support' : ($reply->user->name ?? 'User');
                                     $time = $reply->created_at->format('Y/m/d H:i');
-                                    
+
                                     $html .= "<div class='p-3 rounded border-r-4 {$color}'>";
                                     $html .= "<div class='flex justify-between mb-2'>";
                                     $html .= "<strong class='text-sm'>{$sender}</strong>";
@@ -101,13 +115,13 @@ class SupportTicketResource extends Resource
                                     $html .= "</div>";
                                 }
                                 $html .= '</div>';
-                                
+
                                 return new \Illuminate\Support\HtmlString($html);
                             }),
                     ])
                     ->columns(1)
-                    ->visible(fn ($record) => $record && $record->replies()->exists()),
-                
+                    ->visible(fn($record) => $record && $record->replies()->exists()),
+
                 Forms\Components\Section::make('New Reply')
                     ->schema([
                         Forms\Components\Textarea::make('admin_reply')
@@ -127,37 +141,43 @@ class SupportTicketResource extends Resource
                     ->label('Ticket Number')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('User')
+                    ->label('User / Guest')
                     ->searchable()
                     ->sortable()
-                    ->url(fn ($record) => $record->user ? "/admin/users/{$record->user_id}/edit" : null)
-                    ->color('primary')
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($record->user_id) {
+                            return $state;
+                        }
+                        return "Guest: " . ($record->guest_name ?: 'Unknown') . " ({$record->guest_email})";
+                    })
+                    ->url(fn($record) => $record->user ? "/admin/users/{$record->user_id}/edit" : null)
+                    ->color(fn($record) => $record->user_id ? 'primary' : 'warning')
                     ->weight('medium'),
-                
+
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Subject')
                     ->searchable()
                     ->limit(50),
-                
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'answered',
                     ])
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
                         'pending' => 'Awaiting Reply',
                         'answered' => 'Answered',
                         default => $state,
                     }),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime('Y/m/d H:i')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('replied_at')
                     ->label('Replied At')
                     ->dateTime('Y/m/d H:i')

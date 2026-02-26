@@ -34,7 +34,7 @@ Route::get('/blog/{category}', \App\Livewire\BlogCategoryPage::class)->name('blo
 Route::get('/blog/{category}/{slug}', BlogPostPage::class)->name('blog.show');
 Route::get('/domains', DomainsPage::class)->name('domains');
 // Route::get('/resources', EducationalResourcesPage::class)->name('resources'); // تغییر به سیستم جدید
-Route::get('/profile', ProfilePage::class)->middleware(['auth'])->name('profile');
+Route::get('/profile', ProfilePage::class)->name('profile');
 Route::get('/attempts', AttemptsPage::class)->middleware(['auth'])->name('attempts');
 Route::get('/support-tickets', SupportTicketsPage::class)->middleware(['auth'])->name('support-tickets');
 

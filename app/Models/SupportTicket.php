@@ -16,6 +16,9 @@ class SupportTicket extends Model
         'status',
         'admin_reply',
         'replied_at',
+        'guest_name',
+        'guest_email',
+        'guest_ip',
     ];
 
     protected $casts = [
