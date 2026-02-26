@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Models\Post;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Exception;
 
 class FetchBlogNews extends Command
@@ -83,6 +84,9 @@ class FetchBlogNews extends Command
                     continue;
                 }
 
+                // Register media namespace if available
+                $namespaces = $xml->getNamespaces(true);
+
                 $items = $xml->channel->item;
                 $processedCount = 0;
 
@@ -109,6 +113,33 @@ class FetchBlogNews extends Command
                         ? (string) $item->children('content', true)->encoded 
                         : $description;
 
+                    // Try to extract image
+                    $imageUrl = null;
+                    
+                    // 1. Try media:content
+                    if (isset($namespaces['media'])) {
+                        $media = $item->children($namespaces['media']);
+                        if (isset($media->content) && isset($media->content->attributes()->url)) {
+                            $imageUrl = (string) $media->content->attributes()->url;
+                        }
+                    }
+                    
+                    // 2. Try enclosure
+                    if (!$imageUrl && isset($item->enclosure) && isset($item->enclosure->attributes()->url)) {
+                        $type = (string) $item->enclosure->attributes()->type;
+                        if (str_starts_with($type, 'image/')) {
+                            $imageUrl = (string) $item->enclosure->attributes()->url;
+                        }
+                    }
+                    
+                    // 3. Try to extract from content HTML
+                    if (!$imageUrl && preg_match('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $content, $matches)) {
+                        $imageUrl = $matches[1];
+                    }
+                    if (!$imageUrl && preg_match('/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $description, $matches)) {
+                        $imageUrl = $matches[1];
+                    }
+
                     // Clean tags for the prompt
                     $cleanContent = strip_tags($content);
                     $originalText = "Title: {$title}\n\nContent: {$cleanContent}";
@@ -118,11 +149,28 @@ class FetchBlogNews extends Command
                     $aiResult = $this->rewriteWithAI($apiKey, $baseUrl, $prompt, $originalText);
 
                     if ($aiResult && isset($aiResult['title']) && isset($aiResult['content'])) {
+                        
+                        $imagePath = null;
+                        if ($imageUrl) {
+                            try {
+                                $imageContents = Http::get($imageUrl)->body();
+                                $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+                                $extension = $extension ?: 'jpg'; // Default to jpg if no extension found
+                                $filename = 'posts/' . Str::random(40) . '.' . $extension;
+                                
+                                Storage::disk('public')->put($filename, $imageContents);
+                                $imagePath = $filename;
+                            } catch (\Exception $e) {
+                                $this->warn("Failed to download image for {$title}: " . $e->getMessage());
+                            }
+                        }
+
                         Post::create([
                             'title' => $aiResult['title'],
                             'slug' => Str::slug($aiResult['title']) . '-' . uniqid(),
                             'summary' => $aiResult['summary'] ?? Str::limit(strip_tags($aiResult['content']), 150),
                             'content' => $aiResult['content'],
+                            'image_path' => $imagePath,
                             'category_id' => $categoryId,
                             'is_published' => true,
                             'published_at' => now(),

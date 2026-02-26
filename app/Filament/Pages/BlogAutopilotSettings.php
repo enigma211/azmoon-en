@@ -38,12 +38,14 @@ class BlogAutopilotSettings extends Page implements HasForms
             'autopilot_category_id',
             'autopilot_min_posts_per_day',
             'autopilot_max_posts_per_day',
+            'autopilot_schedule_interval',
         ])->pluck('value', 'key')->toArray();
 
         // Default values
         $settings['avalai_base_url'] = $settings['avalai_base_url'] ?? 'https://api.avalai.ir/v1';
         $settings['autopilot_min_posts_per_day'] = $settings['autopilot_min_posts_per_day'] ?? 1;
         $settings['autopilot_max_posts_per_day'] = $settings['autopilot_max_posts_per_day'] ?? 3;
+        $settings['autopilot_schedule_interval'] = $settings['autopilot_schedule_interval'] ?? '12';
         
         $defaultPrompt = "Please rewrite the following news article to be an engaging blog post for CDL drivers in English. Suggest an attractive title and provide a short summary. Format the output in JSON with 'title', 'summary', and 'content' keys. Ensure the 'content' is well-formatted HTML (using paragraphs, headings, and lists where appropriate). Here is the article:\n\n";
         $settings['autopilot_prompt'] = $settings['autopilot_prompt'] ?? $defaultPrompt;
@@ -95,9 +97,19 @@ class BlogAutopilotSettings extends Page implements HasForms
                             ->helperText('The system will stop after generating this many posts in a single day to prevent spam.'),
                     ]),
 
-                Section::make('RSS Sources')
-                    ->description('List the RSS feeds to fetch news from')
+                Section::make('Execution Settings')
+                    ->description('Configure when and where to fetch news from')
                     ->schema([
+                        Select::make('autopilot_schedule_interval')
+                            ->label('Fetch Frequency')
+                            ->options([
+                                '1' => 'Every 1 Hour',
+                                '6' => 'Every 6 Hours',
+                                '12' => 'Every 12 Hours',
+                                '24' => 'Once a Day (Every 24 Hours)',
+                            ])
+                            ->required()
+                            ->helperText('How often should the background task run to check for new RSS articles.'),
                         Textarea::make('autopilot_rss_feeds')
                             ->label('RSS Feed URLs')
                             ->rows(5)
