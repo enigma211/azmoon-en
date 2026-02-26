@@ -38,15 +38,36 @@ class FetchBlogNews extends Command
         $prompt = Setting::where('key', 'autopilot_prompt')->value('value');
         $categoryId = Setting::where('key', 'autopilot_category_id')->value('value');
         $rssFeedsText = Setting::where('key', 'autopilot_rss_feeds')->value('value');
+        $minPosts = (int)(Setting::where('key', 'autopilot_min_posts_per_day')->value('value') ?? 1);
+        $maxPosts = (int)(Setting::where('key', 'autopilot_max_posts_per_day')->value('value') ?? 3);
 
         if (!$apiKey || !$prompt || !$categoryId || !$rssFeedsText) {
             $this->error('Missing required settings. Please configure Autopilot Settings in the admin panel.');
             return;
         }
 
+        // Check how many auto-generated posts were already created today
+        $todayPostsCount = Post::whereNotNull('source_url')
+            ->whereDate('created_at', now()->toDateString())
+            ->count();
+
+        if ($todayPostsCount >= $maxPosts) {
+            $this->info("Daily limit reached ({$maxPosts} posts). Skipping fetch.");
+            return;
+        }
+
+        $postsNeeded = max($minPosts - $todayPostsCount, 1);
+        $this->info("Targeting to fetch {$postsNeeded} new posts (Max allowed: {$maxPosts}, Created today: {$todayPostsCount}).");
+
         $feeds = array_filter(array_map('trim', explode("\n", $rssFeedsText)));
+        
+        $postsCreatedThisRun = 0;
 
         foreach ($feeds as $feedUrl) {
+            if ($todayPostsCount + $postsCreatedThisRun >= $maxPosts) {
+                $this->info("Maximum daily post limit ({$maxPosts}) reached during this run. Stopping.");
+                break;
+            }
             $this->info("Fetching RSS from: {$feedUrl}");
             
             try {
@@ -66,8 +87,12 @@ class FetchBlogNews extends Command
                 $processedCount = 0;
 
                 foreach ($items as $item) {
-                    // Only process up to 3 items per feed to avoid rate limits
-                    if ($processedCount >= 3) {
+                    if ($todayPostsCount + $postsCreatedThisRun >= $maxPosts) {
+                        break 2; // Break out of both loops if overall max is reached
+                    }
+
+                    // Only process up to max needed per feed to avoid rate limits
+                    if ($processedCount >= $postsNeeded) {
                         break;
                     }
 
@@ -105,6 +130,7 @@ class FetchBlogNews extends Command
                         ]);
                         $this->info("Successfully created post: {$aiResult['title']}");
                         $processedCount++;
+                        $postsCreatedThisRun++;
                     } else {
                         $this->warn("Failed to generate AI content for: {$title}");
                     }

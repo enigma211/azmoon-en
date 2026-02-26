@@ -36,10 +36,14 @@ class BlogAutopilotSettings extends Page implements HasForms
             'autopilot_prompt',
             'autopilot_rss_feeds',
             'autopilot_category_id',
+            'autopilot_min_posts_per_day',
+            'autopilot_max_posts_per_day',
         ])->pluck('value', 'key')->toArray();
 
         // Default values
         $settings['avalai_base_url'] = $settings['avalai_base_url'] ?? 'https://api.avalai.ir/v1';
+        $settings['autopilot_min_posts_per_day'] = $settings['autopilot_min_posts_per_day'] ?? 1;
+        $settings['autopilot_max_posts_per_day'] = $settings['autopilot_max_posts_per_day'] ?? 3;
         
         $defaultPrompt = "Please rewrite the following news article to be an engaging blog post for CDL drivers in English. Suggest an attractive title and provide a short summary. Format the output in JSON with 'title', 'summary', and 'content' keys. Ensure the 'content' is well-formatted HTML (using paragraphs, headings, and lists where appropriate). Here is the article:\n\n";
         $settings['autopilot_prompt'] = $settings['autopilot_prompt'] ?? $defaultPrompt;
@@ -77,6 +81,18 @@ class BlogAutopilotSettings extends Page implements HasForms
                             ->options(Category::pluck('title', 'id'))
                             ->searchable()
                             ->required(),
+                        TextInput::make('autopilot_min_posts_per_day')
+                            ->label('Minimum Posts Per Day (Target)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->required()
+                            ->helperText('The system will try to fetch at least this many posts if available.'),
+                        TextInput::make('autopilot_max_posts_per_day')
+                            ->label('Maximum Posts Per Day (Limit)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->required()
+                            ->helperText('The system will stop after generating this many posts in a single day to prevent spam.'),
                     ]),
 
                 Section::make('RSS Sources')
