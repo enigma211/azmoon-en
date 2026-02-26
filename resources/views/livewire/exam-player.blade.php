@@ -215,6 +215,10 @@
         @endif
 
         <div class="mt-8 space-y-4">
+            <div class="flex justify-center mb-6">
+                <livewire:question-vote :question="$q" :key="'vote-'.$q->id" />
+            </div>
+
             <!-- Navigation buttons -->
             <div class="flex items-center justify-between border-t border-gray-100 pt-6">
                 <button wire:click="prev" 
@@ -246,10 +250,6 @@
                         </button>
                     @endif
                 </div>
-            </div>
-            
-            <div class="flex justify-center mt-4 border-t border-gray-100 pt-4">
-                <livewire:question-vote :question="$q" :key="'vote-'.$q->id" />
             </div>
 
     @auth
