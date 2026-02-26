@@ -17,6 +17,7 @@ class Post extends Model
         'published_at',
         'view_count',
         'category_id',
+        'source_url',
     ];
 
     protected $casts = [
