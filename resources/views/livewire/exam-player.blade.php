@@ -248,6 +248,10 @@
                 </div>
             </div>
             
+            <div class="flex justify-center mt-4 border-t border-gray-100 pt-4">
+                <livewire:question-vote :question="$q" :key="'vote-'.$q->id" />
+            </div>
+
     @auth
         <!-- Report Issue Button -->
         <div class="flex justify-center pt-2">
