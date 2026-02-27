@@ -13,6 +13,8 @@ use Filament\Forms\Components\Section;
 use Filament\Notifications\Notification;
 use App\Models\Setting;
 use App\Models\Category;
+use Filament\Actions\Action;
+use Illuminate\Support\Facades\Artisan;
 
 class BlogAutopilotSettings extends Page implements HasForms
 {
@@ -27,6 +29,39 @@ class BlogAutopilotSettings extends Page implements HasForms
     protected static string $view = 'filament.pages.admin-settings-page'; // Reuse the view from AdminSettingsPage
 
     public ?array $data = [];
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('run_fetch')
+                ->label('Run Fetch Now (Test)')
+                ->icon('heroicon-o-play')
+                ->color('success')
+                ->requiresConfirmation()
+                ->modalHeading('Run News Fetcher')
+                ->modalDescription('This will manually trigger the AI news fetcher in the background. It may take a few moments depending on the RSS feeds and AI API response time.')
+                ->modalSubmitActionLabel('Yes, run it')
+                ->action(function () {
+                    try {
+                        // Run the artisan command
+                        Artisan::call('news:fetch');
+                        $output = Artisan::output();
+                        
+                        Notification::make()
+                            ->title('Fetch completed')
+                            ->body('Command executed successfully. Check the blog to see if new posts were added.')
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Error during fetch')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                }),
+        ];
+    }
 
     public function mount(): void
     {
