@@ -89,8 +89,16 @@ class FetchBlogNews extends Command
 
                 $items = $xml->channel->item;
                 $processedCount = 0;
+                $searchDepth = 0; // Prevent looking endlessly into old posts
+                $maxSearchDepth = 20; // Only check up to the first 20 items in any RSS feed
 
                 foreach ($items as $item) {
+                    if ($searchDepth >= $maxSearchDepth) {
+                        $this->info("Reached maximum search depth of {$maxSearchDepth} items for this feed. Moving to next feed.");
+                        break;
+                    }
+                    $searchDepth++;
+
                     if ($todayPostsCount + $postsCreatedThisRun >= $maxPosts) {
                         $this->info("Maximum daily limit reached during processing. Stopping.");
                         break 2; // Break out of both loops if overall max is reached
