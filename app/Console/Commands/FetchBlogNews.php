@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 use Exception;
 
 class FetchBlogNews extends Command
@@ -112,8 +113,8 @@ class FetchBlogNews extends Command
 
                     $sourceUrl = (string) $item->link;
                     
-                    // Check if already processed
-                    if (Post::where('source_url', $sourceUrl)->exists()) {
+                    // Check if already processed (either published or rejected by AI)
+                    if (Post::where('source_url', $sourceUrl)->exists() || Cache::has('ai_rejected_' . md5($sourceUrl))) {
                         // Keep checking other items in the RSS feed instead of stopping
                         continue;
                     }
@@ -155,7 +156,7 @@ class FetchBlogNews extends Command
                     $cleanContent = strip_tags($content);
                     $originalText = "Title: {$title}\n\nContent: {$cleanContent}";
 
-                    $this->info("Processing new article: {$title}");
+                    $this->info("Sending article to AI for evaluation: {$title}");
 
                     $aiResult = $this->rewriteWithAI($apiKey, $baseUrl, $prompt, $originalText);
 
@@ -166,8 +167,10 @@ class FetchBlogNews extends Command
 
                     // Gatekeeper check
                     if (isset($aiResult['is_relevant']) && $aiResult['is_relevant'] === false) {
-                        $this->warn("AI rejected this article (Irrelevant to CDL drivers). Skipping...");
-                        continue;
+                        $this->warn("AI rejected this article (Irrelevant). Saving to cache to ignore next time. Skipping...");
+                        // Remember this rejection for 30 days so we don't ask AI again
+                        Cache::put('ai_rejected_' . md5($sourceUrl), true, now()->addDays(30));
+                        continue; // This skips the current item and moves to the next news item in the RSS loop
                     }
 
                     if (empty($aiResult['title']) || empty($aiResult['content'])) {
