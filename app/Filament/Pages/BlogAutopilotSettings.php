@@ -47,10 +47,15 @@ class BlogAutopilotSettings extends Page implements HasForms
                         Artisan::call('news:fetch');
                         $output = Artisan::output();
                         
+                        // Strip ANSI color codes from the output and trim it
+                        $cleanOutput = preg_replace('/\x1b\[[0-9;]*m/', '', $output);
+                        $cleanOutput = trim($cleanOutput);
+                        
                         Notification::make()
                             ->title('Fetch completed')
-                            ->body('Command executed successfully. Check the blog to see if new posts were added.')
+                            ->body("Result:\n" . substr($cleanOutput, 0, 500) . (strlen($cleanOutput) > 500 ? '...' : ''))
                             ->success()
+                            ->duration(10000)
                             ->send();
                     } catch (\Exception $e) {
                         Notification::make()
