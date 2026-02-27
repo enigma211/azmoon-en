@@ -92,11 +92,13 @@ class FetchBlogNews extends Command
 
                 foreach ($items as $item) {
                     if ($todayPostsCount + $postsCreatedThisRun >= $maxPosts) {
+                        $this->info("Maximum daily limit reached during processing. Stopping.");
                         break 2; // Break out of both loops if overall max is reached
                     }
 
                     // Only process up to max needed per feed to avoid rate limits
                     if ($processedCount >= $postsNeeded) {
+                        $this->info("Reached target fetch count for this run. Moving to next feed or stopping.");
                         break;
                     }
 
@@ -104,6 +106,7 @@ class FetchBlogNews extends Command
                     
                     // Check if already processed
                     if (Post::where('source_url', $sourceUrl)->exists()) {
+                        // Keep checking other items in the RSS feed instead of stopping
                         continue;
                     }
 
