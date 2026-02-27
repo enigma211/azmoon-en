@@ -148,40 +148,52 @@ class FetchBlogNews extends Command
 
                     $aiResult = $this->rewriteWithAI($apiKey, $baseUrl, $prompt, $originalText);
 
-                    if ($aiResult && isset($aiResult['title']) && isset($aiResult['content'])) {
-                        
-                        $imagePath = null;
-                        if ($imageUrl) {
-                            try {
-                                $imageContents = Http::get($imageUrl)->body();
-                                $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
-                                $extension = $extension ?: 'jpg'; // Default to jpg if no extension found
-                                $filename = 'posts/' . Str::random(40) . '.' . $extension;
-                                
-                                Storage::disk('public')->put($filename, $imageContents);
-                                $imagePath = $filename;
-                            } catch (\Exception $e) {
-                                $this->warn("Failed to download image for {$title}: " . $e->getMessage());
-                            }
-                        }
-
-                        Post::create([
-                            'title' => $aiResult['title'],
-                            'slug' => Str::slug($aiResult['title']) . '-' . uniqid(),
-                            'summary' => $aiResult['summary'] ?? Str::limit(strip_tags($aiResult['content']), 150),
-                            'content' => $aiResult['content'],
-                            'image_path' => $imagePath,
-                            'category_id' => $categoryId,
-                            'is_published' => true,
-                            'published_at' => now(),
-                            'source_url' => $sourceUrl,
-                        ]);
-                        $this->info("Successfully created post: {$aiResult['title']}");
-                        $processedCount++;
-                        $postsCreatedThisRun++;
-                    } else {
-                        $this->warn("Failed to generate AI content for: {$title}");
+                    if (!$aiResult) {
+                        $this->warn("Failed to parse AI JSON response for: {$title}");
+                        continue;
                     }
+
+                    // Gatekeeper check
+                    if (isset($aiResult['is_relevant']) && $aiResult['is_relevant'] === false) {
+                        $this->warn("AI rejected this article (Irrelevant to CDL drivers). Skipping...");
+                        continue;
+                    }
+
+                    if (empty($aiResult['title']) || empty($aiResult['content'])) {
+                        $this->error("AI marked as relevant but returned empty content for: {$title}");
+                        continue;
+                    }
+
+                    // Try to download image if AI accepted the article
+                    $imagePath = null;
+                    if ($imageUrl) {
+                        try {
+                            $imageContents = Http::get($imageUrl)->body();
+                            $extension = pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+                            $extension = $extension ?: 'jpg'; // Default to jpg if no extension found
+                            $filename = 'posts/' . Str::random(40) . '.' . $extension;
+                            
+                            Storage::disk('public')->put($filename, $imageContents);
+                            $imagePath = $filename;
+                        } catch (\Exception $e) {
+                            $this->warn("Failed to download image for {$aiResult['title']}: " . $e->getMessage());
+                        }
+                    }
+
+                    Post::create([
+                        'title' => $aiResult['title'],
+                        'slug' => Str::slug($aiResult['title']) . '-' . uniqid(),
+                        'summary' => $aiResult['meta_description'] ?? Str::limit(strip_tags($aiResult['content']), 150),
+                        'content' => $aiResult['content'],
+                        'image_path' => $imagePath,
+                        'category_id' => $categoryId,
+                        'is_published' => true,
+                        'published_at' => now(),
+                        'source_url' => $sourceUrl,
+                    ]);
+                    $this->info("Successfully published relevant article: {$aiResult['title']}");
+                    $processedCount++;
+                    $postsCreatedThisRun++;
 
                     // Delay to prevent hitting rate limits
                     sleep(2);

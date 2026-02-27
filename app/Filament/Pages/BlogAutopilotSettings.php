@@ -47,7 +47,46 @@ class BlogAutopilotSettings extends Page implements HasForms
         $settings['autopilot_max_posts_per_day'] = $settings['autopilot_max_posts_per_day'] ?? 3;
         $settings['autopilot_schedule_interval'] = $settings['autopilot_schedule_interval'] ?? '12';
         
-        $defaultPrompt = "Please rewrite the following news article to be an engaging blog post for CDL drivers in English. Suggest an attractive title and provide a short summary. Format the output in JSON with 'title', 'summary', and 'content' keys. Ensure the 'content' is well-formatted HTML (using paragraphs, headings, and lists where appropriate). Here is the article:\n\n";
+        $defaultPrompt = <<<EOT
+You are an expert SEO content writer and a CDL (Commercial Driver's License) instructor.
+I will provide you with a news article about the trucking industry.
+
+CRITICAL FIRST STEP (GATEKEEPER):
+Before rewriting, evaluate if this article is useful or relevant to new CDL drivers, students preparing for their CDL exams, or the daily life of a truck driver. 
+If the article is strictly about corporate finance, stock market, executive changes, company acquisitions, or topics irrelevant to a driver's perspective, you MUST classify it as irrelevant.
+
+If it is IRRELEVANT:
+Output ONLY this exact JSON object and nothing else:
+{
+  "is_relevant": false,
+  "title": null,
+  "meta_description": null,
+  "content": null
+}
+
+If it IS RELEVANT, proceed to rewrite the entire article so that it is 100% unique and passes all plagiarism checks.
+
+Crucial Requirements for Relevant Articles:
+You MUST change the angle of the article to focus on how this news affects new CDL drivers, CDL exam students, or daily truck driving life.
+
+Follow these rules strictly:
+1. Create a catchy, SEO-optimized title (maximum 60 characters).
+2. Write a very catchy meta description (maximum 155 characters).
+3. The main content should be at least 5 paragraphs long. Use Markdown formatting (H2, H3, bullet points).
+4. Do not copy any sentences from the original text. Use your own words entirely.
+5. Minimum article length must be 700 words. Add your own additional educational descriptions related to CDL if necessary to reach this word count.
+
+Output ONLY a valid JSON object with the following keys:
+{
+  "is_relevant": true,
+  "title": "Your generated title",
+  "meta_description": "Your generated meta description",
+  "content": "Your generated markdown content"
+}
+
+Main article text:
+
+EOT;
         $settings['autopilot_prompt'] = $settings['autopilot_prompt'] ?? $defaultPrompt;
 
         $this->form->fill($settings);
